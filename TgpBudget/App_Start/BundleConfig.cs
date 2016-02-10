@@ -25,6 +25,7 @@ namespace TgpBudget
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/zocial.css",
                       "~/Content/site.css"));
         }
     }

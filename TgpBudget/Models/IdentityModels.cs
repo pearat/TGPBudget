@@ -11,6 +11,7 @@ namespace TgpBudget.Models
     public class ApplicationUser : IdentityUser
     {
         public int? HouseholdId { get; set; }
+
         public string DisplayName { get; set; }
         
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -35,7 +36,7 @@ namespace TgpBudget.Models
         }
         public DbSet<Household> Households { get; set; }
         public DbSet<BankAcct> BankAcct { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Deal> Deals { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
     }

@@ -10,7 +10,7 @@ namespace TgpBudget.Models
     {
         public BankAcct()
         {
-            this.Transactions = new HashSet<Transaction>();
+            this.Deals = new HashSet<Deal>();
         }
         public int Id { get; set; }
         [Required]
@@ -24,6 +24,6 @@ namespace TgpBudget.Models
         public decimal BalanceCurrent { get; set; }
         public decimal BalanceReconciled { get; set; }
 
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Deal> Deals { get; set; }
     }
 }

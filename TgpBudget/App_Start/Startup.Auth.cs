@@ -4,8 +4,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
-using Owin;
 using TgpBudget.Models;
+using System.Configuration;
+using Owin;
+using Owin.Security.Providers.LinkedIn;
 
 namespace TgpBudget
 {
@@ -54,15 +56,19 @@ namespace TgpBudget
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseFacebookAuthentication(
+                appId: ConfigurationManager.AppSettings["FacebookAppId"],
+                appSecret: ConfigurationManager.AppSettings["FacebookAppSecret"]);
+
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = ConfigurationManager.AppSettings["GoogleClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["GoogleClientSecret"]
+            });
+
+            app.UseLinkedInAuthentication(ConfigurationManager.AppSettings["LinkedInClientId"],
+                ConfigurationManager.AppSettings["LinkedInClientSecret"]);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TgpBudget.Models
 {
-    public class Transaction
+    public class Deal
     {
         public int Id { get; set; }
         [Required]

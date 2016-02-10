@@ -10,6 +10,7 @@ using TgpBudget.Models;
 
 namespace TgpBudget.Controllers
 {
+    [RequireHttps]
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
