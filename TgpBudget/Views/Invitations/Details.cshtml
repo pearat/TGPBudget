@@ -1,0 +1,58 @@
+﻿@model TgpBudget.Models.Invitation
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Invitation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Household.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Household.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InvitationCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InvitationCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IssuedOn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IssuedOn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InvalidAfter)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InvalidAfter)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,82 @@
+﻿@model TgpBudget.Models.BankAcct
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BankAcct</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HouseholdId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HouseholdId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HeldAt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HeldAt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcctNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcctNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Closed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Closed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BalanceCurrent)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BalanceCurrent)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BalanceReconciled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BalanceReconciled)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

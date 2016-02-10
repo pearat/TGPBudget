@@ -1,0 +1,37 @@
+HOUSEHOLD
+-PK: Id
+Name
+Address
+Tax-No
+
+USER
+-PK: Id
+-FK: Household
+<built-in>
+
+ACCOUNT
+-PK: Id
+-FK: Household
+Name
+Date-Opened
+Date-Closed?
+Balance-Reconciled 
+Balance-Current
+
+TRANSACTION
+-PK: Id
+-FK: Account
+-FK: Category
+Date
+Payee
+Description
+Amount
+Reconciled
+
+CATEGORY
+-PK: Id
+-FK: Household
+Name
+IsExpense
+BudgetAmount
+
