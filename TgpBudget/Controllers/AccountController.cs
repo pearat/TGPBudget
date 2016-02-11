@@ -157,9 +157,14 @@ namespace TgpBudget.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string code)
         {
-            return View();
+            var newUser = new RegisterViewModel();
+            if (code != null)
+            {
+                newUser.InvitationCode = code;
+            }
+            return View(newUser);
         }
 
         //

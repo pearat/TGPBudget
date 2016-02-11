@@ -113,6 +113,8 @@ namespace TgpBudget.Controllers
             return View(household);
         }
 
+
+
         // POST: Households/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

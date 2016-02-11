@@ -10,14 +10,18 @@ namespace TgpBudget.Models
     {
         public int Id { get; set; }
         public int HouseholdId { get; set; }
-        public string UserEmail { get; set; }
+        public string HouseholdName { get; set; }
+
+        public string IssuedBy { get; set; }
         [Required]
+        public string GuestEmail { get; set; }
+
+
         public string InvitationCode { get; set; }
-        [Required]
+   
         public DateTimeOffset IssuedOn { get; set; }
-        [Required]
+
         public DateTimeOffset InvalidAfter { get; set; }
 
-        public virtual Household Household { get; set; }
     }
 }

@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using TgpBudget.Models;
@@ -16,11 +20,11 @@ namespace TgpBudget.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Invitations
-        public ActionResult Index()
-        {
-            var invitations = db.Invitations.Include(i => i.Household);
-            return View(invitations.ToList());
-        }
+        //public ActionResult Index()
+        //{
+        //    var invitations = db.Invitations.Include(i => i.Household);
+        //    return View(invitations.ToList());
+        //}
 
         // GET: Invitations/Details/5
         public ActionResult Details(int? id)
@@ -37,11 +41,39 @@ namespace TgpBudget.Controllers
             return View(invitation);
         }
 
+        // Helper function: GetUniqueKey
+        private string GetUniqueKey(int maxSize)
+        {
+            char[] chars = new char[62];
+            chars =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
+            byte[] data = new byte[1];
+            using (RNGCryptoServiceProvider crypto = new RNGCryptoServiceProvider())
+            {
+                crypto.GetNonZeroBytes(data);
+                data = new byte[maxSize];
+                crypto.GetNonZeroBytes(data);
+            }
+            StringBuilder result = new StringBuilder(maxSize);
+            foreach (byte b in data)
+            {
+                result.Append(chars[b % (chars.Length)]);
+            }
+            return result.ToString();
+        }
+
+
         // GET: Invitations/Create
         public ActionResult Create()
         {
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
-            return View();
+            var invite = new Invitation();
+            var user = db.Users.Find(User.Identity.GetUserId());
+            var HhId = (int)user.HouseholdId;
+            invite.HouseholdId = HhId;
+            invite.HouseholdName = user.Household.Name;
+            invite.IssuedBy = user.Email;
+
+            return View(invite);
         }
 
         // POST: Invitations/Create
@@ -49,16 +81,51 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,HouseholdId,UserEmail,InvitationCode,IssuedOn,InvalidAfter")] Invitation invitation)
+        public ActionResult Create([Bind(Include = "HouseholdId,HouseholdName,IssuedBy,GuestEmail")] Invitation invitation)
         {
+            var MAXSIZE = 12;
+            var EXPIRATION_DAYS = 7;
+            
             if (ModelState.IsValid)
             {
+                invitation.IssuedOn = System.DateTimeOffset.Now;
+                invitation.InvalidAfter = invitation.IssuedOn.AddDays(EXPIRATION_DAYS);
+                
+                invitation.InvitationCode= GetUniqueKey(MAXSIZE);
                 db.Invitations.Add(invitation);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                // vvvvvvvvv end send Email vvvvvvvvv
+
+                var callbackUrl = Url.Action("Register", "Account", new { code = invitation.InvitationCode }, protocol: Request.Url.Scheme);
+                var manualUrl = Url.Action("Register", "Account" );
+                var callbackLoginUrl = Url.Action("Login", "Account", new { code = invitation.InvitationCode }, protocol: Request.Url.Scheme);
+                var manualLoginUrl = Url.Action("Login", "Account");
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                var SendTo = invitation.GuestEmail;
+                var es = new EmailService();
+                var msg = new IdentityMessage
+                {
+                    Subject = "Invitation to join TGP-Budget App",
+                    Destination = SendTo,
+                    Body = "On " + invitation.IssuedOn.DateTime.ToLongDateString() + ", " + invitation.IssuedBy + 
+                    " sent you an invitation to join the " + invitation.HouseholdName + " house hold.\r\n"+
+                    "Please register at  within the next "+ EXPIRATION_DAYS+" days. \r\n"+
+                    "To REGISTER with TGP-Budget and JOIN this household  by clicking <a href=\"" + callbackUrl + "\">here.</a>\r\n\r\n"+
+                    "To login manually, navigate to this address: < a href =\"" + manualUrl + "\">here</a>" +
+                    "and enter the following household code: " + invitation.InvitationCode + "\r\n\r\n\r\n" +
+
+                    "(Note: if you have already visited registered, then"+
+                    "To LOGIN  by clicking <a href=\"" + callbackLoginUrl + "\">here.</a>\r\n\r\n" +
+                    "To login manually, navigate to this address: < a href =\"" + manualLoginUrl + "\">here</a>" +
+                    "and enter the following household code: " + invitation.InvitationCode + " )."
+                };
+                es.SendAsync(msg);
+
+                // ^^^^^^^^^ end send Email ^^^^^^^^^
+                return RedirectToAction("Index","Home");
             }
 
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);
+            //ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);
             return View(invitation);
         }
 
@@ -129,5 +196,7 @@ namespace TgpBudget.Controllers
             }
             base.Dispose(disposing);
         }
+
     }
 }
+

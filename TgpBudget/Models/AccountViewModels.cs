@@ -72,6 +72,9 @@ namespace TgpBudget.Models
     public class RegisterViewModel
     {
 
+        [Display(Name = "InvitationCode")]
+        public string InvitationCode { get; set; }
+
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [DataType(DataType.Text)]

@@ -459,6 +459,7 @@
     <Content Include="XcTim1-3\assets\sass\light-bootstrap-dashboard.scss" />
     <Content Include="XcTim1-3\Creative Tim License.pdf" />
     <Content Include="Views\Manage\EditUserProfile.cshtml" />
+    <Content Include="Views\Households\InviteJoinHh.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
