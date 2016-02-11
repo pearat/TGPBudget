@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TgpBudget.Models;
+using System.Data.Entity;
 
 namespace TgpBudget.Controllers
 {
@@ -16,6 +17,7 @@ namespace TgpBudget.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ManageController()
         {
@@ -212,6 +214,47 @@ namespace TgpBudget.Controllers
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
 
+        // vvvvvvvvvvvvvvv EditUserProfile vvvvvvvvvvvvvvv
+        //
+        // GET: /Manage/EditUserProfile
+        public ActionResult EditUserProfile()
+        {
+            var userData = new EditUserProfileViewModel();
+            var user = db.Users.Find(User.Identity.GetUserId());
+
+            userData.DisplayName = user.DisplayName;
+            userData.Email = user.Email;
+            userData.PhoneNumber = user.PhoneNumber;
+            return View(userData);
+        }
+
+        //
+        // POST: /Manage/EditUserProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUserProfile([Bind(Include = "DisplayName,Email,PhoneNumber")] EditUserProfileViewModel userData)
+        {
+            if (ModelState.IsValid)
+            {
+                //ApplicationUser user = new ApplicationUser();
+
+                var user = db.Users.Find(User.Identity.GetUserId());
+               
+                user.DisplayName = userData.DisplayName;
+                user.Email = userData.Email;
+                user.PhoneNumber = userData.PhoneNumber;
+
+                //db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+            return View(userData);
+        }
+    
+        // ^^^^^^^^^^^^^^^ EditUserProfile ^^^^^^^^^^^^^^^
+
+
+        // vvvvvvvvvvvvvvv ChangePassword vvvvvvvvvvvvvvv
         //
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()
@@ -242,6 +285,7 @@ namespace TgpBudget.Controllers
             AddErrors(result);
             return View(model);
         }
+        // ^^^^^^^^^^^^^^^ ChangePassword ^^^^^^^^^^^^^^^
 
         //
         // GET: /Manage/SetPassword

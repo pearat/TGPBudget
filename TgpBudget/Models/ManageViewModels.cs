@@ -58,6 +58,27 @@ namespace TgpBudget.Models
         public string ConfirmPassword { get; set; }
     }
 
+
+    public class EditUserProfileViewModel
+    {
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Display or Screen Name")]
+        public string DisplayName { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 5)]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Phone]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+    }
+
     public class AddPhoneNumberViewModel
     {
         [Required]

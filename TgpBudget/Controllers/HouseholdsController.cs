@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -47,13 +48,20 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Created,Updated,Address,TaxId")] Household household)
+        public ActionResult Create([Bind(Include = "Name,Address,TaxId")] Household household)
         {
             if (ModelState.IsValid)
             {
+                household.Created = System.DateTimeOffset.Now;
                 db.Households.Add(household);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var hh = db.Households.First(h => h.Name == household.Name);
+                var user = db.Users.Find(User.Identity.GetUserId());
+
+                user.HouseholdId = hh.Id;
+                db.SaveChanges();
+
+                return RedirectToAction("Index", new { HhId = hh.Id });
             }
 
             return View(household);
