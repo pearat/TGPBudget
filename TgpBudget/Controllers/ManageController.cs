@@ -221,7 +221,7 @@ namespace TgpBudget.Controllers
         {
             var userData = new EditUserProfileViewModel();
             var user = db.Users.Find(User.Identity.GetUserId());
-
+            userData.HouseholdName = db.Households.FirstOrDefault(h => h.Id == user.HouseholdId).Name;
             userData.DisplayName = user.DisplayName;
             userData.Email = user.Email;
             userData.PhoneNumber = user.PhoneNumber;

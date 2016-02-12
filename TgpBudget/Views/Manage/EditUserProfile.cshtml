@@ -13,6 +13,12 @@
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
 
+    <div class="form-group">
+        @Html.LabelFor(m => m.HouseholdName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Model.HouseholdName
+        </div>
+    </div>
 
     <div class="form-group">
         @Html.LabelFor(m => m.DisplayName, new { @class = "col-md-2 control-label" })

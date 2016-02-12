@@ -18,7 +18,8 @@ namespace TgpBudget.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        
+        private ApplicationDbContext db = new ApplicationDbContext();
+
 
 
         public AccountController()
@@ -163,6 +164,10 @@ namespace TgpBudget.Controllers
             if (code != null)
             {
                 newUser.InvitationCode = code;
+                var guest = db.Invitations.First(i=>i.InvitationCode==code);
+                if (guest!=null)
+                    newUser.Email = guest.GuestEmail;
+
             }
             return View(newUser);
         }
@@ -176,7 +181,8 @@ namespace TgpBudget.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,
+                                                DisplayName = model.DisplayName, InvitationCode=model.InvitationCode };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -522,7 +528,7 @@ namespace TgpBudget.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Households");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

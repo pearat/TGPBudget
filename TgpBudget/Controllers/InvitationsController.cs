@@ -96,10 +96,10 @@ namespace TgpBudget.Controllers
                 db.SaveChanges();
                 // vvvvvvvvv end send Email vvvvvvvvv
 
-                var callbackUrl = Url.Action("Register", "Account", new { code = invitation.InvitationCode }, protocol: Request.Url.Scheme);
-                var manualUrl = Url.Action("Register", "Account" );
+                var callbackRegisterUrl = Url.Action("Register", "Account", new { code = invitation.InvitationCode }, protocol: Request.Url.Scheme);
+                var manualRegisterUrl = Url.Action("Register", "Account", new { code = ""}, protocol: Request.Url.Scheme);
                 var callbackLoginUrl = Url.Action("Login", "Account", new { code = invitation.InvitationCode }, protocol: Request.Url.Scheme);
-                var manualLoginUrl = Url.Action("Login", "Account");
+                var manualLoginUrl = Url.Action("Login", "Account", new { code = "" }, protocol: Request.Url.Scheme);
                 //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 var SendTo = invitation.GuestEmail;
                 var es = new EmailService();
@@ -108,21 +108,21 @@ namespace TgpBudget.Controllers
                     Subject = "Invitation to join TGP-Budget App",
                     Destination = SendTo,
                     Body = "On " + invitation.IssuedOn.DateTime.ToLongDateString() + ", " + invitation.IssuedBy + 
-                    " sent you an invitation to join the " + invitation.HouseholdName + " house hold.\r\n"+
-                    "Please register at  within the next "+ EXPIRATION_DAYS+" days. \r\n"+
-                    "To REGISTER with TGP-Budget and JOIN this household  by clicking <a href=\"" + callbackUrl + "\">here.</a>\r\n\r\n"+
-                    "To login manually, navigate to this address: < a href =\"" + manualUrl + "\">here</a>" +
-                    "and enter the following household code: " + invitation.InvitationCode + "\r\n\r\n\r\n" +
+                    " sent you an invitation to join the " + invitation.HouseholdName + " house hold.<br />"+
+                    "Please register at  within the next "+ EXPIRATION_DAYS+" days. <br />"+
+                    "To REGISTER with TGP-Budget and JOIN this household  by clicking <a href=\"" + callbackRegisterUrl + "\">here.</a><br /><br />"+
+                    "To login manually, navigate to this address: < a href =\"" + manualRegisterUrl + "\">here</a>" +
+                    "and enter the following household code: <b>" + invitation.InvitationCode + "</b> <br /><br /><br />" +
 
                     "(Note: if you have already visited registered, then"+
-                    "To LOGIN  by clicking <a href=\"" + callbackLoginUrl + "\">here.</a>\r\n\r\n" +
+                    "To LOGIN  by clicking <a href=\"" + callbackLoginUrl + "\">here.</a><br /><br />" +
                     "To login manually, navigate to this address: < a href =\"" + manualLoginUrl + "\">here</a>" +
-                    "and enter the following household code: " + invitation.InvitationCode + " )."
+                    "and enter the following household code: <b>" + invitation.InvitationCode + "</b> )."
                 };
                 es.SendAsync(msg);
 
                 // ^^^^^^^^^ end send Email ^^^^^^^^^
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index","Home","Home");
             }
 
             //ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);

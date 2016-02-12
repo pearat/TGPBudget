@@ -19,7 +19,25 @@ namespace TgpBudget.Controllers
         // GET: Households
         public ActionResult Index()
         {
-            return View(db.Households.ToList());
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user.HouseholdId==null)
+            {
+                if (user.InvitationCode == null)
+                {
+                    // Join w/ Code or Create new Household
+
+                    return RedirectToAction("Create", "Households");
+
+                }
+                else
+                {
+                    user.HouseholdId = db.Invitations.FirstOrDefault(i=>i.InvitationCode==user.InvitationCode).HouseholdId;
+                    db.SaveChanges();
+                }
+            }
+
+            //return View(db.Households.ToList());
+            return RedirectToAction("EditUserProfile", "Manage");
         }
 
         // GET: Households/Details/5
@@ -55,7 +73,7 @@ namespace TgpBudget.Controllers
                 household.Created = System.DateTimeOffset.Now;
                 db.Households.Add(household);
                 db.SaveChanges();
-                var hh = db.Households.First(h => h.Name == household.Name);
+                var hh = db.Households.FirstOrDefault(h => h.Name == household.Name);
                 var user = db.Users.Find(User.Identity.GetUserId());
 
                 user.HouseholdId = hh.Id;
