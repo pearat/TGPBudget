@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -39,6 +40,8 @@ namespace TgpBudget.Controllers
         // GET: BankAccts/Create
         public ActionResult Create()
         {
+            var bankAccount = new BankAcctViewModel();
+            var user = db.Users.Find(User.Identity.GetUserId());
             return View();
         }
 

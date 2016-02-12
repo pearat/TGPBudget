@@ -1,0 +1,65 @@
+﻿@model IEnumerable<TgpBudget.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "List Members";
+}
+
+<h2>Details</h2>
+<h4>Household Members</h4>
+<hr />
+
+<div>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title">Striped Table with Hover</h4>
+                            <p class="category">Here is a subtitle for this table</p>
+                        </div>
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-hover table-striped">
+                                <thead>
+
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+
+                                </thead>
+                                <tbody>
+
+                                    @for (var k = 0; k < Model.Count(); k++)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Model.ElementAt(k).DisplayName
+                                            </td>
+
+
+                                            <td>
+                                                @Model.ElementAt(k).Email
+                                            </td>
+
+                                            <td>
+                                                @Model.ElementAt(k).PhoneNumber
+                                            </td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

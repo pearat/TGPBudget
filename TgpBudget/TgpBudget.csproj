@@ -253,6 +253,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\zocial.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -278,6 +279,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="XcTim1-3\assets\css\animate.min.css" />
     <Content Include="XcTim1-3\assets\css\bootstrap.min.css" />
     <Content Include="XcTim1-3\assets\css\demo.css" />
@@ -379,9 +381,9 @@
     <Content Include="Views\Categories\Details.cshtml" />
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Categories\Index.cshtml" />
-    <Content Include="Views\Households\Create.cshtml" />
-    <Content Include="Views\Households\Delete.cshtml" />
-    <Content Include="Views\Households\Details.cshtml" />
+    <Content Include="Views\Households\JoinCreate.cshtml" />
+    <Content Include="Views\Households\Leave.cshtml" />
+    <Content Include="Views\Households\ListMembers.cshtml" />
     <Content Include="Views\Households\Edit.cshtml" />
     <Content Include="Views\Households\Index.cshtml" />
     <Content Include="Views\Invitations\Create.cshtml" />
@@ -465,6 +467,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\src\" />
     <Folder Include="Content\templates\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

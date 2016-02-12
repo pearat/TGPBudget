@@ -24,7 +24,7 @@
     <link href="~/XcTim1-3/assets/css/animate.min.css" rel="stylesheet" />
     <!--  Light Bootstrap Table core CSS    -->
     <link href="~/XcTim1-3/assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
-
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
     <!--  CSS for Demo Purpose, don't include it in your project     -->
     <link href="~/XcTim1-3/assets/css/demo.css" rel="stylesheet" />
 
@@ -39,7 +39,7 @@
 
 
     <div class="wrapper">
-        <div class="sidebar" data-color="red" data-image="/XcTim1-3/assets/img/sidebar-5.jpg">
+        <div class="sidebar" data-color="blue" data-image="/XcTim1-3/assets/img/sidebar-5.jpg">
 
             <!--
 
@@ -79,13 +79,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("Create", "Households")>
+                        <a href=@Url.Action("Create", "BankAccts")>
                             <i class="pe-7s-science"></i>
-                            <p>Household</p>
+                            <p>Create Bank Account</p>
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("Create", "Invitations")>
+                        <a href="#">
                             <i class="pe-7s-map-marker"></i>
                             <p>Join Invitation</p>
                         </a>
@@ -147,27 +147,28 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                @*<a href="">
-                                        Account
-                                    </a>*@
-                                @Html.Partial("_LoginPartial")
-                            </li>
-                            @*<li class="dropdown">
+                            <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        Dropdown
+                                        Household
                                         <b class="caret"></b>
                                     </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Action</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something</a></li>
-                                        <li><a href="#">Another action</a></li>
-                                        <li><a href="#">Something</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a></li>
-                                    </ul>
-                                </li>*@
+                                <ul class="dropdown-menu">
+                                    <li><a href=@Url.Action("ListMembers", "Households")>List Household Members</li>
+                                    <li><a href=@Url.Action("Create", "Invitations")>Invite Someone to Join</li>
+                                    <li><a href=@Url.Action("Edit", "Households")>Edit Details</li>
+                                    <li><a href=@Url.Action("Leave", "Households")>Leave This Household</li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                </ul>
+                                </li>
+                            <li>
+                                @Html.Partial("_LoginPartial")
+                            </li>
+
                             @*<li>
                                     <a href="#">
                                         Log out
@@ -229,21 +230,22 @@
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="~/XcTim1-3/assets/js/light-bootstrap-dashboard.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="~/XcTim1-3/assets/js/demo.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
 
-        demo.initChartist();
+        //demo.initChartist();
 
-        $.notify({
-            icon: 'pe-7s-gift',
-            message: "Welcome to <b>TGP Budget</b> - an easy family budgeting App."
+        //$.notify({
+        //    icon: 'pe-7s-gift',
+        //    message: "Welcome to <b>TGP Budget</b> - an easy family budgeting App."
 
-        }, {
-            type: 'info',
-            timer: 4000
-        });
+        //}, {
+        //    type: 'info',
+        //    timer: 500
+        //});
 
     });
 </script>
