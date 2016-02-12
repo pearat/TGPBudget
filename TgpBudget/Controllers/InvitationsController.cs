@@ -83,15 +83,16 @@ namespace TgpBudget.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "HouseholdId,HouseholdName,IssuedBy,GuestEmail")] Invitation invitation)
         {
-            var MAXSIZE = 12;
+            var INVITATION_CODE_LENGTH = 12;
             var EXPIRATION_DAYS = 7;
-            
+            var EXPIRATION_HOURS = 24;
+
             if (ModelState.IsValid)
             {
                 invitation.IssuedOn = System.DateTimeOffset.Now;
-                invitation.InvalidAfter = invitation.IssuedOn.AddDays(EXPIRATION_DAYS);
+                invitation.InvalidAfter = invitation.IssuedOn.AddHours(EXPIRATION_HOURS); //.AddDays(EXPIRATION_DAYS);
                 
-                invitation.InvitationCode= GetUniqueKey(MAXSIZE);
+                invitation.InvitationCode= GetUniqueKey(INVITATION_CODE_LENGTH);
                 db.Invitations.Add(invitation);
                 db.SaveChanges();
                 // vvvvvvvvv end send Email vvvvvvvvv

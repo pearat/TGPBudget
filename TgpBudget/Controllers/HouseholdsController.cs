@@ -20,7 +20,7 @@ namespace TgpBudget.Controllers
         public ActionResult Index()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user.HouseholdId==null)
+            if (user.HouseholdId == null)
             {
                 if (user.InvitationCode == null)
                 {
@@ -31,7 +31,8 @@ namespace TgpBudget.Controllers
                 }
                 else
                 {
-                    user.HouseholdId = db.Invitations.FirstOrDefault(i=>i.InvitationCode==user.InvitationCode).HouseholdId;
+                    // add error checking to be sure that code exists, matches and hasn't expired
+                    user.HouseholdId = db.Invitations.FirstOrDefault(i => i.InvitationCode == user.InvitationCode).HouseholdId;
                     db.SaveChanges();
                 }
             }
@@ -58,6 +59,7 @@ namespace TgpBudget.Controllers
         // GET: Households/Create
         public ActionResult Create()
         {
+            ViewBag.Msg = "Welcome to TGP-Budget!";
             return View();
         }
 
@@ -66,23 +68,48 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,Address,TaxId")] Household household)
+        public ActionResult Create([Bind(Include = "Name,Address,TaxId,TryCode,InvitationCode")] HouseholdViewModel HhVM)
         {
             if (ModelState.IsValid)
             {
-                household.Created = System.DateTimeOffset.Now;
-                db.Households.Add(household);
-                db.SaveChanges();
-                var hh = db.Households.FirstOrDefault(h => h.Name == household.Name);
+                var now = System.DateTimeOffset.Now;
                 var user = db.Users.Find(User.Identity.GetUserId());
+                if (HhVM.InvitationCode == "")
+                {
+                    var household = new Household();
+                    household.Name = HhVM.Name;
+                    household.Address = HhVM.Address;
+                    household.TaxId = HhVM.TaxId;
+                    household.Created = now;
+                    db.Households.Add(household);
+                    db.SaveChanges();
 
-                user.HouseholdId = hh.Id;
-                db.SaveChanges();
+                    var hh = db.Households.FirstOrDefault(h => h.Name == household.Name);
+                    user.HouseholdId = hh.Id;
+                    db.SaveChanges();
+                    return RedirectToAction("Index", new { HhId = hh.Id });
+                }
+                else
+                {
+                    var invitation = db.Invitations.FirstOrDefault(i => i.InvitationCode == HhVM.InvitationCode);
+                    if (invitation == null)
+                    {
+                        ViewBag.Msg = "Invalid code, please try entering it again.";
+                        return View();
+                    }
+                    if (now> invitation.InvalidAfter)
+                    {
+                        ViewBag.Msg = "This code has expired, please request a new one and enter it promptly.";
+                        return View();
+                    }
+                    user.HouseholdId = invitation.HouseholdId;
+                    db.SaveChanges();
+                    return RedirectToAction("Index", new { HhId = user.HouseholdId });
+                }
 
-                return RedirectToAction("Index", new { HhId = hh.Id });
             }
 
-            return View(household);
+            return View();
         }
 
         // GET: Households/Edit/5
