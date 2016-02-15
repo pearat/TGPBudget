@@ -19,21 +19,29 @@ namespace TgpBudget.Controllers
         // GET: BankAccts
         public ActionResult Index()
         {
+
+            if (User == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null || user.Household==null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View(db.BankAccts.ToList());
         }
 
         // GET: BankAccts/Details/5
         public ActionResult Details(int? id)
         {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null)
-            {
-                return RedirectToAction("JoinCreate");
-            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            var user = db.Users.Find(User.Identity.GetUserId());
+
             BankAcct bankAcct = db.BankAccts.Find(id);
             if (bankAcct == null)
             {
@@ -45,11 +53,17 @@ namespace TgpBudget.Controllers
         // GET: BankAccts/Create
         public ActionResult Create()
         {
+
+            if (User == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null)
+            if(user==null)
             {
                 return RedirectToAction("JoinCreate","Households");
             }
+
             var bankAccount = new BankAcctViewModel();
             bankAccount.HouseholdId = user.Household.Id;
             bankAccount.HouseholdName = user.Household.Name;

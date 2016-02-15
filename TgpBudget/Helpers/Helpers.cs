@@ -10,31 +10,31 @@ using System.Security.Principal;
 
 namespace TgpBudget.Helpers
     {
-    //    public class Helpers
-    //    {
-    //        private ApplicationDbContext db = new ApplicationDbContext();
+    public class Helper
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
 
-    //        public ApplicationUser FetchUser(IPrincipal user)
-    //        {
-                
-    //            return db.Users.Find(user.Identity.GetUserId());
-    //        }
+        public ApplicationUser FetchUser(IPrincipal User)
+        {
 
-    //        //public ApplicationUser GetCurentUser()
-    //        //{
-    //        //    return db.Users.Find(User.Identity.GetUserId());
-    //        //}
+            return db.Users.Find(User.Identity.GetUserId());
+        }
 
-    //    public Household GetHousehold(int hhId)
-    //    {
-    //        return db.Households.Find(hhId);
-    //    }
+        //public ApplicationUser GetCurentUser()
+        //{
+        //    return db.Users.Find(User.Identity.GetUserId());
+        //}
 
-    //    public Household GetHouseholdFromUser(string userId)
-    //    {
-    //        return db.Households.Find(db.Users.Find(userId));
-    //    }
+        //    public Household GetHousehold(int hhId)
+        //    {
+        //        return db.Households.Find(hhId);
+        //    }
 
-    //}
+        //    public Household GetHouseholdFromUser(string userId)
+        //    {
+        //        return db.Households.Find(db.Users.Find(userId));
+        //    }
+
     }
+}
 

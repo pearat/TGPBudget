@@ -24,7 +24,7 @@
             @Html.DisplayNameFor(model => model.AcctNumber)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Created)
+            @Html.DisplayNameFor(model => model.Opened)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Closed)
@@ -53,7 +53,7 @@
             @Html.DisplayFor(modelItem => item.AcctNumber)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Created)
+            @Html.DisplayFor(modelItem => item.Opened)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Closed)
@@ -73,3 +73,16 @@
 }
 
 </table>
+<div class="col-md-4">
+    <h2>Create New Account</h2>
+    <p>Create a new financial Account.</p>
+    <p><a class="btn btn-default" href=@Url.Action("Create", "BankAccts")>Create &raquo;</a></p>
+</div>
+
+<div>
+    @Html.ActionLink("Return Home", "Index", "Home")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

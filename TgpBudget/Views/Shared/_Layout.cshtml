@@ -55,7 +55,7 @@
                 </div>
                 <ul class="nav">
                     <li class="active">
-                        <a href="dashboard.html">
+                        <a href=@Url.Action("Index", "Home")>
                             <i class="pe-7s-graph"></i>
                             <p>Dashboard</p>
                         </a>
@@ -79,13 +79,13 @@
                             </a>
                         </li>*@
                     <li>
-                        <a href=@Url.Action("Create", "BankAccts")>
+                        <a href=@Url.Action("Index", "BankAccts")>
                             <i class="pe-7s-piggy"></i>
                             <p>Bank Accounts</p>
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("ListMembers", "Households")>
+                        <a href=@Url.Action("Index", "Households")>
                             <i class="pe-7s-home"></i>
                             <p>Household Info</p>
                         </a>

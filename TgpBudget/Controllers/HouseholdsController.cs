@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using TgpBudget.Models;
+using TgpBudget.Helpers;
 
 namespace TgpBudget.Controllers
 {
@@ -15,7 +16,19 @@ namespace TgpBudget.Controllers
         // GET: Households
         public ActionResult Index()
         {
+            if (User == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            if (user.DisplayName == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             if (user.HouseholdId == null)
             {
                 if (user.InvitationCode == null)
@@ -46,13 +59,15 @@ namespace TgpBudget.Controllers
             }
 
             //return View(db.Households.ToList());
-            return RedirectToAction("EditUserProfile", "Manage");
+            return RedirectToAction("Index","Home");
         }
 
         // GET: Households/List/5
         public ActionResult ListMembers()
         {
-            var user = db.Users.Find(User.Identity.GetUserId());
+            // var user = db.Users.Find(User.Identity.GetUserId());
+            Helper helper = new Helper();
+            var user = helper.FetchUser(User);
             if (user == null)
             {
                 return RedirectToAction("JoinCreate");

@@ -219,9 +219,14 @@ namespace TgpBudget.Controllers
         // GET: /Manage/EditUserProfile
         public ActionResult EditUserProfile()
         {
-            var userData = new EditUserProfileViewModel();
+            
             var user = db.Users.Find(User.Identity.GetUserId());
-            userData.HouseholdName = db.Households.FirstOrDefault(h => h.Id == user.HouseholdId).Name;
+            if (user == null)
+            {
+                return RedirectToAction("JoinCreate","Households");
+            }
+            var userData = new EditUserProfileViewModel();
+            userData.HouseholdName = user.Household.Name;// db.Households.FirstOrDefault(h => h.Id == user.HouseholdId).Name;
             userData.DisplayName = user.DisplayName;
             userData.Email = user.Email;
             userData.PhoneNumber = user.PhoneNumber;
