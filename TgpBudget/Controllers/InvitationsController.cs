@@ -66,8 +66,12 @@ namespace TgpBudget.Controllers
         // GET: Invitations/Create
         public ActionResult Create()
         {
-            var invite = new Invitation();
             var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("JoinCreate","Households");
+            }
+            var invite = new Invitation();
             var HhId = (int)user.HouseholdId;
             invite.HouseholdId = HhId;
             invite.HouseholdName = user.Household.Name;

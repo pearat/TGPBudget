@@ -1,14 +1,14 @@
 ﻿@model TgpBudget.Models.Household
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Leave Household";
 }
 
 <h2>Delete</h2>
 
 <h3>Are you sure you want to Leave the <b>@Model.Name</b> household?</h3>
 <div>
-    
+
     <hr />
 
     <dl class="dl-horizontal">
@@ -58,9 +58,15 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Leave" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="col-md-offset-2 col-md-10">
+            <div class="form-actions no-color">
+                <input type="submit" value="Leave" class="btn btn-default" />
+            </div>
         </div>
+
     }
+    <div>
+
+        @Html.ActionLink("Back to List", "Index", "Home")
+    </div>
 </div>

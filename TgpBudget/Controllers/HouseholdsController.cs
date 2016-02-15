@@ -53,9 +53,9 @@ namespace TgpBudget.Controllers
         public ActionResult ListMembers()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user.HouseholdId == null)
+            if (user == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("JoinCreate");
             }
             var household = db.Households.Find(user.HouseholdId);
             var model = household.Users;
@@ -124,11 +124,12 @@ namespace TgpBudget.Controllers
         public ActionResult Edit(int? id)
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            id = user.HouseholdId;
-            if (id == null)
+            
+            if (user == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("JoinCreate");
             }
+            id = user.HouseholdId;
             Household household = db.Households.Find(id);
             if (household == null)
             {
@@ -158,12 +159,12 @@ namespace TgpBudget.Controllers
         public ActionResult Leave()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            var id = user.HouseholdId;
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
 
+            if (user == null)
+            {
+                return RedirectToAction("JoinCreate");
+            }
+            var id = user.HouseholdId;
             Household household = db.Households.Find(id);
             // Household household = user.Household;
             if (household == null)

@@ -25,6 +25,11 @@ namespace TgpBudget.Controllers
         // GET: BankAccts/Details/5
         public ActionResult Details(int? id)
         {
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("JoinCreate");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -40,8 +45,12 @@ namespace TgpBudget.Controllers
         // GET: BankAccts/Create
         public ActionResult Create()
         {
-            var bankAccount = new BankAcctViewModel();
             var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("JoinCreate","Households");
+            }
+            var bankAccount = new BankAcctViewModel();
             bankAccount.HouseholdId = user.Household.Id;
             bankAccount.HouseholdName = user.Household.Name;
             return View(bankAccount);
