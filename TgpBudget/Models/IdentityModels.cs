@@ -42,7 +42,7 @@ namespace TgpBudget.Models
             return new ApplicationDbContext();
         }
         public DbSet<Household> Households { get; set; }
-        public DbSet<BankAcct> BankAcct { get; set; }
+        public DbSet<BankAcct> BankAccts { get; set; }
         public DbSet<Deal> Deals { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Invitation> Invitations { get; set; }

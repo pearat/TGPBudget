@@ -40,7 +40,7 @@ namespace TgpBudget.Controllers
         // GET: Deals/Create
         public ActionResult Create()
         {
-            ViewBag.BankAcctId = new SelectList(db.BankAcct, "Id", "AccountName");
+            ViewBag.BankAcctId = new SelectList(db.BankAccts, "Id", "AccountName");
             ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
             return View();
         }
@@ -59,7 +59,7 @@ namespace TgpBudget.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.BankAcctId = new SelectList(db.BankAcct, "Id", "AccountName", deal.BankAcctId);
+            ViewBag.BankAcctId = new SelectList(db.BankAccts, "Id", "AccountName", deal.BankAcctId);
             ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", deal.CategoryId);
             return View(deal);
         }
@@ -76,7 +76,7 @@ namespace TgpBudget.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BankAcctId = new SelectList(db.BankAcct, "Id", "AccountName", deal.BankAcctId);
+            ViewBag.BankAcctId = new SelectList(db.BankAccts, "Id", "AccountName", deal.BankAcctId);
             ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", deal.CategoryId);
             return View(deal);
         }
@@ -94,7 +94,7 @@ namespace TgpBudget.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.BankAcctId = new SelectList(db.BankAcct, "Id", "AccountName", deal.BankAcctId);
+            ViewBag.BankAcctId = new SelectList(db.BankAccts, "Id", "AccountName", deal.BankAcctId);
             ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", deal.CategoryId);
             return View(deal);
         }
@@ -114,7 +114,7 @@ namespace TgpBudget.Controllers
             return View(deal);
         }
 
-        // POST: Deals/Delete/5
+        //// POST: Deals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

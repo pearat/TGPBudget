@@ -26,7 +26,7 @@ namespace TgpBudget.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -38,9 +38,9 @@ namespace TgpBudget.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -141,7 +141,7 @@ namespace TgpBudget.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -164,8 +164,8 @@ namespace TgpBudget.Controllers
             if (code != null)
             {
                 newUser.InvitationCode = code;
-                var guest = db.Invitations.First(i=>i.InvitationCode==code);
-                if (guest!=null)
+                var guest = db.Invitations.First(i => i.InvitationCode == code);
+                if (guest != null)
                     newUser.Email = guest.GuestEmail;
 
             }
@@ -181,8 +181,13 @@ namespace TgpBudget.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,
-                                                DisplayName = model.DisplayName, InvitationCode=model.InvitationCode };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    DisplayName = model.DisplayName,
+                    InvitationCode = model.InvitationCode
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

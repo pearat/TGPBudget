@@ -28,7 +28,7 @@ namespace TgpBudget.Models
         public virtual ICollection<Category> Categories { get; set; }
     }
 
-    // public int INVITATION_CODE_LENGTH = 12;
+    
 
     public class HouseholdViewModel 
     {

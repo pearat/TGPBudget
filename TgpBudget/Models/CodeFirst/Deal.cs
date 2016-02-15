@@ -18,6 +18,8 @@ namespace TgpBudget.Models
         public decimal Amount { get; set; }
         [Required]
         public bool Reconciled { get; set; }
+
+
         public virtual BankAcct BankAcct { get; set; }
         public virtual Category Category { get; set; }
 

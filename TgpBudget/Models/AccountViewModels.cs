@@ -72,7 +72,7 @@ namespace TgpBudget.Models
     public class RegisterViewModel
     {
 
-        [Display(Name = "InvitationCode")]
+        [Display(Name = "Invitation Code")]
         public string InvitationCode { get; set; }
 
         [Required]

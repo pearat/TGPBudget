@@ -19,7 +19,7 @@ namespace TgpBudget.Controllers
         // GET: BankAccts
         public ActionResult Index()
         {
-            return View(db.BankAcct.ToList());
+            return View(db.BankAccts.ToList());
         }
 
         // GET: BankAccts/Details/5
@@ -29,7 +29,7 @@ namespace TgpBudget.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BankAcct bankAcct = db.BankAcct.Find(id);
+            BankAcct bankAcct = db.BankAccts.Find(id);
             if (bankAcct == null)
             {
                 return HttpNotFound();
@@ -42,7 +42,9 @@ namespace TgpBudget.Controllers
         {
             var bankAccount = new BankAcctViewModel();
             var user = db.Users.Find(User.Identity.GetUserId());
-            return View();
+            bankAccount.HouseholdId = user.Household.Id;
+            bankAccount.HouseholdName = user.Household.Name;
+            return View(bankAccount);
         }
 
         // POST: BankAccts/Create
@@ -50,13 +52,32 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,HouseholdId,AccountName,HeldAt,AcctNumber,Created,Closed,BalanceCurrent,BalanceReconciled")] BankAcct bankAcct)
+        public ActionResult Create([Bind(Include = "HouseholdId,AccountName,HeldAt,AcctNumber,BalanceCurrent")] BankAcctViewModel bankAcct)
         {
             if (ModelState.IsValid)
             {
-                db.BankAcct.Add(bankAcct);
+                if (db.BankAccts.Any(a => a.AcctNumber == bankAcct.AcctNumber && a.HeldAt == bankAcct.HeldAt))
+                {
+                    ModelState.AddModelError("AccountName", "Pls enter a unique Account number for this Institution.");
+                    return View(bankAcct);
+                }
+
+                if (bankAcct.OpeningDate == null)
+                    bankAcct.OpeningDate = System.DateTimeOffset.Now;
+                if (bankAcct.BalanceOpening != 0)
+                {
+                    // generate opening transaction
+                }
+                var newBankAcct = new BankAcct();
+                newBankAcct.AccountName = bankAcct.AccountName;
+                newBankAcct.AcctNumber = bankAcct.AcctNumber;
+                newBankAcct.HeldAt = bankAcct.HeldAt;
+                newBankAcct.HouseholdId = bankAcct.HouseholdId;
+                newBankAcct.Opened = bankAcct.OpeningDate;
+                newBankAcct.BalanceCurrent = bankAcct.BalanceOpening;
+                db.BankAccts.Add(newBankAcct);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Households");
             }
 
             return View(bankAcct);
@@ -69,7 +90,7 @@ namespace TgpBudget.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BankAcct bankAcct = db.BankAcct.Find(id);
+            BankAcct bankAcct = db.BankAccts.Find(id);
             if (bankAcct == null)
             {
                 return HttpNotFound();
@@ -100,7 +121,7 @@ namespace TgpBudget.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BankAcct bankAcct = db.BankAcct.Find(id);
+            BankAcct bankAcct = db.BankAccts.Find(id);
             if (bankAcct == null)
             {
                 return HttpNotFound();
@@ -113,8 +134,8 @@ namespace TgpBudget.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            BankAcct bankAcct = db.BankAcct.Find(id);
-            db.BankAcct.Remove(bankAcct);
+            BankAcct bankAcct = db.BankAccts.Find(id);
+            db.BankAccts.Remove(bankAcct);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

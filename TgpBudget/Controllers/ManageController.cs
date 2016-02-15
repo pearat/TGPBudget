@@ -35,9 +35,9 @@ namespace TgpBudget.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -239,7 +239,7 @@ namespace TgpBudget.Controllers
                 //ApplicationUser user = new ApplicationUser();
 
                 var user = db.Users.Find(User.Identity.GetUserId());
-               
+
                 user.DisplayName = userData.DisplayName;
                 user.Email = userData.Email;
                 user.PhoneNumber = userData.PhoneNumber;
@@ -250,7 +250,7 @@ namespace TgpBudget.Controllers
             }
             return View(userData);
         }
-    
+
         // ^^^^^^^^^^^^^^^ EditUserProfile ^^^^^^^^^^^^^^^
 
 
@@ -376,7 +376,7 @@ namespace TgpBudget.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -427,6 +427,6 @@ namespace TgpBudget.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

@@ -15,6 +15,7 @@ namespace TgpBudget.Models
         [Required]
         public bool IsExpense { get; set; }
         public decimal? BudgetAmount { get; set; }
+        
 
         public virtual Household Household { get; set; }
     }

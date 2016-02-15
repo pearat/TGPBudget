@@ -31,7 +31,7 @@
     <!--     Fonts and icons     -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
-        <link href="~/XcTim1-3/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+    <link href="~/XcTim1-3/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     <!-- ^^^^^ start of TEMPLATE addins ^^^^^ -->
 
 </head>
@@ -50,7 +50,7 @@
             <div class="sidebar-wrapper">
                 <div class="logo">
                     <img />
-                    <a href="http://tpeara@azurewebsites.net" background-image="~/img/logo/tlogo.png" >
+                    <a href="http://tpeara@azurewebsites.net" background-image="~/img/logo/tlogo.png">
                     </a>
                 </div>
                 <ul class="nav">
@@ -66,28 +66,28 @@
                             <p>User Profile</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="table.html">
-                            <i class="pe-7s-note2"></i>
-                            <p>Table List</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="typography.html">
-                            <i class="pe-7s-news-paper"></i>
-                            <p>Typography</p>
-                        </a>
-                    </li>
+                    @*<li>
+                            <a href="table.html">
+                                <i class="pe-7s-note2"></i>
+                                <p>Table List</p>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="typography.html">
+                                <i class="pe-7s-news-paper"></i>
+                                <p>Typography</p>
+                            </a>
+                        </li>*@
                     <li>
                         <a href=@Url.Action("Create", "BankAccts")>
-                            <i class="pe-7s-science"></i>
-                            <p>Create Bank Account</p>
+                            <i class="pe-7s-piggy"></i>
+                            <p>Bank Accounts</p>
                         </a>
                     </li>
                     <li>
                         <a href="#">
-                            <i class="pe-7s-map-marker"></i>
-                            <p>Join Invitation</p>
+                            <i class="pe-7s-home"></i>
+                            <p>Household Info</p>
                         </a>
                     </li>
                     <li>
@@ -99,7 +99,7 @@
                     <li class="active-pro">
                         <a href="upgrade.html">
                             <i class="pe-7s-rocket"></i>
-                            <p>Upgrade to PRO</p>
+                            <p>For Reports</p>
                         </a>
                     </li>
                 </ul>
@@ -148,23 +148,18 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        Household
-                                        <b class="caret"></b>
-                                    </a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    Household
+                                    <b class="caret"></b>
+                                </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href=@Url.Action("ListMembers", "Households")>List Household Members</li>
-                                    <li><a href=@Url.Action("Create", "Invitations")>Invite Someone to Join</li>
-                                    <li><a href=@Url.Action("Edit", "Households")>Edit Details</li>
-                                    <li><a href=@Url.Action("Leave", "Households")>Leave This Household</li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something</a></li>
+                                    <li><a href=@Url.Action("ListMembers", "Households")>List Household Members</a></li>
+                                    <li><a href=@Url.Action("Create", "Invitations")>Invite Someone to Join</a></li>
+                                    <li><a href=@Url.Action("Edit", "Households")>Edit Details</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href=@Url.Action("Leave", "Households")>Leave This Household</a></li>
                                 </ul>
-                                </li>
+                            </li>
                             <li>
                                 @Html.Partial("_LoginPartial")
                             </li>

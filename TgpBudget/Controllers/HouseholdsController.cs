@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using TgpBudget.Models;
 
@@ -57,7 +53,7 @@ namespace TgpBudget.Controllers
         public ActionResult ListMembers()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user.HouseholdId== null)
+            if (user.HouseholdId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -81,7 +77,6 @@ namespace TgpBudget.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult JoinCreate([Bind(Include = "Name,Address,TaxId,TryCode,InvitationCode")] HouseholdViewModel HhVM)
         {
-            var INVITATION_CODE_LENGTH = 12;
             if (ModelState.IsValid)
             {
                 var now = System.DateTimeOffset.Now;
@@ -109,7 +104,7 @@ namespace TgpBudget.Controllers
                         ViewBag.Msg = "Invalid code, please try entering it again.";
                         return View(HhVM);
                     }
-                    if (now> invitation.InvalidAfter)
+                    if (now > invitation.InvalidAfter)
                     {
                         ViewBag.Msg = "This code has expired, please request a new one and enter it promptly.";
                         return View(HhVM);
@@ -128,6 +123,8 @@ namespace TgpBudget.Controllers
         // GET: Households/Edit/5
         public ActionResult Edit(int? id)
         {
+            var user = db.Users.Find(User.Identity.GetUserId());
+            id = user.HouseholdId;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -166,8 +163,9 @@ namespace TgpBudget.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            
+
             Household household = db.Households.Find(id);
+            // Household household = user.Household;
             if (household == null)
             {
                 return HttpNotFound();
