@@ -16,7 +16,7 @@ namespace TgpBudget.Models
 
         [Required]
         public string AccountName { get; set; }
-        public string AcctNumber { get; set; }
+        public string AccountNumber { get; set; }
         public string HeldAt { get; set; }
         public DateTimeOffset? Opened { get; set; }
         public DateTimeOffset? Closed { get; set; }
@@ -43,16 +43,15 @@ namespace TgpBudget.Models
         public string AccountName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 5)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [DataType(DataType.Text)]
         [Display(Name = "Bank or Financial Institution")]
         public string HeldAt { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 5)]
         [DataType(DataType.Text)]
         [Display(Name = "Account Number (or unique identifier)")]
-        public string AcctNumber { get; set; }
+        public string AccountNumber { get; set; }
 
         [DataType(DataType.Currency)]
         [Display(Name = "Opening Balance (can be entered later)")]

@@ -1,18 +1,18 @@
 ﻿@model TgpBudget.Models.BankAcctViewModel
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Open a New Account";
 }
 
-<h2>Create Bank Account</h2>
+<h2>Open a new Financial Account</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
-        <h4>BankAcct</h4>
+        <h4>Account Details</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -22,15 +22,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.HouseholdName, htmlAttributes: new { @class = "control-label col-md-4" })
             <div class="col-md-8">
-                @Model.HouseholdName / @Model.HouseholdId 
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AccountName, htmlAttributes: new { @class = "control-label col-md-4" })
-            <div class="col-md-8">
-                @Html.EditorFor(model => model.AccountName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                @Model.HouseholdName / @Model.HouseholdId
             </div>
         </div>
 
@@ -43,10 +35,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AcctNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+            @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label col-md-4" })
             <div class="col-md-8">
-                @Html.EditorFor(model => model.AcctNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AcctNumber, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -66,7 +58,7 @@
                 @Html.ValidationMessageFor(model => model.OpeningDate, "", new { @class = "text-danger" })
             </div>
         </div>
-    
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-8">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -74,9 +66,10 @@
         </div>
     </div>
 }
-
+<br />
+<hr />
 <div>
-    @Html.ActionLink("Return Home", "Index","Home")
+    @Html.ActionLink("Return Home", "Index", "Home")
 </div>
 
 @section Scripts {

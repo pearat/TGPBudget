@@ -11,6 +11,7 @@ namespace TgpBudget.Models
         public int Id { get; set; }
         public int? HouseholdId { get; set; }
         [Required]
+        [Display(Name = "Category")]
         public string Name { get; set; }
         [Required]
         public bool IsExpense { get; set; }

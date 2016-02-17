@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<TgpBudget.Models.Deal>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Transactions Index";
 }
 
-<h2>Index</h2>
+<h2>Recent Transactions</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("New Transaction", "New")
 </p>
 <table class="table">
     <tr>
@@ -18,7 +18,7 @@
             @Html.DisplayNameFor(model => model.Category.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Created)
+            @Html.DisplayNameFor(model => model.DealDate)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Payee)
@@ -44,7 +44,7 @@
             @Html.DisplayFor(modelItem => item.Category.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Created)
+            @Html.DisplayFor(modelItem => item.DealDate)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Payee)

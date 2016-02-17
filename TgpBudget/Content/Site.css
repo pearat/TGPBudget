@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.checkbox input{
+    /*color: #404040;
+    visibility:visible;*/
+    display:inline-table;
+}
+
+.btn-lg.btn-simple {
+    padding:8px 8px;
+}

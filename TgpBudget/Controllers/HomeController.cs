@@ -1,16 +1,27 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TgpBudget.Models;
 
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
     public class HomeController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
         public ActionResult Index()
         {
+            @ViewBag.ActiveHousehold = "";
+            if (User != null)
+            {
+                var user = db.Users.Find(User.Identity.GetUserId());
+                if (user != null && user.DisplayName != null && user.Household.Name != null)
+                    @ViewBag.ActiveHousehold = user.Household.Name;
+            }
             return View();
         }
 

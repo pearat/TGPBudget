@@ -1,0 +1,148 @@
+﻿@model TgpBudget.Models.DealViewModel
+
+@{
+    ViewBag.Title = "New Transaction";
+}
+
+<h2>New Transaction</h2>
+
+<h4>Enter a new income or expense item</h4>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.IsExpense)        
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BankAcctName, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("BankAcctName", (List<SelectListItem>)ViewBag.BankAcctName, htmlAttributes: new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(model => model.BankAcctName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-10 col-md-offset-2">
+            <input id="IncExpBtn" name="IncExp" type="checkbox" data-toggle="toggle" data-on="Income" data-off="Expense"
+                   data-onstyle="success" data-offstyle="info">
+        </div>
+        <div id="ExpenseList">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ExpenseId, "ExpenseId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("ExpenseId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ExpenseId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div id="IncomeList">
+            <div class="form-group">
+                @Html.LabelFor(model => model.IncomeId, "IncomeId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IncomeId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IncomeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+                @Html.LabelFor(model => model.DealDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DealDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Payee, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Reconciled, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="btn btn-info btn-simple btn-lg">
+                    @Html.CheckBoxFor(model => model.Reconciled, "")
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+        //       $(window).load(function () {
+
+        $(function () {
+            //$('#IncExpBtn').bootstrapToggle({
+            //    on: 'Income',
+            //    off: 'Expense'
+            //});
+            $('#IncomeList').hide();
+            $('#ExpenseList').show();
+
+            $('#IncExpBtn').change(function () {
+                if ($(this).val()) {
+                    $('#IncomeList').show();
+                    $('#ExpenseList').hide();
+                    $(this).val("Off")
+                    $('IsExpense').val(false);
+                }
+                else {
+                    $('#IncomeList').hide();
+                    $('#ExpenseList').show();
+                    $(this).val("On")
+                    $('IsExpense').val(true);
+                }
+            });
+
+
+            //$('#IncExpBtn').click(function () {
+            //    if ($(this).val()) {
+            //        $('#IncomeList').show();
+            //        $('#ExpenseList').hide();
+            //        $(this).val("Off")
+            //    }
+            //    else {
+            //        $('#IncomeList').hide();
+            //        $('#ExpenseList').show();
+            //        $(this).val("On")
+            //    }
+            //});
+        })
+    </script>
+}

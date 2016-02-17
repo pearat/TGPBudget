@@ -1,12 +1,13 @@
 ﻿@model TgpBudget.Models.BankAcct
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Close an Account";
 }
 
-<h2>Delete</h2>
+<h2>Close</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to close this Account?</h3>
+
 <div>
     <h4>BankAcct</h4>
     <hr />
@@ -36,11 +37,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AcctNumber)
+            @Html.DisplayNameFor(model => model.AccountNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AcctNumber)
+            @Html.DisplayFor(model => model.AccountNumber)
         </dd>
 
         <dt>
@@ -81,8 +82,9 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Close" class="btn btn-default" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
     }
 </div>
+<h4 style="color:red">Note: figure out what to do with <b><u>unreconciled transactions</u> and <u>ending balance</u></b></h4>

@@ -24,7 +24,9 @@
     <link href="~/XcTim1-3/assets/css/animate.min.css" rel="stylesheet" />
     <!--  Light Bootstrap Table core CSS    -->
     <link href="~/XcTim1-3/assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
     <!--  CSS for Demo Purpose, don't include it in your project     -->
     <link href="~/XcTim1-3/assets/css/demo.css" rel="stylesheet" />
 
@@ -61,33 +63,29 @@
                         </a>
                     </li>
                     <li>
+                        <a href=@Url.Action("Index", "Households")>
+                            <i class="pe-7s-home"></i>
+                            <p>Household Info</p>
+                        </a>
+                    </li>
+                    <li>
                         <a href=@Url.Action("EditUserProfile", "Manage")>
                             <i class="pe-7s-user"></i>
                             <p>User Profile</p>
                         </a>
                     </li>
-                    @*<li>
-                            <a href="table.html">
-                                <i class="pe-7s-note2"></i>
-                                <p>Table List</p>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="typography.html">
-                                <i class="pe-7s-news-paper"></i>
-                                <p>Typography</p>
-                            </a>
-                        </li>*@
+
                     <li>
                         <a href=@Url.Action("Index", "BankAccts")>
                             <i class="pe-7s-piggy"></i>
                             <p>Bank Accounts</p>
                         </a>
                     </li>
+
                     <li>
-                        <a href=@Url.Action("Index", "Households")>
-                            <i class="pe-7s-home"></i>
-                            <p>Household Info</p>
+                        <a href=@Url.Action("Index", "Deals")>
+                            <i class="pe-7s-cash"></i>
+                            <p>Transactions</p>
                         </a>
                     </li>
                     <li>
@@ -124,8 +122,8 @@
                         Html.ActionLink("TGP Budget", "Index", "Home", new { area = "" }, new { class = "navbar-brand" })
                             -->
 
-                            <a href="https://tpeara.azurewebsites.net" background-image="~/img/logo/tlogo.png"
-                               style="padding:13px 15px 5px 0px;margin: 13px 0px 0px 0px; font-size:x-large; font-weight:900;">TGP</a>
+                        <a href="https://tpeara.azurewebsites.net" background-image="~/img/logo/tlogo.png"
+                           style="padding:13px 15px 5px 0px;margin: 13px 0px 0px 0px; font-size:x-large; font-weight:900;">TGP</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-left">
@@ -150,6 +148,9 @@
                                 <a href="">
                                     <i class="fa fa-search"></i>
                                 </a>
+                            </li>
+                            <li>
+                                <b>@ViewBag.ActiveHousehold</>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
@@ -216,11 +217,11 @@
     </div>
 
 </body>
-
+</html>
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/bootstrap")
-@RenderSection("scripts", required: false)
-</html>
+
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
 <!--  Checkbox, Radio & Switch Plugins -->
 
@@ -229,13 +230,17 @@
 <script src="~/XcTim1-3/assets/js/chartist.min.js"></script>
 <!--  Notifications Plugin    -->
 <script src="~/XcTim1-3/assets/js/bootstrap-notify.js"></script>
+
 <!--  Google Maps Plugin    -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="~/XcTim1-3/assets/js/light-bootstrap-dashboard.js"></script>
+
 <script src="~/Scripts/jquery-ui.js"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="~/XcTim1-3/assets/js/demo.js"></script>
+
+
 <script type="text/javascript">
     $(document).ready(function () {
 
@@ -252,3 +257,4 @@
 
     });
 </script>
+@RenderSection("scripts", required: false)

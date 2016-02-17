@@ -57,7 +57,7 @@ namespace TgpBudget.Controllers
                     db.SaveChanges();
                 }
             }
-
+            @ViewBag.ActiveHousehold = user.Household.Name;
             //return View(db.Households.ToList());
             return RedirectToAction("Index","Home");
         }
@@ -186,6 +186,7 @@ namespace TgpBudget.Controllers
             {
                 return HttpNotFound();
             }
+            @ViewBag.ActiveHousehold = "";
             return View(household);
         }
 

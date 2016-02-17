@@ -7,9 +7,30 @@ using System.Web.Mvc;
 using TgpBudget.Models;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Security.Claims;
+using System;
 
 namespace TgpBudget.Helpers
+{
+    public static class Extension
     {
+        public static string GetHouseholdId(this IIdentity user)
+        {
+            var ClaimUser = (ClaimsIdentity)user;
+            var Claim = ClaimUser.Claims.FirstOrDefault(c => c.Type == "HouseholdId");
+            if (Claim != null)
+                return Claim.Value;  
+            else
+                return "";
+        }
+        public static bool IsInHousehold(this IIdentity user)
+        {
+            var cUser = (ClaimsIdentity)user;
+            var hid = cUser.Claims.FirstOrDefault(c => cUser.AuthenticationType == "HouseholdId");
+            return (hid != null && !string.IsNullOrWhiteSpace(hid.Value));
+        }
+    }
+
     public class Helper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -19,22 +40,23 @@ namespace TgpBudget.Helpers
 
             return db.Users.Find(User.Identity.GetUserId());
         }
-
-        //public ApplicationUser GetCurentUser()
-        //{
-        //    return db.Users.Find(User.Identity.GetUserId());
-        //}
-
-        //    public Household GetHousehold(int hhId)
-        //    {
-        //        return db.Households.Find(hhId);
-        //    }
-
-        //    public Household GetHouseholdFromUser(string userId)
-        //    {
-        //        return db.Households.Find(db.Users.Find(userId));
-        //    }
-
     }
+    
+    //public ApplicationUser GetCurentUser()
+    //{
+    //    return db.Users.Find(User.Identity.GetUserId());
+    //}
+
+    //    public Household GetHousehold(int hhId)
+    //    {
+    //        return db.Households.Find(hhId);
+    //    }
+
+    //    public Household GetHouseholdFromUser(string userId)
+    //    {
+    //        return db.Households.Find(db.Users.Find(userId));
+    //    }
+
 }
+
 
