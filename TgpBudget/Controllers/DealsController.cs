@@ -7,12 +7,14 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using TgpBudget.Helpers;
 using TgpBudget.Models;
 
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
     [Authorize]
+    [AuthorizeHouseholdRequired]
     public class DealsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

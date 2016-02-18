@@ -10,20 +10,31 @@ using System.Security.Principal;
 using System.Security.Claims;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Web;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace TgpBudget.Helpers
 {
     public static class Extension
     {
+        public static async Task RefreshAuthentication(this HttpContextBase context, ApplicationUser user)
+        {
+            context.GetOwinContext().Authentication.SignOut();
+            await context.GetOwinContext().Get<ApplicationSignInManager>().SignInAsync(user, isPersistent: false, rememberBrowser: false);
+        }
         public static string GetHouseholdId(this IIdentity user)
         {
-            var ClaimUser = (ClaimsIdentity)user;
-            var Claim = ClaimUser.Claims.FirstOrDefault(c => c.Type == "HouseholdId");
-            if (Claim != null)
-                return Claim.Value;  
+            var claimsIdentity = (ClaimsIdentity)user;
+            var HhClaim = claimsIdentity.Claims.FirstOrDefault(c => c.Type == "HouseholdId");
+
+            if (HhClaim != null)
+                return HhClaim.Value;  
             else
-                return "";
+                return ""; // return null (?)
         }
+
         public static bool IsInHousehold(this IIdentity user)
         {
             var cUser = (ClaimsIdentity)user;
@@ -35,11 +46,6 @@ namespace TgpBudget.Helpers
         {
             return h.Users.ToList();
         }
-
-        //Helper Extensions
-        //var usersInHousehld = hh.UsersInHousehold();
-        //where hh is a record of type Household.(edited)
-
     }
 
     public class Helper

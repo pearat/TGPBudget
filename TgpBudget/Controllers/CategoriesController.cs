@@ -7,20 +7,28 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TgpBudget.Models;
+using TgpBudget.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class CategoriesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Categories
-        //public ActionResult Index()
-        //{
-        //    var categories = db.Categories.Include(c => c.Household);
-        //    return View(categories.ToList());
-        //}
+        public ActionResult Index()
+        {
+            var uid = User.Identity.GetUserId();
+            var user = db.Users.Find(uid);
+            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            //var categories = db.Categories.Where(c => c.HouseholdId ==user.HouseholdId);
+            var categories = db.Categories.Where(c => c.HouseholdId == HhId);
+            @ViewBag.ActiveHousehold = user.Household.Name;
+            return View(categories.ToList());
+        }
 
         // GET: Categories/Details/5
         public ActionResult Details(int? id)
@@ -40,60 +48,74 @@ namespace TgpBudget.Controllers
         // GET: Categories/Create
         public ActionResult Create()
         {
-            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name");
-            return View();
+            Category category = new Category();
+            var user = db.Users.Find(User.Identity.GetUserId());
+            category.HouseholdId = user.HouseholdId;
+            category.IsExpense = true;
+
+            return View(category);
         }
 
         // POST: Categories/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create([Bind(Include = "Id,HouseholdId,Name,IsExpense,BudgetAmount")] Category category)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Categories.Add(category);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,HouseholdId,Name,IsExpense,BudgetAmount")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId==category.HouseholdId))
+                {
+                    ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
+                    return View(category);
+                }
+                db.Categories.Add(category);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-        //    ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
-        //    return View(category);
-        //}
+            ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
+            return View(category);
+        }
 
         // GET: Categories/Edit/5
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Category category = db.Categories.Find(id);
-        //    if (category == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
-        //    return View(category);
-        //}
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Category category = db.Categories.Find(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            
+            return View(category);
+        }
 
         // POST: Categories/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,HouseholdId,Name,IsExpense,BudgetAmount")] Category category)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(category).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
-        //    return View(category);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,HouseholdId,Name,IsExpense,BudgetAmount")] Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId == category.HouseholdId))
+                {
+                    ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
+                    return View(category);
+                }
+                db.Entry(category).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            
+            return View(category);
+        }
 
         // GET: Categories/Delete/5
         public ActionResult Delete(int? id)
