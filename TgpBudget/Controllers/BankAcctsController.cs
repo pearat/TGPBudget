@@ -12,6 +12,7 @@ using TgpBudget.Models;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class BankAcctsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

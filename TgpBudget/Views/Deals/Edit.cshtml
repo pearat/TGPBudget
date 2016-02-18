@@ -1,4 +1,4 @@
-﻿@model TgpBudget.Models.Deal
+﻿@model TgpBudget.Models.DealViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -14,32 +14,39 @@
         <h4>Deal</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.BankAcct.AccountName, "BankAcctId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.BankAcctId, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("BankAcctId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.BankAcct.AccountName, "", new { @class = "text-danger" })
+
+                @Html.ValidationMessageFor(model => model.BankAcctId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-
         <div class="form-group">
-            @Html.LabelFor(model => model.CategoryId, "CategoryId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })
+                @*@Html.DropDownList("CategoryId", (IEnumerable<SelectListItem>)ViewBag.CategoryId, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownListFor(model => model.CategoryId, null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DealDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DealDate, "", new { @class = "text-danger" })
+        <div class="control-group">
+            <div style="display:inline">
+                <label for="date-picker-1" class="control-label">
+                    <span class="glyphicon glyphicon-calendar">
+                        Transaction Date
+                    </span>
+                </label>
+                <div class="controls">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate"
+                           value="@Model.DealDate.ToString("MM/dd/yyyy")">
+                </div>
             </div>
         </div>
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -90,15 +97,63 @@
 @section scripts{
     <script type="text/javascript">
 
-        //$(function () {
-        //    $('#toggle-two').bootstrapToggle({
-        //        on: 'Enabled',
-        //        off: 'Disabled'
-        //    });
-        //})
+        $(document).ready(function () {
 
-        //$(function () {
-        //    $("input[name='Reconciled']").attr('type', '');
-        //});
+            $('.datepicker').datepicker({
+                format: 'dd MMM yyyy'
+            });
+
+            $(".date-picker").on("change", function () {
+                var id = $(this).attr("id");
+                var val = $("label[for='" + id + "']").text();
+                $("#msg").text(val + " changed");
+            });
+        });
+        $(function () {
+            //    var j = $('#IncExpBtn').val();
+            //    console.log('At start of Edit, j: ' + j);
+            //    var k = ($('#IncExpBtn').bootstrapToggle('on'));
+            //    console.log('At start of Edit, k: ' + k);
+            //    if ($('#IncExpBtn').bootstrapToggle('on')) {
+            //        $('#IncomeList').hide();
+            //        $('#ExpenseList').show();
+            //        $('#IncExpBtn').prop('checked', false);
+            //    }
+            //    else {
+            //        $('#IncomeList').show();
+            //        $('#ExpenseList').hide();
+            //        $('#IncExpBtn').val("");
+            //        $('#IncExpBtn').prop('checked', true);
+            //    };
+            //});
+            //function toggleOnByInput() {
+            //    $('#IncExpBtn').prop('checked', true).change()
+            //}
+            //function toggleOffByInput() {
+            //    $('#IncExpBtn').prop('checked', false).change()
+            //}
+            //function toggleOn() {
+            //    $('#IncExpBtn').bootstrapToggle('on')
+            //}
+            //function toggleOff() {
+            //    $('#IncExpBtn').bootstrapToggle('off')
+            //}
+            //$('#IncomeList').hide();
+            //$('#ExpenseList').hide();
+            //var j=$('#IncExpBtn').val();
+            //console.log('At start of Edit, j: '+j);
+            //if ($('#IncExpBtn').bootstrapToggle('on')) {
+            //    $('#IncomeList').hide();
+            //    $('#ExpenseList').show();
+            //    $('IncExpBtn').prop('checked', false);
+            //}
+            //else {
+            //    $('#IncomeList').show();
+            //    $('#ExpenseList').hide();
+            //    $('#IncExpBtn').val("");
+            //    $('IncExpBtn').prop('checked', true);
+            //};
+        });
+
     </script>
 }

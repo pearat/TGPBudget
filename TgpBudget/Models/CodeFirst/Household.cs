@@ -11,7 +11,7 @@ namespace TgpBudget.Models
         public Household()
         {
             this.Users = new HashSet<ApplicationUser>();
-            this.BankAcct = new HashSet<BankAcct>();
+            this.BankAccts = new HashSet<BankAcct>();
             this.Categories = new HashSet<Category>();
         }
         public int Id { get; set; }
@@ -24,7 +24,7 @@ namespace TgpBudget.Models
         public string TaxId { get; set; }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
-        public virtual ICollection<BankAcct> BankAcct { get; set; }
+        public virtual ICollection<BankAcct> BankAccts { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
     }
 

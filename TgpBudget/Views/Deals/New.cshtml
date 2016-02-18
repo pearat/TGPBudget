@@ -14,34 +14,31 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        @Html.HiddenFor(model => model.IsExpense)        
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            @Html.LabelFor(model => model.BankAcctName, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.BankAcctId, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("BankAcctName", (List<SelectListItem>)ViewBag.BankAcctName, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("BankAcctId", null, htmlAttributes: new { @class = "form-control" })
 
-                @Html.ValidationMessageFor(model => model.BankAcctName, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.BankAcctId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="col-md-10 col-md-offset-2">
-            <input id="IncExpBtn" name="IncExp" type="checkbox" data-toggle="toggle" data-on="Income" data-off="Expense"
-                   data-onstyle="success" data-offstyle="info">
-        </div>
-        <div id="ExpenseList">
-            <div class="form-group">
-                @Html.LabelFor(model => model.ExpenseId, "ExpenseId", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="form-group" style="display:inline">
+            <div class="col-md-2 control-label">
+                <input type="checkbox" data-toggle="toggle" data-on="Expense" data-off="Income" checked
+                       id="IncExpBtn" name="IncomeToggle" data-onstyle="success" data-offstyle="info">
+            </div>
+            <div id="ExpenseList" style="padding-top:-19px">
                 <div class="col-md-10">
                     @Html.DropDownList("ExpenseId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.ExpenseId, "", new { @class = "text-danger" })
                 </div>
             </div>
-        </div>
-        <div id="IncomeList">
-            <div class="form-group">
-                @Html.LabelFor(model => model.IncomeId, "IncomeId", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div id="IncomeList" style="padding-top:-19px">
                 <div class="col-md-10">
                     @Html.DropDownList("IncomeId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.IncomeId, "", new { @class = "text-danger" })
@@ -49,13 +46,42 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
                 @Html.LabelFor(model => model.DealDate, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
+                    Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { class = "form-control", value="System.DateTimeOffset.Now" } })
+
                     @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.DealDate, "", new { @class = "text-danger" })
                 </div>
+            </div>*@
+
+        <div class="control-group">
+                <div style="display:inline">
+                    <label for="date-picker-1" class="control-label">
+                        <span class="glyphicon glyphicon-calendar">
+                            Transaction Date
+                        </span>
+                    </label>
+                    <div class="controls">
+                        <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate"
+                               value="@Model.DealDate.ToString("MM/dd/yyyy")">
+                    </div>
+                </div>
             </div>
+
+
+
+        @*<div class="input-group date">
+            <input type="text" class="form-control" value="@Model.DealDate.ToString("MM/dd/yyyy")">
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-th">Transaction Date</span>
+            </div>
+        </div>*@
+
+
+
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -105,44 +131,32 @@
 @section Scripts {
 
     <script type="text/javascript">
-        //       $(window).load(function () {
-
         $(function () {
-            //$('#IncExpBtn').bootstrapToggle({
-            //    on: 'Income',
-            //    off: 'Expense'
-            //});
             $('#IncomeList').hide();
             $('#ExpenseList').show();
-
+            $('#IncExpBtn').val("Income");
             $('#IncExpBtn').change(function () {
-                if ($(this).val()) {
+                if ($(this).val() == "Income") {
                     $('#IncomeList').show();
                     $('#ExpenseList').hide();
-                    $(this).val("Off")
-                    $('IsExpense').val(false);
+                    $(this).val("Expense");
                 }
                 else {
                     $('#IncomeList').hide();
                     $('#ExpenseList').show();
-                    $(this).val("On")
-                    $('IsExpense').val(true);
+                    $(this).val("Income");
                 }
             });
 
+            $('.datepicker').datepicker({
+                format: 'dd MMM yyyy'
+            });
 
-            //$('#IncExpBtn').click(function () {
-            //    if ($(this).val()) {
-            //        $('#IncomeList').show();
-            //        $('#ExpenseList').hide();
-            //        $(this).val("Off")
-            //    }
-            //    else {
-            //        $('#IncomeList').hide();
-            //        $('#ExpenseList').show();
-            //        $(this).val("On")
-            //    }
-            //});
-        })
+            $(".date-picker").on("change", function () {
+                var id = $(this).attr("id");
+                var val = $("label[for='" + id + "']").text();
+                $("#msg").text(val + " changed");
+            });
+        });
     </script>
 }

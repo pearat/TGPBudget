@@ -12,6 +12,7 @@ using TgpBudget.Models;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class DealsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -20,15 +21,21 @@ namespace TgpBudget.Controllers
         public ActionResult Index()
         {
             @ViewBag.ActiveHousehold = "";
+            int HhId;
             if (User != null)
             {
                 var user = db.Users.Find(User.Identity.GetUserId());
                 if (user != null && user.DisplayName != null && user.Household.Name != null)
                     @ViewBag.ActiveHousehold = user.Household.Name;
+                HhId = (int)user.HouseholdId;
+                if (HhId != 0)
+                {
+                    var hh = db.Households.Find(HhId);
+                    var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate);
+                    return View(deals.ToList());
+                }
             }
-            
-            var deals = db.Deals.Include(d => d.BankAcct).Include(d => d.Category);
-            return View(deals.ToList());
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Deals/Details/5
@@ -53,11 +60,11 @@ namespace TgpBudget.Controllers
             newDeal.DealDate = System.DateTimeOffset.Now;
 
             var user = db.Users.Find(User.Identity.GetUserId());
-            
-            ViewBag.BankAcctName = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
 
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
 
             // ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
+
             ViewBag.ExpenseId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
             ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
             return View(newDeal);
@@ -68,13 +75,13 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult New([Bind(Include = "ExpenseId,DealDate,IsExpense,IncomeId,Payee,Description,Amount,Reconciled")] DealViewModel dvm)
+        public ActionResult New([Bind(Include = "BankAcctId,CategoryId,ExpenseId,DealDate,IncomeToggle,IncomeId,Payee,Description,Amount,Reconciled")] DealViewModel dvm)
         {
             if (ModelState.IsValid)
             {
                 Deal deal = new Deal();
-                deal.BankAcctId = db.BankAccts.FirstOrDefault(b => b.AccountName == dvm.BankAcctName).Id;
-                if (dvm.IsExpense)
+                deal.BankAcctId = dvm.BankAcctId;
+                if (dvm.IncomeToggle == "Income")
                     deal.CategoryId = dvm.ExpenseId;
                 else
                     deal.CategoryId = dvm.IncomeId;
@@ -89,6 +96,11 @@ namespace TgpBudget.Controllers
                 return RedirectToAction("Index");
 
             }
+            var user = db.Users.Find(User.Identity.GetUserId());
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            ViewBag.ExpenseId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
+            ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+
             return View(dvm);
         }
 
@@ -104,9 +116,31 @@ namespace TgpBudget.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BankAcctId = new SelectList(db.BankAccts, "Id", "AccountName", deal.BankAcctId);
+            var editDeal = new DealViewModel();
+            editDeal.Amount = deal.Amount;
+            editDeal.BankAcctId = (int)deal.BankAcctId;
+            editDeal.CategoryId = deal.CategoryId;
+            editDeal.DealDate = deal.DealDate.Date;
+            editDeal.Description = deal.Description;
+            editDeal.Id = deal.Id;
+            
+            editDeal.Payee = deal.Payee;
+            editDeal.Reconciled = deal.Reconciled;
 
-            return View(deal);
+            var user = db.Users.Find(User.Identity.GetUserId());
+
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            if (deal.Category.IsExpense)
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
+                editDeal.IsExpense = true;
+            }
+            else {
+                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+                editDeal.IsExpense = false;
+            }
+            return View(editDeal);
+
         }
 
         // POST: Deals/Edit/5
@@ -114,16 +148,37 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,BankAcctId,CategoryId,Created,Payee,Description,Amount,Reconciled")] Deal deal)
+        public ActionResult Edit([Bind(Include = "Amount,BankAcctId,CategoryId,DealDate,Description,Id,IsExpense,Payee,Reconciled")] DealViewModel dvm)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(deal).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                Deal deal = db.Deals.FirstOrDefault(d => d.Id == dvm.Id);
+                if (deal != null)
+                {
+                    deal.Amount = dvm.Amount;
+                    deal.BankAcctId = dvm.BankAcctId;
+  
+                    deal.CategoryId = dvm.CategoryId;
+                    deal.DealDate = dvm.DealDate;
+                    deal.Description = dvm.Description;
+                    deal.Payee = dvm.Payee;
+                    deal.Reconciled = dvm.Reconciled;
 
-            return View(deal);
+                    var oldDeal = db.Deals.AsNoTracking().FirstOrDefault(d => d.Id == dvm.Id);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            var user = db.Users.Find(User.Identity.GetUserId());
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            if (dvm.IsExpense)
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
+            }
+            else {
+                ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+            }
+            return View(dvm);
         }
 
         // GET: Deals/Delete/5

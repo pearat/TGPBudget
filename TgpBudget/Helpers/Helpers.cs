@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Security.Claims;
 using System;
+using System.Collections.Generic;
 
 namespace TgpBudget.Helpers
 {
@@ -29,6 +30,16 @@ namespace TgpBudget.Helpers
             var hid = cUser.Claims.FirstOrDefault(c => cUser.AuthenticationType == "HouseholdId");
             return (hid != null && !string.IsNullOrWhiteSpace(hid.Value));
         }
+
+        public static ICollection<ApplicationUser> UsersInHousehold(this Household h)
+        {
+            return h.Users.ToList();
+        }
+
+        //Helper Extensions
+        //var usersInHousehld = hh.UsersInHousehold();
+        //where hh is a record of type Household.(edited)
+
     }
 
     public class Helper
