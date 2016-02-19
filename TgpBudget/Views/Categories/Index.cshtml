@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TgpBudget.Models.Category>
+﻿@model IEnumerable<TgpBudget.Models.CategoryViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -10,51 +10,80 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
-    <tr>
-        <th>
-            Household
-        </th>
-        <th>
-            Category
-        </th>
-        <th>
-            Is Expense?
-        </th>
-        <th>
-            Budget $/Month
-        </th>
-        <th></th>
-    </tr>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.category.Name)
+            </th>
+            <th style="max-width:175px; text-align:center">
+                @Html.DisplayNameFor(model => model.category.BudgetAmount)
+            </th>
+            <th style="max-width:175px; text-align:center">
+                @Html.DisplayNameFor(model => model.ActualAmount)
+            </th>
+            <th style="max-width:175px; text-align:center">
+                @Html.DisplayNameFor(model => model.Variance)
+            </th>
+        </tr>
+    </thead>
+    @*<tbody>*@
+    @foreach (var item in Model)
+    {
+        <!--   {if (item.category.IsExpense && item.IsTotal)
+            {
+                <style>
+                    .Totals {
+                        color: red;
+                        font-weight: bold;
+                </style>
+            }
+            else
+            {
+                if (item.category.IsExpense)
+                {
+                    <style>
+                        .Totals {
+                            color: red;
+                            font-weight: bold;
+                    </style>
+                }
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Household.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsExpense)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BudgetAmount)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+            }
+            -->
+        <tr class="Totals">
+            <td>
+                @Html.DisplayFor(modelItem => item.category.Name)
+            </td>
+            <td style="max-width:175px; text-align:right">
+                @Html.DisplayFor(modelItem => item.category.BudgetAmount)
 
-            <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
-                Delete
-            </button>
+            </td>
 
-        </td>
-    </tr>
-}
+            <td style="text-align:right">
+                @Html.DisplayFor(modelItem => item.ActualAmount)
+
+            </td>
+            <td style="text-align:right">
+                @Html.DisplayFor(modelItem => item.Variance)
+
+            </td>
+
+            <td>
+                @if (!item.IsTotal)
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.category.Id })<span> | </span>
+                        @Html.ActionLink("Details", "Details", new { id = item.category.Id })<span> | </span>
+                        <button data-id="@item.category.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
+                            <span>Delete</span>
+                        </button>
+                }
+            </td>
+        </tr>
+    }
+
 </table>
 
-    <!-- vvvvv Start of Modal vvvvv -->
+<!-- vvvvv Start of Modal vvvvv -->
 
 <div class="modal fade" id="delCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="max-width:800px;">

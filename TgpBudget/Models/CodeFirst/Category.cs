@@ -19,9 +19,26 @@ namespace TgpBudget.Models
 
         [DataType(DataType.Currency)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        [Display(Name = "Budget")]
         public decimal BudgetAmount { get; set; }
         public bool IsProtected { get; set; }
 
         public virtual Household Household { get; set; }
+    }
+    public class CategoryViewModel 
+    {
+        public Category category { get; set; }
+
+        [Display(Name="Actual")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal ActualAmount { get; set; }
+
+        [Display(Name = "Variance")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal Variance { get; set; }
+        public bool IsTotal { get; set; }
+
     }
 }

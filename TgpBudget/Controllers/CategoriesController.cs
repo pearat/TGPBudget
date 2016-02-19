@@ -26,9 +26,76 @@ namespace TgpBudget.Controllers
             @ViewBag.ActiveHousehold = user.Household.Name;
             int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
             //var categories = db.Categories.Where(c => c.HouseholdId ==user.HouseholdId).OrderBy(c=>c.Name).ToList();
-            var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.Name).ToList();
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
+            var categoryViewModelList = new List<CategoryViewModel>();
+            decimal totalActual =  0;
+            decimal totalBudget = 0;
+            foreach (var cat in categories)
+            {
+                if (cat.IsExpense)
+                    break;
+                var cVM = new CategoryViewModel();
+                cVM.category = cat;
+
+                foreach (var d in deals)
+                {
+                    if (d.CategoryId == cat.Id)
+                        cVM.ActualAmount += d.Amount;
+                }
+                if (cVM.category.IsExpense)
+                {
+                    cVM.category.BudgetAmount *= -1;
+                    cVM.ActualAmount *= -1;
+                }
+                cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
+                categoryViewModelList.Add(cVM);
+                totalActual += cVM.ActualAmount;
+                totalBudget += cVM.category.BudgetAmount;
+            }
+            var iVm = new CategoryViewModel();
+            iVm.category = new Category();
+            iVm.category.Name = "Total Income";
+            iVm.category.BudgetAmount = totalBudget;
+            iVm.ActualAmount = totalActual;
+            iVm.Variance = totalActual - totalBudget;
+            iVm.IsTotal = true;
+            categoryViewModelList.Add(iVm);
+
+            totalActual = totalBudget = 0;
+            foreach (var cat in categories)
+            {
+                if (!cat.IsExpense)
+                    continue;
+                var cVM = new CategoryViewModel();
+                cVM.category = cat;
+
+                foreach (var d in deals)
+                {
+                    if (d.CategoryId == cat.Id)
+                        cVM.ActualAmount += d.Amount;
+                }
+                if (cVM.category.IsExpense)
+                {
+                    cVM.category.BudgetAmount *= -1;
+                    cVM.ActualAmount *= -1;
+                }
+                cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
+                categoryViewModelList.Add(cVM);
+                totalActual += cVM.ActualAmount;
+                totalBudget += cVM.category.BudgetAmount;
+            }
+            var eVM = new CategoryViewModel();
+            eVM.category = new Category();
+            eVM.category.Name = "Total Expense";
+            eVM.category.BudgetAmount = -totalBudget;
+            eVM.ActualAmount = -totalActual;
+            eVM.Variance = totalActual - totalBudget;
+            eVm.IsTotal = true;
+            categoryViewModelList.Add(eVM);
             
-            return View(categories);
+            return View(categoryViewModelList);
         }
 
         // GET: Categories/Details/5
@@ -66,7 +133,7 @@ namespace TgpBudget.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId==category.HouseholdId))
+                if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId == category.HouseholdId))
                 {
                     ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
                     return View(category);
@@ -93,7 +160,7 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Category category = db.Categories.Find(id);
-            
+
             if (category == null)
             {
                 return HttpNotFound();
@@ -124,7 +191,7 @@ namespace TgpBudget.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            
+
             return View(category);
         }
 
@@ -148,7 +215,7 @@ namespace TgpBudget.Controllers
         //[HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
         //public ActionResult DeleteConfirmed(int id)
-        
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -167,7 +234,7 @@ namespace TgpBudget.Controllers
             var hh = db.Households.Find(user.HouseholdId);
 
 
-            var dealsInHh = hh.BankAccts.SelectMany(a => a.Deals); 
+            var dealsInHh = hh.BankAccts.SelectMany(a => a.Deals);
             if (category.IsExpense)
             {
                 Category otherExpense = db.Categories.FirstOrDefault(c => c.Name == "Other Expense" &&
