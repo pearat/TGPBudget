@@ -69,6 +69,14 @@
 
 </table>
 <hr />
+<form id="deleteIdForm" action="@Url.Action("Recalc", "BankAccts") ">
+    @Html.AntiForgeryToken()
+    <input id="modal-id" type="hidden" name="id" value="" />
+    <button id="deleteConfirmed" value="true" form="deleteIdForm" type="submit"
+            class="btn btn-infon" data-warning="modal">
+        Calculate Balances
+    </button>
+</form>
 
 <div class="row">
     <div class="col-md-2">

@@ -15,8 +15,12 @@ namespace TgpBudget.Models
         public string Name { get; set; }
         [Required]
         public bool IsExpense { get; set; }
-        public decimal? BudgetAmount { get; set; }
-        
+        [Required]
+
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal BudgetAmount { get; set; }
+        public bool IsProtected { get; set; }
 
         public virtual Household Household { get; set; }
     }

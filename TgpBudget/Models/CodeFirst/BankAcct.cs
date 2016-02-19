@@ -20,7 +20,11 @@ namespace TgpBudget.Models
         public string HeldAt { get; set; }
         public DateTimeOffset? Opened { get; set; }
         public DateTimeOffset? Closed { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal BalanceCurrent { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal BalanceReconciled { get; set; }
 
         [Required]
@@ -54,7 +58,8 @@ namespace TgpBudget.Models
         public string AccountNumber { get; set; }
 
         [DataType(DataType.Currency)]
-        [Display(Name = "Opening Balance (can be entered later)")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        [Display(Name = "Opening Balance (optional)")]
         public decimal BalanceOpening { get; set; }
 
         [DataType(DataType.Date)]

@@ -15,6 +15,9 @@ namespace TgpBudget.Models
         public int? CategoryId { get; set; }
 
         [Display(Name = "Dollar Amount")]
+
+        [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Amount { get; set; }
         
         [Required]
@@ -38,6 +41,7 @@ namespace TgpBudget.Models
 
         [Required]
         [DataType(DataType.Currency)]
+        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:C}")]
         [Display(Name = "Dollar Amount")]
         public decimal Amount { get; set; }
 

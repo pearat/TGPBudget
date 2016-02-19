@@ -38,7 +38,7 @@ namespace TgpBudget.Helpers
         public static bool IsInHousehold(this IIdentity user)
         {
             var cUser = (ClaimsIdentity)user;
-            var hid = cUser.Claims.FirstOrDefault(c => cUser.AuthenticationType == "HouseholdId");
+            var hid = cUser.Claims.FirstOrDefault(c => c.Type == "HouseholdId");
             return (hid != null && !string.IsNullOrWhiteSpace(hid.Value));
         }
 

@@ -13,21 +13,22 @@ using Microsoft.AspNet.Identity;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
-    [Authorize]
+    [AuthorizeHouseholdRequired]
     public class CategoriesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private List<string> protectedNameList = new List<string>(new string[] { "Other Income", "Other Expense", "Total" });
 
         // GET: Categories
         public ActionResult Index()
         {
-            var uid = User.Identity.GetUserId();
-            var user = db.Users.Find(uid);
-            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
-            //var categories = db.Categories.Where(c => c.HouseholdId ==user.HouseholdId);
-            var categories = db.Categories.Where(c => c.HouseholdId == HhId);
+            var user = db.Users.Find(User.Identity.GetUserId());
             @ViewBag.ActiveHousehold = user.Household.Name;
-            return View(categories.ToList());
+            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            //var categories = db.Categories.Where(c => c.HouseholdId ==user.HouseholdId).OrderBy(c=>c.Name).ToList();
+            var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.Name).ToList();
+            
+            return View(categories);
         }
 
         // GET: Categories/Details/5
@@ -70,6 +71,11 @@ namespace TgpBudget.Controllers
                     ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
                     return View(category);
                 }
+                // if (category.Name=="Other Expense"|| category.Name == "Other Income")
+                if (protectedNameList.Contains(category.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    category.IsProtected = true;
+                }
                 db.Categories.Add(category);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -87,11 +93,12 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Category category = db.Categories.Find(id);
+            
             if (category == null)
             {
                 return HttpNotFound();
             }
-            
+            TempData["OriginalCatName"] = category.Name;
             return View(category);
         }
 
@@ -100,14 +107,18 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,HouseholdId,Name,IsExpense,BudgetAmount")] Category category)
+        public ActionResult Edit([Bind(Include = "Id,HouseholdId,Name,IsExpense,IsProtected,BudgetAmount")] Category category)
         {
             if (ModelState.IsValid)
             {
-                if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId == category.HouseholdId))
+                var originalCategoryName = TempData["OriginalCatName"];
+                if (category.Name != (string)originalCategoryName)
                 {
-                    ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
-                    return View(category);
+                    if (db.Categories.Any(c => c.Name == category.Name && c.HouseholdId == category.HouseholdId))
+                    {
+                        ModelState.AddModelError("Name", "This category already exists.  Please enter a unique category name");
+                        return View(category);
+                    }
                 }
                 db.Entry(category).State = EntityState.Modified;
                 db.SaveChanges();
@@ -118,6 +129,26 @@ namespace TgpBudget.Controllers
         }
 
         // GET: Categories/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Category category = db.Categories.Find(id);
+        //    if (category == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    // TempData["OriginalCatName"] = category.Name;
+        //    return View(category);
+        //}
+
+        // POST: Categories/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -125,19 +156,58 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Category category = db.Categories.Find(id);
-            if (category == null)
+            if (category.IsProtected)
             {
-                return HttpNotFound();
+                ModelState.AddModelError("Name", "This category is cannot be deleted");
+                return View(category);
             }
-            return View(category);
-        }
+            //int HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            //var hh = db.Households.Find(HhId);
+            var user = db.Users.Find(User.Identity.GetUserId());
+            var hh = db.Households.Find(user.HouseholdId);
 
-        // POST: Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Category category = db.Categories.Find(id);
+
+            var dealsInHh = hh.BankAccts.SelectMany(a => a.Deals); 
+            if (category.IsExpense)
+            {
+                Category otherExpense = db.Categories.FirstOrDefault(c => c.Name == "Other Expense" &&
+                                                                    c.HouseholdId == category.HouseholdId);
+                if (otherExpense == null)
+                {
+                    otherExpense = new Category();
+                    otherExpense.IsExpense = true;
+                    otherExpense.IsProtected = true;
+                    otherExpense.Name = "Other Expense";
+                    otherExpense.HouseholdId = category.HouseholdId;
+                    db.Categories.Add(otherExpense);
+                    // db.SaveChanges();
+                }
+                foreach (var d in dealsInHh)
+                {
+                    if (d.CategoryId == category.Id)
+                        d.CategoryId = otherExpense.Id;
+                }
+            }
+            else
+            {
+                Category otherIncome = db.Categories.FirstOrDefault(c => c.Name == "Other Income" &&
+                                                                    c.HouseholdId == category.HouseholdId);
+                if (otherIncome == null)
+                {
+                    otherIncome = new Category();
+                    otherIncome.IsExpense = false;
+                    otherIncome.IsProtected = true;
+                    otherIncome.Name = "Other Income";
+                    otherIncome.HouseholdId = category.HouseholdId;
+                    db.Categories.Add(otherIncome);
+                    //db.SaveChanges();
+                }
+                foreach (var d in dealsInHh)
+                {
+                    if (d.CategoryId == category.Id)
+                        d.CategoryId = otherIncome.Id;
+                }
+            }
             db.Categories.Remove(category);
             db.SaveChanges();
             return RedirectToAction("Index");

@@ -13,7 +13,7 @@ using TgpBudget.Models;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
-    [Authorize]
+
     [AuthorizeHouseholdRequired]
     public class DealsController : Controller
     {
@@ -22,22 +22,11 @@ namespace TgpBudget.Controllers
         // GET: Deals
         public ActionResult Index()
         {
-            @ViewBag.ActiveHousehold = "";
-            int HhId;
-            if (User != null)
-            {
-                var user = db.Users.Find(User.Identity.GetUserId());
-                if (user != null && user.DisplayName != null && user.Household.Name != null)
-                    @ViewBag.ActiveHousehold = user.Household.Name;
-                HhId = (int)user.HouseholdId;
-                if (HhId != 0)
-                {
-                    var hh = db.Households.Find(HhId);
-                    var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate);
-                    return View(deals.ToList());
-                }
-            }
-            return RedirectToAction("Index", "Home");
+            var user = db.Users.Find(User.Identity.GetUserId());
+            @ViewBag.ActiveHousehold = user.Household.Name;
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            return View(deals);
         }
 
         // GET: Deals/Details/5
@@ -63,12 +52,15 @@ namespace TgpBudget.Controllers
 
             var user = db.Users.Find(User.Identity.GetUserId());
 
-            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(
+                b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
 
             // ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
 
-            ViewBag.ExpenseId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
-            ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+            ViewBag.ExpenseId = new SelectList(db.Categories.Where(
+                c => c.IsExpense == true && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
+            ViewBag.IncomeId = new SelectList(db.Categories.Where(
+                c => c.IsExpense == false && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
             return View(newDeal);
         }
 
@@ -92,16 +84,26 @@ namespace TgpBudget.Controllers
                 deal.Description = dvm.Description;
                 deal.Amount = dvm.Amount;
                 deal.Reconciled = dvm.Reconciled;
-
                 db.Deals.Add(deal);
+                db.SaveChanges();
+                //var i = deal.Id;
+                deal = db.Deals.Include("BankAcct").Include("Category").FirstOrDefault(d => d.Id == deal.Id);
+
+                deal.BankAcct.BalanceCurrent += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+                if (deal.Reconciled)
+                    deal.BankAcct.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
 
             }
             var user = db.Users.Find(User.Identity.GetUserId());
-            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
-            ViewBag.ExpenseId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
-            ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(
+                b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
+            ViewBag.ExpenseId = new SelectList(db.Categories.Where(
+                c => c.IsExpense == true && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
+            ViewBag.IncomeId = new SelectList(db.Categories.Where(
+                c => c.IsExpense == false && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
 
             return View(dvm);
         }
@@ -121,24 +123,29 @@ namespace TgpBudget.Controllers
             var editDeal = new DealViewModel();
             editDeal.Amount = deal.Amount;
             editDeal.BankAcctId = (int)deal.BankAcctId;
-            editDeal.CategoryId = deal.CategoryId;
+            editDeal.CategoryId = (int)deal.CategoryId;
+            TempData["oldCategoryId"] = deal.CategoryId ?? default(int);
             editDeal.DealDate = deal.DealDate.Date;
             editDeal.Description = deal.Description;
             editDeal.Id = deal.Id;
-            
+
             editDeal.Payee = deal.Payee;
             editDeal.Reconciled = deal.Reconciled;
 
-            var user = db.Users.Find(User.Identity.GetUserId());
-
-            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            //var user = db.Users.Find(User.Identity.GetUserId());
+            //var Household = db.Households.Find(user.HouseholdId);
+            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            var Household = db.Households.Find(HhId);
+            ViewBag.BankAcctId = new SelectList(Household.BankAccts.OrderBy(b => b.AccountName).ToList(), "Id", "AccountName");
             if (deal.Category.IsExpense)
             {
-                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
+                ViewBag.CategoryId = new SelectList(Household.Categories.Where(
+                    c => c.IsExpense == true).OrderBy(c => c.Name).ToList(), "Id", "Name");
                 editDeal.IsExpense = true;
             }
             else {
-                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+                ViewBag.CategoryId = new SelectList(Household.Categories.Where(
+                    c => c.IsExpense == false).OrderBy(c => c.Name).ToList(), "Id", "Name");
                 editDeal.IsExpense = false;
             }
             return View(editDeal);
@@ -157,28 +164,42 @@ namespace TgpBudget.Controllers
                 Deal deal = db.Deals.FirstOrDefault(d => d.Id == dvm.Id);
                 if (deal != null)
                 {
+                    int newCatId = dvm.CategoryId ?? default(int);
+                    int oldCatId = Convert.ToInt32(TempData["oldCategoryId"]);
+                    if (deal.Amount != dvm.Amount || newCatId != oldCatId)
+                    {
+                        // var oldDeal = db.Deals.AsNoTracking().FirstOrDefault(d => d.Id == dvm.Id);
+                        deal.BankAcct.BalanceCurrent -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+                        if (deal.Reconciled)
+                            deal.BankAcct.BalanceReconciled -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+                    }
                     deal.Amount = dvm.Amount;
+                    deal.DealDate = dvm.DealDate;  
                     deal.BankAcctId = dvm.BankAcctId;
-  
                     deal.CategoryId = dvm.CategoryId;
-                    deal.DealDate = dvm.DealDate;
                     deal.Description = dvm.Description;
                     deal.Payee = dvm.Payee;
                     deal.Reconciled = dvm.Reconciled;
-
-                    var oldDeal = db.Deals.AsNoTracking().FirstOrDefault(d => d.Id == dvm.Id);
+                    db.SaveChanges();
+                    deal = db.Deals.Include("BankAcct").Include("Category").FirstOrDefault(d => d.Id == deal.Id);
+                    deal.BankAcct.BalanceCurrent += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+                    if (deal.Reconciled)
+                        deal.BankAcct.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
             }
             var user = db.Users.Find(User.Identity.GetUserId());
-            ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId), "Id", "AccountName");
+            var Household = db.Households.Find(user.HouseholdId);
+            ViewBag.BankAcctId = new SelectList(Household.BankAccts.OrderBy(b => b.AccountName).ToList(), "Id", "AccountName");
             if (dvm.IsExpense)
             {
-                ViewBag.CategoryId = new SelectList(db.Categories.Where(c => c.IsExpense == true), "Id", "Name");
+                ViewBag.CategoryId = new SelectList(Household.Categories.Where(
+                    c => c.IsExpense == true).OrderBy(c => c.Name).ToList(), "Id", "Name");
             }
             else {
-                ViewBag.IncomeId = new SelectList(db.Categories.Where(c => c.IsExpense == false), "Id", "Name");
+                ViewBag.CategoryId = new SelectList(Household.Categories.Where(
+                    c => c.IsExpense == false).OrderBy(c => c.Name).ToList(), "Id", "Name");
             }
             return View(dvm);
         }
@@ -204,6 +225,17 @@ namespace TgpBudget.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Deal deal = db.Deals.Find(id);
+
+            //db.Deals.Add(deal);
+            //db.SaveChanges();
+            ////var i = deal.Id;
+            //deal = db.Deals.Include("BankAcct").Include("Category").FirstOrDefault(d => d.Id == deal.Id);
+
+            deal.BankAcct.BalanceCurrent -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+            if (deal.Reconciled)
+                deal.BankAcct.BalanceReconciled -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+
+
             db.Deals.Remove(deal);
             db.SaveChanges();
             return RedirectToAction("Index");

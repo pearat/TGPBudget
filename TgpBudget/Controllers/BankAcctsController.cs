@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using TgpBudget.Helpers;
 using TgpBudget.Models;
 
 namespace TgpBudget.Controllers
@@ -21,17 +22,41 @@ namespace TgpBudget.Controllers
         public ActionResult Index()
         {
 
-            if (User == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             var user = db.Users.Find(User.Identity.GetUserId());
             if (user == null || user.Household==null)
             {
                 return RedirectToAction("Login", "Account");
             }
-            return View(db.BankAccts.Where(b=>b.HouseholdId==user.HouseholdId).ToList());
+            return View( db.BankAccts.Where(b=>b.HouseholdId==user.HouseholdId).OrderBy(b=>b.AccountName).ToList() );
         }
+
+
+
+        // GET: BankAccts
+        public ActionResult Recalc()
+        {
+
+            //var user = db.Users.Find(User.Identity.GetUserId());
+            
+            var Household = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            //var HhBanks = Household.BankAccts
+            // var HhBanks = db.BankAccts.Where(b => b.HouseholdId == HhId);
+            foreach (var bank in Household.BankAccts)
+            {
+                bank.BalanceCurrent = bank.BalanceReconciled = 0;
+                foreach (var deal in bank.Deals)
+                {
+                    bank.BalanceCurrent += (deal.Category.IsExpense?-1:1)* deal.Amount;
+                    if (deal.Reconciled)
+                        bank.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+                }
+                
+            }
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
 
         // GET: BankAccts/Details/5
         public ActionResult Details(int? id)

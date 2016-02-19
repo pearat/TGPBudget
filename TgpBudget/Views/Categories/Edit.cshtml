@@ -17,14 +17,15 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.HouseholdId)
-
+        @Html.HiddenFor(model => model.IsExpense)
+        @Html.HiddenFor(model => model.IsProtected)
         @*<div class="form-group">
-            @Html.LabelFor(model => model.HouseholdId, "HouseholdId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("HouseholdId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.HouseholdId, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
+                @Html.LabelFor(model => model.HouseholdId, "HouseholdId", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("HouseholdId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.HouseholdId, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -35,14 +36,15 @@
         </div>
 
         <div class="form-group">
-            <div class = "control-label col-md-2" >
+            <div class="control-label col-md-2">
                 <label>Category Type</label>
             </div>
             <div class="col-md-10">
                 @{
-                    if (Model.IsExpense) { <span>Expense</span>}
+                    if (Model.IsExpense)
+                    { <span>Expense</span>}
                     else { <span>Income</span>}
-                        }
+                }
             </div>
         </div>
 
@@ -60,7 +62,7 @@
             </div>
         </div>
     </div>
-}
+                    }
 
 <div>
     @Html.ActionLink("Back to List", "Index")
