@@ -30,7 +30,7 @@ namespace TgpBudget.Controllers
             var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
             var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
             var categoryViewModelList = new List<CategoryViewModel>();
-            decimal totalActual =  0;
+            decimal totalActual = 0;
             decimal totalBudget = 0;
             foreach (var cat in categories)
             {
@@ -44,24 +44,19 @@ namespace TgpBudget.Controllers
                     if (d.CategoryId == cat.Id)
                         cVM.ActualAmount += d.Amount;
                 }
-                if (cVM.category.IsExpense)
-                {
-                    cVM.category.BudgetAmount *= -1;
-                    cVM.ActualAmount *= -1;
-                }
                 cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
                 categoryViewModelList.Add(cVM);
                 totalActual += cVM.ActualAmount;
                 totalBudget += cVM.category.BudgetAmount;
             }
-            var iVm = new CategoryViewModel();
-            iVm.category = new Category();
-            iVm.category.Name = "Total Income";
-            iVm.category.BudgetAmount = totalBudget;
-            iVm.ActualAmount = totalActual;
-            iVm.Variance = totalActual - totalBudget;
-            iVm.IsTotal = true;
-            categoryViewModelList.Add(iVm);
+            var iVM = new CategoryViewModel();
+            iVM.category = new Category();
+            iVM.category.Name = "Total Income";
+            iVM.category.BudgetAmount = totalBudget;
+            iVM.ActualAmount = totalActual;
+            iVM.Variance = totalActual - totalBudget;
+            iVM.IsTotal = true;
+            categoryViewModelList.Add(iVM);
 
             totalActual = totalBudget = 0;
             foreach (var cat in categories)
@@ -76,11 +71,9 @@ namespace TgpBudget.Controllers
                     if (d.CategoryId == cat.Id)
                         cVM.ActualAmount += d.Amount;
                 }
-                if (cVM.category.IsExpense)
-                {
-                    cVM.category.BudgetAmount *= -1;
-                    cVM.ActualAmount *= -1;
-                }
+
+                cVM.category.BudgetAmount *= -1;
+                cVM.ActualAmount *= -1;
                 cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
                 categoryViewModelList.Add(cVM);
                 totalActual += cVM.ActualAmount;
@@ -89,12 +82,21 @@ namespace TgpBudget.Controllers
             var eVM = new CategoryViewModel();
             eVM.category = new Category();
             eVM.category.Name = "Total Expense";
-            eVM.category.BudgetAmount = -totalBudget;
-            eVM.ActualAmount = -totalActual;
+            eVM.category.BudgetAmount = totalBudget;
+            eVM.ActualAmount = totalActual;
             eVM.Variance = totalActual - totalBudget;
-            eVm.IsTotal = true;
+            eVM.IsTotal = true;
             categoryViewModelList.Add(eVM);
-            
+
+            var tVM = new CategoryViewModel();
+            tVM.category = new Category();
+            tVM.category.Name = "Combined Total";
+            tVM.category.BudgetAmount = iVM.category.BudgetAmount + eVM.category.BudgetAmount;
+            tVM.ActualAmount = iVM.ActualAmount + eVM.ActualAmount;
+            tVM.Variance = iVM.Variance + eVM.Variance;
+            tVM.IsTotal = true;
+            categoryViewModelList.Add(tVM);
+
             return View(categoryViewModelList);
         }
 

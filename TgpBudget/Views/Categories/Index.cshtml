@@ -26,61 +26,40 @@
             </th>
         </tr>
     </thead>
-    @*<tbody>*@
-    @foreach (var item in Model)
-    {
-        <!--   {if (item.category.IsExpense && item.IsTotal)
-            {
-                <style>
-                    .Totals {
-                        color: red;
-                        font-weight: bold;
-                </style>
-            }
-            else
-            {
-                if (item.category.IsExpense)
-                {
-                    <style>
-                        .Totals {
-                            color: red;
-                            font-weight: bold;
-                    </style>
-                }
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.category.Name)
+                </td>
+                <td style="max-width:175px; text-align:right">
+                    @Html.DisplayFor(modelItem => item.category.BudgetAmount)
 
-            }
-            -->
-        <tr class="Totals">
-            <td>
-                @Html.DisplayFor(modelItem => item.category.Name)
-            </td>
-            <td style="max-width:175px; text-align:right">
-                @Html.DisplayFor(modelItem => item.category.BudgetAmount)
+                </td>
 
-            </td>
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.ActualAmount)
 
-            <td style="text-align:right">
-                @Html.DisplayFor(modelItem => item.ActualAmount)
+                </td>
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.Variance)
 
-            </td>
-            <td style="text-align:right">
-                @Html.DisplayFor(modelItem => item.Variance)
+                </td>
 
-            </td>
-
-            <td>
-                @if (!item.IsTotal)
-                {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.category.Id })<span> | </span>
+                <td>
+                    @if (!item.IsTotal)
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.category.Id })<span> | </span>
                         @Html.ActionLink("Details", "Details", new { id = item.category.Id })<span> | </span>
                         <button data-id="@item.category.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
                             <span>Delete</span>
                         </button>
-                }
-            </td>
-        </tr>
-    }
-
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <!-- vvvvv Start of Modal vvvvv -->
