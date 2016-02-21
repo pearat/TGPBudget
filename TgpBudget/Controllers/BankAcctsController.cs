@@ -13,7 +13,7 @@ using TgpBudget.Models;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
-    [Authorize]
+    [AuthorizeHouseholdRequired]
     public class BankAcctsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

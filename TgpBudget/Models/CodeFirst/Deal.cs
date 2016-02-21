@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TgpBudget.Models
 {
-    public class Deal
+
+    public class Deal :IComparable<Deal>
     {
         [Required]
         [DataType(DataType.Text)]
@@ -34,11 +36,18 @@ namespace TgpBudget.Models
 
         public virtual BankAcct BankAcct { get; set; }
         public virtual Category Category { get; set; }
+
+        public int CompareTo(Deal d)
+        {
+            return DealDate.CompareTo(d.DealDate);
+        }
     }
 
-    public class DealViewModel
-    {
 
+
+        public class DealViewModel
+    {
+        
         [Required]
         [DataType(DataType.Currency)]
         [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:C}")]

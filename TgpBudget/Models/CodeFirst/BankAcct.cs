@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TgpBudget.Models
 {
-    public class BankAcct
+    public class BankAcct:IComparable<BankAcct>
     {
         public BankAcct()
         {
@@ -32,6 +32,10 @@ namespace TgpBudget.Models
 
         public virtual ICollection<Deal> Deals { get; set; }
 
+        public int CompareTo(BankAcct b)
+        {
+            return AccountName.CompareTo(b.AccountName);
+        }
     }
 
     public class BankAcctViewModel

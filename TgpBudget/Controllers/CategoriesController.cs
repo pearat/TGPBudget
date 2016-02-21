@@ -99,6 +99,96 @@ namespace TgpBudget.Controllers
 
             return View(categoryViewModelList);
         }
+        
+        /*
+        // GET: Categories
+        public ActionResult Index()
+        {
+            var user = db.Users.Find(User.Identity.GetUserId());
+            @ViewBag.ActiveHousehold = user.Household.Name;
+            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
+            var catCol = new CategoryCollection();
+            catCol.IncomeCategories = new List<CategoryViewModel>();
+            catCol.ExpenseCategories = new List<CategoryViewModel>();
+            catCol.IncomeTotal = new CategoryViewModel();
+            catCol.ExpenseTotal = new CategoryViewModel();
+            catCol.GrandTotal = new CategoryViewModel();
+            decimal totalActual = 0;
+            decimal totalBudget = 0;
+            foreach (var cat in categories)
+            {
+                if (cat.IsExpense)
+                    break;
+                var cVM = new CategoryViewModel();
+                cVM.category = cat;
+
+                foreach (var d in deals)
+                {
+                    if (d.CategoryId == cat.Id)
+                        cVM.ActualAmount += d.Amount;
+                }
+                cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
+                catCol.IncomeCategories.Add(cVM);
+                totalActual += cVM.ActualAmount;
+                totalBudget += cVM.category.BudgetAmount;
+            }
+            //var iVM = new CategoryViewModel();
+            catCol.IncomeTotal.category = new Category();
+            catCol.IncomeTotal.category.Name = "Total Income";
+            catCol.IncomeTotal.category.BudgetAmount = totalBudget;
+            catCol.IncomeTotal.ActualAmount = totalActual;
+            catCol.IncomeTotal.Variance = totalActual - totalBudget;
+            //catCol.IncomeTotal.IsTotal = true;
+            // categoryViewModelList.Add(iVM);
+
+            totalActual = totalBudget = 0;
+            foreach (var cat in categories)
+            {
+                if (!cat.IsExpense)
+                    continue;
+                var cVM = new CategoryViewModel();
+                cVM.category = cat;
+
+                foreach (var d in deals)
+                {
+                    if (d.CategoryId == cat.Id)
+                        cVM.ActualAmount += d.Amount;
+                }
+
+                cVM.category.BudgetAmount *= -1;
+                cVM.ActualAmount *= -1;
+                cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
+                catCol.ExpenseCategories.Add(cVM);
+                totalActual += cVM.ActualAmount;
+                totalBudget += cVM.category.BudgetAmount;
+            }
+            // var eVM = new CategoryViewModel();
+            catCol.ExpenseTotal.category = new Category();
+            catCol.ExpenseTotal.category.Name = "Total Expense";
+            catCol.ExpenseTotal.category.BudgetAmount = totalBudget;
+            catCol.ExpenseTotal.ActualAmount = totalActual;
+            catCol.ExpenseTotal.Variance = totalActual - totalBudget;
+            //catCol.ExpenseTotal.IsTotal = true;
+            // categoryViewModelList.Add(eVM);
+
+            var tVM = new CategoryViewModel();
+            catCol.GrandTotal.category = new Category();
+            catCol.GrandTotal.category.Name = "Combined Total";
+            catCol.GrandTotal.category.BudgetAmount = catCol.IncomeTotal.category.BudgetAmount + catCol.ExpenseTotal.category.BudgetAmount;
+            catCol.GrandTotal.ActualAmount = catCol.IncomeTotal.ActualAmount + catCol.ExpenseTotal.ActualAmount;
+            catCol.GrandTotal.Variance = catCol.IncomeTotal.Variance + catCol.ExpenseTotal.Variance;
+            //catCol.GrandTotal.IsTotal = true;
+            // categoryViewModelList.Add(tVM);
+
+            return View(catCol);
+        }
+        */
+
+
 
         // GET: Categories/Details/5
         public ActionResult Details(int? id)

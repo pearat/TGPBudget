@@ -9,28 +9,28 @@
     </div>
     <div class="col-sm-6" style="display:inline; margin:30px 0 0px">
         Sort list:
-        @using (Html.BeginForm("Index","Deals"))
+        @using (Html.BeginForm())
         {
             <div class="form-group">
                 <div class="btn-group" data-toggle="buttons">
-                    <div class="radio-inline btn btn-primary active">
-                        @Html.RadioButton("SortOrder", "byDate") by Date
-                    </div>
-
-                    <div class="btn btn-primary radio-inline">
-                        @Html.RadioButton("SortOrder", "byCategory") by Category
-                    </div>
-
-                    <div class="radio-inline btn btn-primary">
-                        @Html.RadioButton("SortOrder", "byBankAcct") by Account
-                    </div>
-
-                </div>
+                    <label class="btn btn-primary active">
+                        <div class="radio-inline">
+                            @Html.RadioButton("sortOrder", "byDate", true, new { id = "byDate" }) by Date
+                        </div>
+                    </label>
+                    <label class="btn btn-primary">
+                        <div class="radio-inline">
+                            @Html.RadioButton("sortOrder", "byCategory", new { id = "byCategory" }) by Category
+                        </div>
+                    </label>
+                    <label class="btn btn-primary">
+                        <div class="radio-inline">
+                            @Html.RadioButton("sortOrder", "byBankAcct", new { id = "byBankAcct" }) by Account
+                        </div>
+                    </label>
+                </div>  
             </div>
-            <input type="submit" value="Next" />
         }
-
-
     </div>
     @*<div class="col-sm-2"></div>*@
     <div class="col-sm-2" style="display:inline; margin:45px 0 0px; text-align:center">

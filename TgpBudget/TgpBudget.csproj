@@ -464,6 +464,10 @@
     <Content Include="XcTim1-3\Creative Tim License.pdf" />
     <Content Include="Views\Manage\EditUserProfile.cshtml" />
     <Content Include="Views\Households\InviteJoinHh.cshtml" />
+    <Content Include="Views\Categories\IndexAttempt.cshtml" />
+    <Content Include="Views\Categories\IndexCollection.cshtml" />
+    <Content Include="Views\Deals\Details Deal.cshtml" />
+    <Content Include="Views\Deals\IndexBckup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -19,6 +19,7 @@ namespace TgpBudget.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+
         // GET: Deals
         public ActionResult Index()
         {
@@ -28,6 +29,32 @@ namespace TgpBudget.Controllers
             var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
             return View(deals);
         }
+        
+        [HttpPost]
+        public ActionResult Index(string SortOrder)
+        {
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            List<Deal> deals = new List<Deal>();
+            if (SortOrder == "" || SortOrder == "byDate")
+            {
+                deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            }
+            else
+            {
+                if(SortOrder=="byCategory")
+                {
+                    deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(d=>d.Category).ThenByDescending(a => a.DealDate).ToList();
+                }
+                else
+                {
+                    deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(a => a.BankAcct).ThenByDescending(a => a.DealDate).ToList();
+                }
+            }
+            return View(deals);
+        }
+
+
+
 
         // GET: Deals/Details/5
         public ActionResult Details(int? id)
