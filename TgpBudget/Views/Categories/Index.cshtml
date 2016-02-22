@@ -4,49 +4,106 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Category & Budget List</h2>
+<div row style="display:inline">
+    <div class="col-sm-4" style="display:inline">
+        <h2>Categories & Budget</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+    </div>
+
+    <div class="col-sm-6" style="display:inline; margin:30px 0 0px">
+
+        @using (Html.BeginForm("Index", "Categories", "Period"))
+        {
+            <div class="form-group">
+                <div class="btn-group" data-toggle="buttons">
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("Period", "currentMonth", new { onchange = "this.form.submit();" })
+                        <label class="active">Current Month</label>
+                    </div>
+
+                    <div class="btn btn-primary radio-inline">
+                        @Html.RadioButton("Period", "priorMonth", new { onchange = "this.form.submit();" })
+                        <label>Prior Month</label>
+                    </div>
+
+                    <div class="btn btn-primary radio-inline">
+                        @Html.RadioButton("Period", "last30Days", new { onchange = "this.form.submit();" })
+                        <label>Last 30 Days</label>
+                    </div>
+
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("Period", "avg90Days", new { onchange = "this.form.submit();" })
+                        <label>90 Day Avg</label>
+                    </div>
+
+                </div>
+            </div>
+            @*<input type="submit" value="Next" />*@
+        }
+
+
+    </div>
+    @*<div class="col-sm-1"></div>*@
+    <div class="col-sm-2" style="display:inline; margin:40px 0 0px; text-align:left">
+        <p>
+            @Html.ActionLink("New Category", "Create")
+        </p>
+    </div>
+
+</div>
+
 <table class="table">
     <thead>
-        <tr>
-            <th>
+        <tr >
+            <th style="max-width:150px; text-align:left;">
                 @Html.DisplayNameFor(model => model.category.Name)
             </th>
-            <th style="max-width:175px; text-align:center">
-                @Html.DisplayNameFor(model => model.category.BudgetAmount)
+
+            <th style="max-width:150px; text-align:right; font-style:italic;">
+                @Html.DisplayNameFor(model => model.ReconciledAmount)
             </th>
-            <th style="max-width:175px; text-align:center">
+            <th style="max-width:150px; text-align:right; font-style:italic;">
+                @Html.DisplayNameFor(model => model.UnreconciledAmount)
+            </th>
+            <th style="max-width:150px; text-align:right; ">
                 @Html.DisplayNameFor(model => model.ActualAmount)
             </th>
-            <th style="max-width:175px; text-align:center">
+            <th style="max-width:150px; text-align:right; ">
+                @Html.DisplayNameFor(model => model.category.BudgetAmount)
+            </th>
+            <th style="max-width:150px; text-align:right;font-style:italic; ">
                 @Html.DisplayNameFor(model => model.Variance)
             </th>
+
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
+            <tr style="text-align:right">
+                <td style="text-align:left">
                     @Html.DisplayFor(modelItem => item.category.Name)
                 </td>
-                <td style="max-width:175px; text-align:right">
-                    @Html.DisplayFor(modelItem => item.category.BudgetAmount)
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReconciledAmount)
 
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnreconciledAmount)
+                </td>
 
-                <td style="text-align:right">
+                <td style="text-align:right; font-weight:bolder;">
                     @Html.DisplayFor(modelItem => item.ActualAmount)
 
                 </td>
-                <td style="text-align:right">
+                <td style="text-align:right; font-weight:bolder;">
+                    @Html.DisplayFor(modelItem => item.category.BudgetAmount)
+                </td>
+                <td style="text-align:right; font-style:italic;">
                     @Html.DisplayFor(modelItem => item.Variance)
 
                 </td>
-
                 <td>
                     @if (!item.IsTotal)
                     {
@@ -103,6 +160,9 @@
 
 @section scripts{
     <script>
+        //$(document).ready(function () {
+        $('.table').DataTable();
+        //});
         var categoryId = 0;
         $('#delCategoryModal').on('shown.bs.modal', function (e) {
             var j = $(e.relatedTarget).data('id');
@@ -111,6 +171,7 @@
             $('.modal-backdrop').removeClass('modal-backdrop');
             $('#modal-id').val(categoryId);
         });
+
 
     </script>
 }

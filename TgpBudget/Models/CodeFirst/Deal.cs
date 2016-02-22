@@ -8,8 +8,7 @@ namespace TgpBudget.Models
     public class Deal :IComparable<Deal>
     {
         [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "Account Name")]
+
         public int Id { get; set; }
 
         public int? BankAcctId { get; set; }
@@ -19,12 +18,12 @@ namespace TgpBudget.Models
         [Display(Name = "Dollar Amount")]
 
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:C}")]
         public decimal Amount { get; set; }
         
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name = "Date of Transaction")]
+        [Display(Name = "Date")]
         public DateTimeOffset DealDate { get; set; }
 
         public string Description { get; set; }
@@ -39,7 +38,7 @@ namespace TgpBudget.Models
 
         public int CompareTo(Deal d)
         {
-            return DealDate.CompareTo(d.DealDate);
+            return Amount.CompareTo((decimal)d.Amount);
         }
     }
 
@@ -50,7 +49,7 @@ namespace TgpBudget.Models
         
         [Required]
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:C}")]
+        //[DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:C}")]
         [Display(Name = "Dollar Amount")]
         public decimal Amount { get; set; }
 

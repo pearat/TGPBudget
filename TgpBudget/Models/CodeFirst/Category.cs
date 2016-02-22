@@ -20,7 +20,7 @@ namespace TgpBudget.Models
         [Required]
 
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+//      [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         [Display(Name = "Budget")]
         public decimal BudgetAmount { get; set; }
         public bool IsProtected { get; set; }
@@ -38,15 +38,25 @@ namespace TgpBudget.Models
 
         [Display(Name="Actual")]
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal ActualAmount { get; set; }
 
         [Display(Name = "Variance")]
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        // [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal Variance { get; set; }
+
+        [Display(Name = "Reconciled")]
+        [DataType(DataType.Currency)]
+        // [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        public decimal ReconciledAmount { get; set; }
+
+        [Display(Name = "Unreconciled")]
+        [DataType(DataType.Currency)]
+        public decimal UnreconciledAmount { get; set; }
+
         public int Count { get; set; }
-        
+
         public bool IsTotal { get; set; }
     }
 

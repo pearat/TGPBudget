@@ -27,6 +27,9 @@ namespace TgpBudget.Controllers
             @ViewBag.ActiveHousehold = user.Household.Name;
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            foreach (var d in deals)
+                if (d.Category.IsExpense)
+                    d.Amount *= -1;
             return View(deals);
         }
         
@@ -35,21 +38,33 @@ namespace TgpBudget.Controllers
         {
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             List<Deal> deals = new List<Deal>();
-            if (SortOrder == "" || SortOrder == "byDate")
+            deals = hh.BankAccts.SelectMany(a => a.Deals).ToList();
+            foreach(var d in deals)
             {
-                deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+                d.Amount *= (d.Category.IsExpense ? -1 : 1);
             }
-            else
-            {
-                if(SortOrder=="byCategory")
-                {
-                    deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(d=>d.Category).ThenByDescending(a => a.DealDate).ToList();
-                }
-                else
-                {
-                    deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(a => a.BankAcct).ThenByDescending(a => a.DealDate).ToList();
-                }
-            }
+            //if (SortOrder == "" || SortOrder == "byDate")
+            //{
+            //    deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            //}
+            //else
+            //{
+            //    if (SortOrder == "byCategory")
+            //    {
+            //        deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(d => d.Category).ThenByDescending(a => a.DealDate).ToList();
+            //    }
+            //    else
+            //    {
+            //        if (SortOrder == "byBankAcct")
+            //        {
+            //            deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(a => a.BankAcct).ThenByDescending(a => a.DealDate).ToList();
+            //        }
+            //        else // by Amount
+            //        {
+            //            deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(a => a.Amount).ToList();
+            //        }
+            //    }
+            //}
             return View(deals);
         }
 

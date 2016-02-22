@@ -15,6 +15,8 @@ namespace TgpBudget.Models
         public int Id { get; set; }
 
         [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Account Name")]
         public string AccountName { get; set; }
         public string AccountNumber { get; set; }
         public string HeldAt { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Runtime.InteropServices;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -19,9 +20,43 @@ namespace TgpBudget.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private List<string> protectedNameList = new List<string>(new string[] { "Other Income", "Other Expense", "Total" });
 
-        // GET: Categories
-        public ActionResult Index()
+        public enum DateRange
         {
+            currentMonth,
+            priorMonth,
+            last30Days,
+            avg90Days
+        };
+
+        // GET: Categories
+        public ActionResult Index(DateRange? period)
+        {
+            DateRange actualDates = period ?? DateRange.currentMonth;
+            ViewBag.Period = actualDates;
+            DateTimeOffset endDate = System.DateTimeOffset.Now;
+            var startDate = new DateTimeOffset();
+            var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
+            switch (actualDates)
+            {
+                case DateRange.currentMonth:
+                    startDate = firstOfMonth;
+                    break;
+                case DateRange.priorMonth:
+
+                    startDate = firstOfMonth.AddMonths(-1);
+                    endDate = firstOfMonth.AddDays(-1);
+                    break;
+                case DateRange.last30Days:
+                    startDate = endDate.AddDays(-30);
+                    break;
+                case DateRange.avg90Days:
+                    startDate = endDate.AddDays(-90);
+                    break;
+                default:
+                    startDate = firstOfMonth;
+                    break;
+            }
+
             var user = db.Users.Find(User.Identity.GetUserId());
             @ViewBag.ActiveHousehold = user.Household.Name;
             int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
@@ -32,6 +67,7 @@ namespace TgpBudget.Controllers
             var categoryViewModelList = new List<CategoryViewModel>();
             decimal totalActual = 0;
             decimal totalBudget = 0;
+            decimal totalReconciled = 0;
             foreach (var cat in categories)
             {
                 if (cat.IsExpense)
@@ -41,20 +77,36 @@ namespace TgpBudget.Controllers
 
                 foreach (var d in deals)
                 {
-                    if (d.CategoryId == cat.Id)
-                        cVM.ActualAmount += d.Amount;
+                    if (d.DealDate >= startDate && d.DealDate <= endDate)
+                    {
+                        if (d.CategoryId == cat.Id)
+                        {
+                            cVM.ActualAmount += d.Amount;
+                            if (d.Reconciled)
+                                cVM.ReconciledAmount += d.Amount;
+                        }
+                    }
                 }
+                if (actualDates == DateRange.avg90Days)
+                {
+                    cVM.ActualAmount /= 3;
+                    cVM.ReconciledAmount /= 3;
+                }
+                cVM.UnreconciledAmount = cVM.ActualAmount - cVM.ReconciledAmount;
                 cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
                 categoryViewModelList.Add(cVM);
                 totalActual += cVM.ActualAmount;
                 totalBudget += cVM.category.BudgetAmount;
+                totalReconciled += cVM.ReconciledAmount;
             }
             var iVM = new CategoryViewModel();
             iVM.category = new Category();
             iVM.category.Name = "Total Income";
             iVM.category.BudgetAmount = totalBudget;
             iVM.ActualAmount = totalActual;
+            iVM.ReconciledAmount = totalReconciled;
             iVM.Variance = totalActual - totalBudget;
+            iVM.UnreconciledAmount = totalActual - totalReconciled;
             iVM.IsTotal = true;
             categoryViewModelList.Add(iVM);
 
@@ -68,16 +120,29 @@ namespace TgpBudget.Controllers
 
                 foreach (var d in deals)
                 {
-                    if (d.CategoryId == cat.Id)
-                        cVM.ActualAmount += d.Amount;
+                    if (d.DealDate >= startDate && d.DealDate <= endDate)
+                    {
+                        if (d.CategoryId == cat.Id)
+                        {
+                            cVM.ActualAmount -= d.Amount;
+                            if (d.Reconciled)
+                                cVM.ReconciledAmount -= d.Amount;
+                        }
+                    }
+                }
+                if (actualDates == DateRange.avg90Days)
+                {
+                    cVM.ActualAmount /= 3;
+                    cVM.ReconciledAmount /= 3;
                 }
 
                 cVM.category.BudgetAmount *= -1;
-                cVM.ActualAmount *= -1;
+                cVM.UnreconciledAmount = cVM.ActualAmount - cVM.ReconciledAmount;
                 cVM.Variance = cVM.ActualAmount - cat.BudgetAmount;
                 categoryViewModelList.Add(cVM);
                 totalActual += cVM.ActualAmount;
                 totalBudget += cVM.category.BudgetAmount;
+                totalReconciled += cVM.ReconciledAmount;
             }
             var eVM = new CategoryViewModel();
             eVM.category = new Category();
@@ -85,6 +150,9 @@ namespace TgpBudget.Controllers
             eVM.category.BudgetAmount = totalBudget;
             eVM.ActualAmount = totalActual;
             eVM.Variance = totalActual - totalBudget;
+            eVM.ReconciledAmount = totalReconciled;
+            eVM.UnreconciledAmount = totalActual - totalReconciled;
+
             eVM.IsTotal = true;
             categoryViewModelList.Add(eVM);
 
@@ -94,12 +162,25 @@ namespace TgpBudget.Controllers
             tVM.category.BudgetAmount = iVM.category.BudgetAmount + eVM.category.BudgetAmount;
             tVM.ActualAmount = iVM.ActualAmount + eVM.ActualAmount;
             tVM.Variance = iVM.Variance + eVM.Variance;
+            tVM.ReconciledAmount = iVM.ReconciledAmount + eVM.ReconciledAmount;
+            tVM.UnreconciledAmount = iVM.UnreconciledAmount + eVM.UnreconciledAmount;
             tVM.IsTotal = true;
+
             categoryViewModelList.Add(tVM);
 
             return View(categoryViewModelList);
         }
-        
+
+
+
+
+
+
+
+
+
+
+
         /*
         // GET: Categories
         public ActionResult Index()

@@ -6,30 +6,43 @@
 <div row style="display:inline">
     <div class="col-sm-4" style="display:inline">
         <h2>Transactions List</h2>
+
     </div>
-    <div class="col-sm-6" style="display:inline; margin:30px 0 0px">
-        Sort list:
-        @using (Html.BeginForm("Index","Deals"))
+    <div class="col-sm-1" style="display:inline; margin:30px 0 0px">
+        <h5>Sort by</h5>
+    </div>
+    <div class="col-sm-5" style="display:inline; margin:30px 0 0px">
+        <!--
+        @using (Html.BeginForm("Index", "Deals"))
         {
             <div class="form-group">
                 <div class="btn-group" data-toggle="buttons">
-                    <div class="radio-inline btn btn-primary active">
-                        @Html.RadioButton("SortOrder", "byDate") by Date
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("SortOrder", "byDate", new { @checked = "checked", onchange = "this.form.submit();", @Class = "active" })
+                        <label>Date</label>
                     </div>
 
                     <div class="btn btn-primary radio-inline">
-                        @Html.RadioButton("SortOrder", "byCategory") by Category
+                        @Html.RadioButton("SortOrder", "byCategory", new { onchange = "this.form.submit();", @Class = "" })
+                        <label>Category</label>
                     </div>
 
                     <div class="radio-inline btn btn-primary">
-                        @Html.RadioButton("SortOrder", "byBankAcct") by Account
+                        @Html.RadioButton("SortOrder", "byBankAcct", new { onchange = "this.form.submit();", @Class = "" })
+                        <label>Account</label>
+                    </div>
+
+
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("SortOrder", "byAmount", new { onchange = "this.form.submit();", @Class = "" })
+                        <label>Amount</label>
                     </div>
 
                 </div>
             </div>
-            <input type="submit" value="Next" />
+            @*<input type="submit" value="Next" />*@
         }
-
+        -->
 
     </div>
     @*<div class="col-sm-2"></div>*@
@@ -45,13 +58,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(m => m.BankAcct.AccountName)
+                @Html.DisplayNameFor(m => m.DealDate)
             </th>
+
             <th>
                 @Html.DisplayNameFor(m => m.Category.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(m => m.DealDate)
+                @Html.DisplayNameFor(m => m.BankAcct.AccountName)
             </th>
             <th>
                 @Html.DisplayNameFor(m => m.Payee)
@@ -73,14 +87,15 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BankAcct.AccountName)
+                    @Html.DisplayFor(modelItem => item.DealDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DealDate)
+                    @Html.DisplayFor(modelItem => item.BankAcct.AccountName)
                 </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Payee)
                 </td>
@@ -88,19 +103,9 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td style="text-align:right">
-                    @{
-                        if (item.Category.IsExpense)
-                        {
-                            <span style="color:Red;">
-                                ( @Html.DisplayFor(modelItem => item.Amount) )
-                            </span>
-                        }
-                        else {
-                            @Html.DisplayFor(modelItem => item.Amount)
-                        }
-                    }
+                    @Html.DisplayFor(modelItem => item.Amount)
                 </td>
-                <td>
+                <td style="text-align:center">
                     @Html.DisplayFor(modelItem => item.Reconciled)
                 </td>
                 <td>
@@ -109,13 +114,16 @@
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>
             </tr>
-                        }
+        }
     </tbody>
 </table>
 
 
 @section scripts{
     <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
         $(":radio").click(function () {
 
             var SelectedValue = $(this).val();
