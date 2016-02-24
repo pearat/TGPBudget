@@ -485,6 +485,7 @@
     <Content Include="Views\BankAccts\_Index.cshtml" />
     <Content Include="Views\Categories\_Index.cshtml" />
     <Content Include="Views\Deals\_Index.cshtml" />
+    <Content Include="Views\BankAccts\_BankStmtChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

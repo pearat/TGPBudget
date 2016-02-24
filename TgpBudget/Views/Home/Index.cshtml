@@ -7,8 +7,8 @@
     <div class="col-md-4">
         <div class="card">
             <div class="header">
-                <h4 class="title">Email Statistics</h4>
-                <p class="category">Last Campaign Performance</p>
+                <h4 class="title">Categories</h4>
+                <p class="category">Main Expenses</p>
             </div>
             <div class="content">
                 <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
@@ -27,7 +27,34 @@
             </div>
         </div>
     </div>
+
     <div class="col-md-8">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Bank Account Balance</h4>
+                <p class="category">Top accounts over pas year</p>
+            </div>
+            <div class="content">
+                @*<div id="chartHours" class="ct-chart"></div>*@
+                @Html.Action("_BankStmtChart", "BankAccts")
+                <div class="footer">
+                    <div class="legend">
+                        <i class="fa fa-circle text-info"></i> Open
+                        <i class="fa fa-circle text-danger"></i> Click
+                        <i class="fa fa-circle text-warning"></i> Click Second Time
+                    </div>
+                    <hr>
+                    <div class="stats">
+                        <i class="fa fa-history"></i> Updated 3 minutes ago
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
         <div class="card ">
             <div class="header">
                 <div class="row">
@@ -81,9 +108,6 @@
                 </div>
             </div>*@
     </div>
-</div>
-
-<div class="row">
     <div class="col-md-6">
         <div class="card">
             <div id="divPartialBankAccts">
@@ -91,51 +115,51 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="row">
-                <div class="col-sm-4" style="display:inline">
-                    <h4>Actual/Budget</h4>
-                </div>
 
-                <div class="col-sm-8" style="display:inline; margin:30px 0 0px">
-
-                    <div class="btn-group" data-toggle="buttons">
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="currentMonthBtn" name="period" value="currentMonth" />Cur Mon
-                        </label>
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="priorMonthBtn" name="period" value="priorMonth" />Prior
-                        </label>
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="last30DaysBtn" name="period" value="last30Days" />30 Days
-                        </label>
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="avg90DaysBtn" name="period" value="avg90Days" />90d Avg
-                        </label>
-
-                    </div>
-                </div>
-            </div>
-            <div id="divPartialCategories">
-                @Html.Action("_Index", "Categories")
-            </div>
-        </div>
-    </div>
 </div>
 <div class="row">
-    <div class="col=sm-2"></div>
-    <div class="col-md-8">
+    
+    <div class="col-sm-7">
         <div class="card">
             <div id="divPartialDeals">
                 @Html.Action("_Index", "Deals")
             </div>
         </div>
     </div>
-    <div class="col=sm-2"></div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="row">
+                <div class="col-sm-2" style="display:inline">
+                    <h4>Budget</h4>
+                </div>
+
+                <div class="col-sm-10" style="display:inline; margin:30px 0 0px">
+
+                    <div class="btn-group" data-toggle="buttons">
+
+                        <label class="radio-inline btn btn-primary ">
+                            <input type="radio" id="currentMonthBtn" name="period" value="currentMonthPartial" />Cur Mon
+                        </label>
+                        <label class="radio-inline btn btn-primary ">
+                            <input type="radio" id="priorMonthBtn" name="period" value="priorMonthPartial" />Prior
+                        </label>
+
+                        <label class="radio-inline btn btn-primary ">
+                            <input type="radio" id="last30DaysBtn" name="period" value="last30DaysPartial" />30 Days
+                        </label>
+
+                        <label class="radio-inline btn btn-primary ">
+                            <input type="radio" id="avg90DaysBtn" name="period" value="avg90DaysPartial" />90d Avg
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+            <div id="divPartialCategories">
+                @Html.Action("Index", "Categories", new { period = "currentMonthPartial" })
+            </div>
+        </div>
+    </div>
 </div>
 
 @section scripts{
@@ -176,24 +200,24 @@
 
             //$("[name=period]").removeAttr("checked");
             //$('#currentMonthBtn').prop("checked", true);
-            $('#divPartialCategories').load('/Categories/_Index?period=currentMonth');
+            $('#divPartialCategories').load('/Categories/Index?period=currentMonthPartial');
         });
         $('body').on('change', '#priorMonthBtn', function (e) {
 
             //$("[name=period]").removeAttr("checked");
             //$('#priorMonthBtn').prop("checked", true);
 
-            $('#divPartialCategories').load('/Categories/_Index?period=priorMonth');
+            $('#divPartialCategories').load('/Categories/Index?period=priorMonthPartial');
         });
+
         $('body').on('change', '#last30DaysBtn', function (e) {
-            //$("[name=period]").removeAttr("checked");
-            //$('#last30DaysBtn').prop("checked", true);
-            $('#divPartialCategories').load('/Categories/_Index?period=last30Days');
+
+            $('#divPartialCategories').load('/Categories/Index?period=last30DaysPartial');
         });
         $('body').on('change', '#avg90DaysBtn', function (e) {
             //$("[name=period]").removeAttr("checked");
             //$('#avg90DaysBtn').prop("checked", true);
-            $('#divPartialCategories').load('/Categories/_Index?period=avg90Days');
+            $('#divPartialCategories').load('/Categories/Index?period=avg90DaysPartial');
         });
 
 

@@ -66,11 +66,38 @@ namespace TgpBudget.Models
         [DataType(DataType.Currency)]
         [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:c}")]
         [Display(Name = "Opening Balance (optional)")]
-        public decimal BalanceOpening { get; set; }
+        public decimal OpeningBalance { get; set; }
 
         [DataType(DataType.Date)]
         [Display(Name = "Date for Opening Balance")]
         public DateTimeOffset? OpeningDate { get; set; }
 
+    }
+
+    public class BankStmt
+    {
+        public int BankAcctId { get; set; }
+        public DataType ReportMonth { get; set; }
+        public decimal OpeningBalance { get; set; }
+        public decimal InFlows { get; set; }
+        public decimal OutFlows { get; set; }
+        public decimal Xfers { get; set; }
+        public decimal EndingBalance { get; set; }
+    }
+
+    public class AnnualBankStmt
+    {
+        public BankStmt[] ABS { get; set; }
+        public string AccountName { get; set; }
+
+        public AnnualBankStmt()
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                ABS[i] = new BankStmt();
+            }
+            AccountName = "An-Account::SomeWhere";
+            
+        }
     }
 }

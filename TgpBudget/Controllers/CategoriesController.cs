@@ -25,13 +25,168 @@ namespace TgpBudget.Controllers
             currentMonth,
             priorMonth,
             last30Days,
-            avg90Days
+            avg90Days,
+            currentMonthPartial,
+            priorMonthPartial,
+            last30DaysPartial,
+            avg90DaysPartial
         };
 
         // GET: Categories
+        //public ActionResult Index(DateRange? period)
+        //{
+        //    DateRange actualDates = period ?? DateRange.currentMonth;
+        //    ViewBag.Period = actualDates;
+        //    DateTimeOffset endDate = System.DateTimeOffset.Now;
+        //    var startDate = new DateTimeOffset();
+        //    var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
+        //    switch (actualDates)
+        //    {
+        //        case DateRange.currentMonth:
+        //            startDate = firstOfMonth;
+        //            break;
+        //        case DateRange.priorMonth:
+
+        //            startDate = firstOfMonth.AddMonths(-1);
+        //            endDate = firstOfMonth.AddDays(-1);
+        //            break;
+        //        case DateRange.last30Days:
+        //            startDate = endDate.AddDays(-30);
+        //            break;
+        //        case DateRange.avg90Days:
+        //            startDate = endDate.AddDays(-90);
+        //            break;
+        //        default:
+        //            startDate = firstOfMonth;
+        //            break;
+        //    }
+
+        //    var user = db.Users.Find(User.Identity.GetUserId());
+        //    @ViewBag.ActiveHousehold = user.Household.Name;
+        //    int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+
+        //    var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+        //    var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+
+        //    var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
+        //    // var categoryViewModelList = new List<CategoryViewModel>();
+        //    var catDVM = new CatDisplayVM();
+        //    catDVM.IncCats = new List<CatDisplay>();
+        //    catDVM.ExpCats = new List<CatDisplay>();
+        //    catDVM.IncTotal = new CatDisplay();
+        //    catDVM.ExpTotal = new CatDisplay();
+        //    catDVM.NetTotal = new CatDisplay();
+        //    decimal totalActual = 0;
+        //    decimal totalBudget = 0;
+        //    decimal totalReconciled = 0;
+
+        //    foreach (var cat in categories)
+        //    {
+        //        if (cat.IsExpense)
+        //            break;
+        //        var cVM = new CatDisplay();
+
+        //        cVM.Id = cat.Id;
+        //        cVM.Name = cat.Name;
+        //        cVM.Budget = cat.BudgetAmount;
+
+        //        foreach (var d in deals)
+        //        {
+        //            if (d.DealDate >= startDate && d.DealDate <= endDate)
+        //            {
+        //                if (d.CategoryId == cat.Id)
+        //                {
+        //                    cVM.Actual += d.Amount;
+        //                    if (d.Reconciled)
+        //                        cVM.Reconciled += d.Amount;
+        //                }
+        //            }
+        //        }
+        //        if (actualDates == DateRange.avg90Days)
+        //        {
+        //            cVM.Actual /= 3;
+        //            cVM.Reconciled /= 3;
+        //        }
+        //        cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
+        //        cVM.Variance = cVM.Actual - cat.BudgetAmount;
+        //        // categoryViewModelList.Add(cVM);
+        //        catDVM.IncCats.Add(cVM);
+        //        totalActual += cVM.Actual;
+        //        totalBudget += cVM.Budget;
+        //        totalReconciled += cVM.Reconciled;
+        //    }
+
+        //    catDVM.IncTotal.Name = "Total Income";
+        //    catDVM.IncTotal.Reconciled = totalReconciled;
+        //    catDVM.IncTotal.Unreconciled = totalActual - totalReconciled;
+        //    catDVM.IncTotal.Actual = totalActual;
+        //    catDVM.IncTotal.Budget = totalBudget;
+        //    catDVM.IncTotal.Variance = totalActual - totalBudget;
+        //    catDVM.IncTotal.IsTotal = true;
+
+        //    totalActual = totalBudget = totalReconciled = 0;
+        //    foreach (var cat in categories)
+        //    {
+        //        if (!cat.IsExpense)
+        //            continue;
+        //        var cVM = new CatDisplay();
+        //        cVM.Id = cat.Id;
+        //        cVM.Name = cat.Name;
+        //        cVM.Budget = cat.BudgetAmount;
+
+        //        foreach (var d in deals)
+        //        {
+        //            if (d.DealDate >= startDate && d.DealDate <= endDate)
+        //            {
+        //                if (d.CategoryId == cat.Id)
+        //                {
+        //                    cVM.Actual -= d.Amount;
+        //                    if (d.Reconciled)
+        //                        cVM.Reconciled -= d.Amount;
+        //                }
+        //            }
+        //        }
+        //        if (actualDates == DateRange.avg90Days)
+        //        {
+        //            cVM.Actual /= 3;
+        //            cVM.Reconciled /= 3;
+        //        }
+
+        //        cVM.Budget *= -1;
+        //        cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
+        //        cVM.Variance = cVM.Actual - cat.BudgetAmount;
+        //        catDVM.ExpCats.Add(cVM);
+        //        totalActual += cVM.Actual;
+        //        totalBudget += cVM.Budget;
+        //        totalReconciled += cVM.Reconciled;
+        //    }
+
+        //    catDVM.ExpTotal.Name = "Total Expense";
+        //    catDVM.ExpTotal.Reconciled = totalReconciled;
+        //    catDVM.ExpTotal.Unreconciled = totalActual - totalReconciled;
+        //    catDVM.ExpTotal.Actual = totalActual;
+        //    catDVM.ExpTotal.Budget = totalBudget;
+        //    catDVM.ExpTotal.Variance = totalActual - totalBudget;
+        //    catDVM.ExpTotal.IsTotal = true;
+
+        //    catDVM.NetTotal.Name = "Combined Total";
+        //    catDVM.NetTotal.Reconciled = catDVM.IncTotal.Reconciled + catDVM.ExpTotal.Reconciled;
+        //    catDVM.NetTotal.Unreconciled = catDVM.IncTotal.Unreconciled + catDVM.ExpTotal.Unreconciled;
+        //    catDVM.NetTotal.Actual = catDVM.IncTotal.Actual + catDVM.ExpTotal.Actual;
+        //    catDVM.NetTotal.Budget = catDVM.IncTotal.Budget + catDVM.ExpTotal.Budget;
+        //    catDVM.NetTotal.Variance = catDVM.IncTotal.Variance + catDVM.ExpTotal.Variance;
+        //    catDVM.NetTotal.IsTotal = true;
+
+        //    return View(catDVM);
+        //}
+
+
+        // GET: Categories
+
         public ActionResult Index(DateRange? period)
         {
             DateRange actualDates = period ?? DateRange.currentMonth;
+            
             ViewBag.Period = actualDates;
             DateTimeOffset endDate = System.DateTimeOffset.Now;
             var startDate = new DateTimeOffset();
@@ -39,192 +194,50 @@ namespace TgpBudget.Controllers
             switch (actualDates)
             {
                 case DateRange.currentMonth:
+                case DateRange.currentMonthPartial:
                     startDate = firstOfMonth;
                     break;
                 case DateRange.priorMonth:
-
+                case DateRange.priorMonthPartial:
                     startDate = firstOfMonth.AddMonths(-1);
                     endDate = firstOfMonth.AddDays(-1);
                     break;
                 case DateRange.last30Days:
+                case DateRange.last30DaysPartial:
                     startDate = endDate.AddDays(-30);
                     break;
                 case DateRange.avg90Days:
+                case DateRange.avg90DaysPartial:
                     startDate = endDate.AddDays(-90);
                     break;
                 default:
                     startDate = firstOfMonth;
                     break;
             }
-
             var user = db.Users.Find(User.Identity.GetUserId());
             @ViewBag.ActiveHousehold = user.Household.Name;
-            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
-            
-            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
-
-            var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
-            // var categoryViewModelList = new List<CategoryViewModel>();
-            var catDVM = new CatDisplayVM();
-            catDVM.IncCats = new List<CatDisplay>();
-            catDVM.ExpCats = new List<CatDisplay>();
-            catDVM.IncTotal = new CatDisplay();
-            catDVM.ExpTotal = new CatDisplay();
-            catDVM.NetTotal = new CatDisplay();
-            decimal totalActual = 0;
-            decimal totalBudget = 0;
-            decimal totalReconciled = 0;
-
-            foreach (var cat in categories)
+            var catDVM = CategoryBudget(startDate, endDate);
+            if (period > DateRange.avg90Days)
             {
-                if (cat.IsExpense)
-                    break;
-                var cVM = new CatDisplay();
-                
-                cVM.Id = cat.Id;
-                cVM.Name = cat.Name;
-                cVM.Budget = cat.BudgetAmount;
-
-                foreach (var d in deals)
-                {
-                    if (d.DealDate >= startDate && d.DealDate <= endDate)
-                    {
-                        if (d.CategoryId == cat.Id)
-                        {
-                            cVM.Actual += d.Amount;
-                            if (d.Reconciled)
-                                cVM.Reconciled += d.Amount;
-                        }
-                    }
-                }
-                if (actualDates == DateRange.avg90Days)
-                {
-                    cVM.Actual /= 3;
-                    cVM.Reconciled /= 3;
-                }
-                cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
-                cVM.Variance = cVM.Actual - cat.BudgetAmount;
-                // categoryViewModelList.Add(cVM);
-                catDVM.IncCats.Add(cVM);
-                totalActual += cVM.Actual;
-                totalBudget += cVM.Budget;
-                totalReconciled += cVM.Reconciled;
+                return PartialView("_Index",catDVM);
             }
-
-            catDVM.IncTotal.Name = "Total Income";
-            catDVM.IncTotal.Reconciled = totalReconciled;
-            catDVM.IncTotal.Unreconciled = totalActual - totalReconciled;
-            catDVM.IncTotal.Actual = totalActual;
-            catDVM.IncTotal.Budget = totalBudget;
-            catDVM.IncTotal.Variance = totalActual - totalBudget;
-            catDVM.IncTotal.IsTotal = true;
-
-            totalActual = totalBudget = totalReconciled = 0;
-            foreach (var cat in categories)
-            {
-                if (!cat.IsExpense)
-                    continue;
-                var cVM = new CatDisplay();
-                cVM.Id = cat.Id;
-                cVM.Name = cat.Name;
-                cVM.Budget = cat.BudgetAmount;
-
-                foreach (var d in deals)
-                {
-                    if (d.DealDate >= startDate && d.DealDate <= endDate)
-                    {
-                        if (d.CategoryId == cat.Id)
-                        {
-                            cVM.Actual -= d.Amount;
-                            if (d.Reconciled)
-                                cVM.Reconciled -= d.Amount;
-                        }
-                    }
-                }
-                if (actualDates == DateRange.avg90Days)
-                {
-                    cVM.Actual /= 3;
-                    cVM.Reconciled /= 3;
-                }
-
-                cVM.Budget *= -1;
-                cVM.Unreconciled = cVM.Actual - cVM.Reconciled ;
-                cVM.Variance = cVM.Actual - cat.BudgetAmount;
-                catDVM.ExpCats.Add(cVM);
-                totalActual += cVM.Actual;
-                totalBudget += cVM.Budget;
-                totalReconciled += cVM.Reconciled;
+            else {
+                return View("Index",catDVM);
             }
-
-            catDVM.ExpTotal.Name = "Total Expense";
-            catDVM.ExpTotal.Reconciled = totalReconciled;
-            catDVM.ExpTotal.Unreconciled = totalActual - totalReconciled;
-            catDVM.ExpTotal.Actual = totalActual;
-            catDVM.ExpTotal.Budget = totalBudget;
-            catDVM.ExpTotal.Variance = totalActual - totalBudget;
-            catDVM.ExpTotal.IsTotal = true;
-
-            catDVM.NetTotal.Name = "Combined Total";
-            catDVM.NetTotal.Reconciled    = catDVM.IncTotal.Reconciled   + catDVM.ExpTotal.Reconciled;
-            catDVM.NetTotal.Unreconciled  = catDVM.IncTotal.Unreconciled + catDVM.ExpTotal.Unreconciled;
-            catDVM.NetTotal.Actual        = catDVM.IncTotal.Actual       + catDVM.ExpTotal.Actual;
-            catDVM.NetTotal.Budget        = catDVM.IncTotal.Budget       + catDVM.ExpTotal.Budget;
-            catDVM.NetTotal.Variance      = catDVM.IncTotal.Variance     + catDVM.ExpTotal.Variance;
-            catDVM.NetTotal.IsTotal = true;
-
-            return View(catDVM);
         }
 
 
 
-        // GET: Categories
-        public ActionResult _Index(DateRange? period)
+        public CatDisplayVM CategoryBudget(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            DateRange actualDates = period ?? DateRange.currentMonth;
-            ViewBag.Period = actualDates;
-            DateTimeOffset endDate = System.DateTimeOffset.Now;
-            var startDate = new DateTimeOffset();
-            var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
-            switch (actualDates)
-            {
-                case DateRange.currentMonth:
-                    startDate = firstOfMonth;
-                    break;
-                case DateRange.priorMonth:
-
-                    startDate = firstOfMonth.AddMonths(-1);
-                    endDate = firstOfMonth.AddDays(-1);
-                    break;
-                case DateRange.last30Days:
-                    startDate = endDate.AddDays(-30);
-                    break;
-                case DateRange.avg90Days:
-                    startDate = endDate.AddDays(-90);
-                    break;
-                default:
-                    startDate = firstOfMonth;
-                    break;
-            }
-
-            var user = db.Users.Find(User.Identity.GetUserId());
-            @ViewBag.ActiveHousehold = user.Household.Name;
             int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
-
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
             var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
-            // var categoryViewModelList = new List<CategoryViewModel>();
             var catDVM = new CatDisplayVM();
-            catDVM.IncCats = new List<CatDisplay>();
-            catDVM.ExpCats = new List<CatDisplay>();
-            catDVM.IncTotal = new CatDisplay();
-            catDVM.ExpTotal = new CatDisplay();
-            catDVM.NetTotal = new CatDisplay();
             decimal totalActual = 0;
             decimal totalBudget = 0;
             decimal totalReconciled = 0;
-
             foreach (var cat in categories)
             {
                 if (cat.IsExpense)
@@ -247,7 +260,7 @@ namespace TgpBudget.Controllers
                         }
                     }
                 }
-                if (actualDates == DateRange.avg90Days)
+                if ((endDate - startDate).TotalDays > 80)
                 {
                     cVM.Actual /= 3;
                     cVM.Reconciled /= 3;
@@ -260,7 +273,6 @@ namespace TgpBudget.Controllers
                 totalBudget += cVM.Budget;
                 totalReconciled += cVM.Reconciled;
             }
-
             catDVM.IncTotal.Name = "Total Income";
             catDVM.IncTotal.Reconciled = totalReconciled;
             catDVM.IncTotal.Unreconciled = totalActual - totalReconciled;
@@ -268,7 +280,6 @@ namespace TgpBudget.Controllers
             catDVM.IncTotal.Budget = totalBudget;
             catDVM.IncTotal.Variance = totalActual - totalBudget;
             catDVM.IncTotal.IsTotal = true;
-
             totalActual = totalBudget = totalReconciled = 0;
             foreach (var cat in categories)
             {
@@ -291,12 +302,11 @@ namespace TgpBudget.Controllers
                         }
                     }
                 }
-                if (actualDates == DateRange.avg90Days)
+                if ((endDate - startDate).TotalDays > 80)
                 {
                     cVM.Actual /= 3;
                     cVM.Reconciled /= 3;
                 }
-
                 cVM.Budget *= -1;
                 cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
                 cVM.Variance = cVM.Actual - cat.BudgetAmount;
@@ -305,7 +315,6 @@ namespace TgpBudget.Controllers
                 totalBudget += cVM.Budget;
                 totalReconciled += cVM.Reconciled;
             }
-
             catDVM.ExpTotal.Name = "Total Expense";
             catDVM.ExpTotal.Reconciled = totalReconciled;
             catDVM.ExpTotal.Unreconciled = totalActual - totalReconciled;
@@ -313,7 +322,6 @@ namespace TgpBudget.Controllers
             catDVM.ExpTotal.Budget = totalBudget;
             catDVM.ExpTotal.Variance = totalActual - totalBudget;
             catDVM.ExpTotal.IsTotal = true;
-
             catDVM.NetTotal.Name = "Combined Total";
             catDVM.NetTotal.Reconciled = catDVM.IncTotal.Reconciled + catDVM.ExpTotal.Reconciled;
             catDVM.NetTotal.Unreconciled = catDVM.IncTotal.Unreconciled + catDVM.ExpTotal.Unreconciled;
@@ -321,10 +329,10 @@ namespace TgpBudget.Controllers
             catDVM.NetTotal.Budget = catDVM.IncTotal.Budget + catDVM.ExpTotal.Budget;
             catDVM.NetTotal.Variance = catDVM.IncTotal.Variance + catDVM.ExpTotal.Variance;
             catDVM.NetTotal.IsTotal = true;
-
-            return PartialView(catDVM);
+            return catDVM;
         }
-        
+
+
 
 
 

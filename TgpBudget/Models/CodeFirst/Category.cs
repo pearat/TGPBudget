@@ -83,6 +83,15 @@ namespace TgpBudget.Models
 
     public class CatDisplayVM
     {
+        public CatDisplayVM()
+        {
+            IncCats = new List<CatDisplay>();
+            IncCats = new List<CatDisplay>();
+            ExpCats = new List<CatDisplay>();
+            IncTotal = new CatDisplay();
+            ExpTotal = new CatDisplay();
+            NetTotal = new CatDisplay();
+        }
         public List<CatDisplay> IncCats { get; set; }
         public List<CatDisplay> ExpCats { get; set; }
         public CatDisplay IncTotal { get; set; }

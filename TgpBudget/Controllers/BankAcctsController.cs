@@ -48,6 +48,40 @@ namespace TgpBudget.Controllers
             return PartialView(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList().Take(4));
         }
 
+        // GET: BankAccts
+        public ActionResult _BankStmtChart()
+        {
+            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            var accounts = db.BankAccts.Where(c => c.HouseholdId == HhId).OrderBy(c => c.AccountName).ToList();
+            var statement = new BankStmt();
+            var annualBankStmt = new AnnualBankStmt();
+
+            // DateTime endDate = System.DateTime.Today;
+            var currentMonth = new DateTime(System.DateTime.Today.Year - 12, System.DateTime.Today.Month, 1);
+
+            var lastYear = new List<DateTime>();
+
+            for (int i = 0; i < 12; i++)
+            {
+                
+                lastYear.Add(currentMonth);
+                currentMonth= currentMonth.AddMonths(1).AddDays(-1);
+                
+            }
+            foreach (var deal in deals)
+            {
+
+                //if (deal.DealDate < startDate)
+                //    continue;
+                //if (deal.DealDate > endDate)
+                //    break;
+
+            }
+            return PartialView("_BankStmtChart", annualBankStmt);
+        }
+
 
         // GET: BankAccts
         public ActionResult Recalc()
@@ -132,7 +166,7 @@ namespace TgpBudget.Controllers
 
                 if (bankAcct.OpeningDate == null)
                     bankAcct.OpeningDate = System.DateTimeOffset.Now;
-                if (bankAcct.BalanceOpening != 0)
+                if (bankAcct.OpeningBalance != 0)
                 {
                     // generate opening transaction
                 }
@@ -143,7 +177,7 @@ namespace TgpBudget.Controllers
                 newBankAcct.AccountName = bankAcct.AccountName;
                 newBankAcct.HouseholdId = bankAcct.HouseholdId;
                 newBankAcct.Opened = bankAcct.OpeningDate;
-                newBankAcct.BalanceCurrent = bankAcct.BalanceOpening;
+                newBankAcct.BalanceCurrent = bankAcct.OpeningBalance;
                 db.BankAccts.Add(newBankAcct);
                 db.SaveChanges();
                 return RedirectToAction("Index", "BankAccts");

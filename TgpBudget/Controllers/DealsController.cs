@@ -26,7 +26,7 @@ namespace TgpBudget.Controllers
             var user = db.Users.Find(User.Identity.GetUserId());
             @ViewBag.ActiveHousehold = user.Household.Name;
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList().Take(5);
             foreach (var d in deals)
                 if (d.Category.IsExpense)
                     d.Amount *= -1;
