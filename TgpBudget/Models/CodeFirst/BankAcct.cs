@@ -64,7 +64,7 @@ namespace TgpBudget.Models
         public string AccountNumber { get; set; }
 
         [DataType(DataType.Currency)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        [DisplayFormat(ApplyFormatInEditMode = false, DataFormatString = "{0:c}")]
         [Display(Name = "Opening Balance (optional)")]
         public decimal BalanceOpening { get; set; }
 

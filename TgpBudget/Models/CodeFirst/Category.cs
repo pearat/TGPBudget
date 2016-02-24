@@ -61,18 +61,34 @@ namespace TgpBudget.Models
     }
 
 
-    public class CategoryCollection : CategoryViewModel
+    public class CatDisplay
     {
-        public List<CategoryViewModel> IncomeCategories { get; set; }
-        public List<CategoryViewModel> ExpenseCategories { get; set; }
-        public CategoryViewModel IncomeTotal { get; set; }
-        public CategoryViewModel ExpenseTotal { get; set; }
-        public CategoryViewModel GrandTotal { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }        
+        public bool IsExpense { get; set; }
+        
+        [DataType(DataType.Currency)]
+        public decimal Actual { get; set; }
+        
+        [DataType(DataType.Currency)]
+        public decimal Budget { get; set; }
+        [DataType(DataType.Currency)]
+        public decimal Reconciled { get; set; }
+        [DataType(DataType.Currency)]
+        public decimal Unreconciled { get; set; }
+        [DataType(DataType.Currency)]
+        public decimal Variance { get; set; }
+        public bool IsTotal { get; set; }
+    }
 
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+    public class CatDisplayVM
+    {
+        public List<CatDisplay> IncCats { get; set; }
+        public List<CatDisplay> ExpCats { get; set; }
+        public CatDisplay IncTotal { get; set; }
+        public CatDisplay ExpTotal { get; set; }
+        public CatDisplay NetTotal { get; set; }
+
     }
 
 }

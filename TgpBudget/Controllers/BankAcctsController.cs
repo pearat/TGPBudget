@@ -12,6 +12,11 @@ using TgpBudget.Models;
 
 namespace TgpBudget.Controllers
 {
+    public enum ReservedAccounts
+    {
+        deletedAccountHouseholdID = 13,
+        newAccountHouseholdId,
+    }
     [RequireHttps]
     [AuthorizeHouseholdRequired]
     public class BankAcctsController : Controller
@@ -30,6 +35,18 @@ namespace TgpBudget.Controllers
             return View( db.BankAccts.Where(b=>b.HouseholdId==user.HouseholdId).OrderBy(b=>b.AccountName).ToList() );
         }
 
+
+        // GET: BankAccts
+        public ActionResult _Index()
+        {
+
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null || user.Household == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return PartialView(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList().Take(4));
+        }
 
 
         // GET: BankAccts
@@ -174,6 +191,25 @@ namespace TgpBudget.Controllers
         }
 
         // GET: BankAccts/Close/5
+        //public ActionResult Close(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    BankAcct bankAcct = db.BankAccts.Find(id);
+        //    if (bankAcct == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(bankAcct);
+        //}
+
+        // POST: BankAccts/Close/5
+        //[HttpPost, ActionName("Close")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult CloseConfirmed(int id)
+
         public ActionResult Close(int? id)
         {
             if (id == null)
@@ -181,23 +217,11 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             BankAcct bankAcct = db.BankAccts.Find(id);
-            if (bankAcct == null)
-            {
-                return HttpNotFound();
-            }
-            return View(bankAcct);
-        }
-
-        // POST: BankAccts/Close/5
-        [HttpPost, ActionName("Close")]
-        [ValidateAntiForgeryToken]
-        public ActionResult CloseConfirmed(int id)
-        {
-            BankAcct bankAcct = db.BankAccts.Find(id);
             if (bankAcct.Closed == null)
                 bankAcct.Closed = System.DateTimeOffset.Now;
             db.Entry(bankAcct).Property(b => b.Closed).IsModified = true;
-            
+            bankAcct.HouseholdId = (int)ReservedAccounts.deletedAccountHouseholdID;
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }

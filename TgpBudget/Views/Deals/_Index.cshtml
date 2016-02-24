@@ -1,0 +1,95 @@
+﻿@model IEnumerable<TgpBudget.Models.Deal>
+
+@{
+    ViewBag.Title = "Transactions Partial";
+}
+
+
+<div row style="display:inline">
+    <div class="col-sm-5">
+        <h3 style="display:inline; margin:10px">Transactions</h3>
+
+    </div>
+    <div class="col-sm-5">
+        <h4 style="display:inline; margin-top:10px">Balance</h4>
+
+    </div>
+
+
+    <div class="col-sm-2">
+        <p style="display:inline; margin-top: 15px; text-align:center">
+            @Html.ActionLink("New", "Open")
+        </p>
+    </div>
+
+
+</div>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(m => m.DealDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(m => m.Category.Name)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(m => m.Payee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Reconciled)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DealDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Payee)
+                </td>
+
+                <td style="text-align:right">
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td style="text-align:center">
+                    @{ if (@item.Reconciled)
+                        {
+                            @:<label>Y</label>
+                        }
+                        else
+                        {
+                            @:<label>N</label>
+                        }
+                    }
+
+                </td>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |*@
+                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    @*<span> | </span>
+                    <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delDealModal">
+                        <span>Delete</span>
+                    </button>*@
+                </td>
+            </tr>
+                        }
+    </tbody>
+</table>

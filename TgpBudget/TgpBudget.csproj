@@ -234,6 +234,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BankAcctsController.cs" />
+    <Compile Include="Controllers\CategoriesControllerBackup.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\DealsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -269,7 +270,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\site.css" />
     <Content Include="img\logo\tlogo.png" />
     <Content Include="Scripts\ai.0.15.0-build58334.js" />
     <Content Include="Scripts\ai.0.15.0-build58334.min.js" />
@@ -291,6 +292,7 @@
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\site.js" />
     <Content Include="XcTim1-3\assets\css\animate.min.css" />
     <Content Include="XcTim1-3\assets\css\bootstrap.min.css" />
     <Content Include="XcTim1-3\assets\css\demo.css" />
@@ -411,7 +413,7 @@
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Deals\NewTries.cshtml" />
-    <Content Include="Views\Deals\Delete.cshtml" />
+    <Content Include="Views\Deals\DeleteOld.cshtml" />
     <Content Include="Views\Deals\Details.cshtml" />
     <Content Include="Views\Deals\Edit.cshtml" />
     <Content Include="Views\Deals\Index.cshtml" />
@@ -478,6 +480,11 @@
     <Content Include="Views\Deals\Details Deal.cshtml" />
     <Content Include="Views\Deals\IndexBckup.cshtml" />
     <Content Include="Views\Deals\New.cshtml" />
+    <Content Include="Views\Deals\IndexBckup2.cshtml" />
+    <Content Include="Views\Households\Index.cshtml" />
+    <Content Include="Views\BankAccts\_Index.cshtml" />
+    <Content Include="Views\Categories\_Index.cshtml" />
+    <Content Include="Views\Deals\_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -21,6 +21,21 @@ namespace TgpBudget.Controllers
 
 
         // GET: Deals
+        public ActionResult _Index()
+        {
+            var user = db.Users.Find(User.Identity.GetUserId());
+            @ViewBag.ActiveHousehold = user.Household.Name;
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            foreach (var d in deals)
+                if (d.Category.IsExpense)
+                    d.Amount *= -1;
+            return PartialView(deals);
+        }
+
+
+
+        // GET: Deals
         public ActionResult Index()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -32,7 +47,10 @@ namespace TgpBudget.Controllers
                     d.Amount *= -1;
             return View(deals);
         }
-        
+
+
+
+
         [HttpPost]
         public ActionResult Index(string SortOrder)
         {
@@ -247,25 +265,30 @@ namespace TgpBudget.Controllers
         }
 
         // GET: Deals/Delete/5
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Deal deal = db.Deals.Find(id);
+        //    if (deal == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(deal);
+        //}
+
+        //// POST: Deals/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int? id)
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Deal deal = db.Deals.Find(id);
-            if (deal == null)
-            {
-                return HttpNotFound();
-            }
-            return View(deal);
-        }
-
-        //// POST: Deals/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
             Deal deal = db.Deals.Find(id);
 
             //db.Deals.Add(deal);

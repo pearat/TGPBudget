@@ -11,6 +11,7 @@ namespace TgpBudget.Controllers
 {
 
     [RequireHttps]
+    [Authorize]
     [AuthorizeHouseholdRequired]
     public class HomeController : Controller
     {

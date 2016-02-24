@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Household Page";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Details</h2>
+        <p>Review and edit information about your household.</p>
+        <p><a class="btn btn-default" href=@Url.Action("Edit", "Households")>Edit &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Membership</h2>
+        <p>See who belongs to your household.</p>
+        <p><a class="btn btn-default" href=@Url.Action("ListMembers", "Households")>List &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h3>Some chart ...?</h3>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Invite</h2>
+        <p>Invite someone new to Join your household.</p>
+        <p><a class="btn btn-default" href=@Url.Action("Create", "Invitations")>Invite &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Leave</h2>
+        <p>Unsubscribe from this household.</p>
+        <p><a class="btn btn-default" href=@Url.Action("Leave", "Households")>Leave &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h3>Other Bumpf...?</h3>
+    </div>
+</div>

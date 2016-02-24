@@ -9,6 +9,7 @@ using TgpBudget.Helpers;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
+    [AuthorizeHouseholdRequired]
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -36,7 +37,6 @@ namespace TgpBudget.Controllers
                     // Join w/ Code or Create new Household
 
                     return RedirectToAction("JoinCreate");
-
                 }
                 else
                 {
@@ -59,7 +59,7 @@ namespace TgpBudget.Controllers
             }
             @ViewBag.ActiveHousehold = user.Household.Name;
             //return View(db.Households.ToList());
-            return RedirectToAction("Index","Home");
+            return View();
         }
 
         // GET: Households/List/5

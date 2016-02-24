@@ -24,19 +24,23 @@
     <link href="~/XcTim1-3/assets/css/animate.min.css" rel="stylesheet" />
     <!--  Light Bootstrap Table core CSS    -->
     <link href="~/XcTim1-3/assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">    
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link href="~/Content/jquery-ui.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/dt/dt-1.10.11/datatables.min.css" />
-    
-    <!--  CSS for Demo Purpose, don't include it in your project    
-    <link href="~/XcTim1-3/assets/css/demo.css" rel="stylesheet" />  -->
 
+    <!--  CSS for Demo Purpose, don't include it in your project
+    <link href="~/XcTim1-3/assets/css/demo.css" rel="stylesheet" />  -->
     <!--     Fonts and icons     -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="~/XcTim1-3/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
     <!-- ^^^^^ start of TEMPLATE addins ^^^^^ -->
-    <link href="~/Content/Site.css" rel="stylesheet" />
+
+        <!-- Chartist-JS code -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+    <link href="~/Content/site.css" rel="stylesheet" />
+
 </head>
 <body>
 
@@ -123,14 +127,9 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        @*<a class="navbar-brand" href="#">Dashboard</a>*@
-                        <!--
-
-                        Html.ActionLink("TGP Budget", "Index", "Home", new { area = "" }, new { class = "navbar-brand" })
-                            -->
 
                         <a href="https://tpeara.azurewebsites.net" background-image="~/img/logo/tlogo.png"
-                           style="padding:13px 15px 5px 0px;margin: 13px 0px 0px 0px; font-size:x-large; font-weight:900;">TGP</a>
+                           style="padding:!important 13px 15px 5px 0px;margin: 13px 0px 0px 0px; font-size:x-large; font-weight:900;">TGP</a>
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-left">
@@ -161,21 +160,6 @@
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <!--
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    Household
-                                    <b class="caret"></b>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href=@Url.Action("ListMembers", "Households")>List Household Members</a></li>
-                                    <li><a href=@Url.Action("Create", "Invitations")>Invite Someone to Join</a></li>
-                                    <li><a href=@Url.Action("Edit", "Households")>Edit Details</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href=@Url.Action("Leave", "Households")>Leave This Household</a></li>
-                                </ul>
-                            </li>
-                            -->
                             <li>
                                 @Html.Partial("_LoginPartial")
                             </li>
@@ -189,28 +173,6 @@
                     </div>
                 </div>
             </nav>
-
-            <!-- <div class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                    </div>
-                    <div class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li>@Html.ActionLink("About", "About", "Home")</li>
-                            <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                        </ul>
-                        @Html.Partial("_LoginPartial")
-                    </div>
-                </div>
-            </div> -->
-
 
             <div class="container body-content">
                 @RenderBody()
@@ -242,9 +204,12 @@
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
 <script src="~/Scripts/jquery-ui.js"></script>
-<!-- Light Bootstrap Table DEMO methods, don't include it in your project! 
+<!-- Light Bootstrap Table DEMO methods, don't include it in your project!
 <script src="~/XcTim1-3/assets/js/demo.js"></script> -->
 
+<!-- Chartist-JS code -->
+<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script src="~/Scripts/site.js"></script>
 
 
 <script type="text/javascript">

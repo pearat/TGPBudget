@@ -9,7 +9,7 @@
 
     </div>
     <div class="col-sm-1" style="display:inline; margin:30px 0 0px">
-        @*<h5>Sort by</h5>*@
+        <h5>Sort by</h5>
     </div>
     <div class="col-sm-5" style="display:inline; margin:30px 0 0px">
         <!--
@@ -111,9 +111,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delDealModal">
-                        <span>Delete</span>
-                    </button>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>
             </tr>
         }
@@ -121,57 +119,8 @@
 </table>
 
 
-<!-- vvvvv Start of Modal vvvvv -->
-
-<div class="modal fade" id="delDealModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width:800px;">
-        <div class="modal-content" style="align-content:center">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    ×
-                </button>
-                <h4 class="modal-title" style="text-align:center; color:#fff"
-                    id="myModalLabel">
-                    Confirm Delete
-                </h4>
-            </div>
-
-            <div class="modal-body" style="text-align:center">
-                <div class="row">
-                    <h4>Are you sure you want to delete this transaction?</h4>
-                </div>
-            </div>
-            <div class="modal-footer" style="align-items:center">
-                <button type="button" data-dismiss="modal" class="btn btn-skin xtra-btn">Dismiss</button>
-
-                <form id="deleteIdForm" action="@Url.Action("Delete", "Deals") ">
-                    @Html.AntiForgeryToken()
-                    <input id="modal-id" type="hidden" name="id" value="" />
-                    <button id="deleteConfirmed" value="true" form="deleteIdForm" type="submit"
-                            class="btn btn-danger xtra-danger-btn" data-warning="modal">
-                        Delete
-                    </button>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ^^^^^ Modal end ^^^^^ -->
-
 @section scripts{
     <script>
-
-        var categoryId = 0;
-        $('#delDealModal').on('shown.bs.modal', function (e) {
-            var j = $(e.relatedTarget).data('id');
-            console.log(' categoryId j: ' + j);
-            categoryId = j;
-            $('.modal-backdrop').removeClass('modal-backdrop');
-            $('#modal-id').val(categoryId);
-        });
-
-
         $(document).ready(function () {
             $('.table').DataTable();
         });
