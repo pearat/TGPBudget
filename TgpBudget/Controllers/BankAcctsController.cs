@@ -72,48 +72,54 @@ namespace TgpBudget.Controllers
             decimal outflows = 0;
 
             var bankChartData = (from m in trailing12Months
-                                 from a in hh.BankAccts
-                                 let aSum = (from d in a.Deals
-                                             where m.Month == d.DealDate.Month && d.Category.IsExpense == true
-                                             select d.Amount).DefaultIfEmpty().Sum()
-                                 let bSum = (from d in a.Deals
+                                 from b in hh.BankAccts
+                                 let aSum = -(from d in b.Deals
+                                              where m.Month == d.DealDate.Month && d.Category.IsExpense == true
+                                              select d.Amount).DefaultIfEmpty().Sum()
+                                 let bSum = (from d in b.Deals
                                              where m.Month == d.DealDate.Month && d.Category.IsExpense == false
                                              select d.Amount).DefaultIfEmpty().Sum()
-                                 let _ = outflows -= aSum
+                                 let _ = outflows += aSum
                                  let ___ = inflows += bSum
                                  select new
                                  {
-                                     AcctId=a.Id,
-                                     AcctName = a.AccountName,
+                                     AcctId = b.Id,
+                                     AcctName = b.AccountName,
                                      Month = m,
                                      Outflows = aSum,
                                      Inflows = bSum
                                  }).ToArray();
-            int numBankAccts = bankChartData.Count() / 12;
-            var lineChart = new lineChart();
+            int numAccts = bankChartData.Count() / 12;
+            var lineChart = new LineChart();
             lineChart.labels = new string[12];
-            lineChart.series = new int[numBankAccts,12];
-            decimal x = 0;
-            decimal y = 0;
+            lineChart.series = new int[numAccts, 12];
+            int x, y = 0;
+            //decimal y = 0;
             int k = 0;
             for (int i = 0; i < 12; i++)
             {
-                lineChart.labels[i] = bankChartData[i * numBankAccts].Month.ToString("MMM");
-                for (int j = 0; j < numBankAccts; j++)
+                lineChart.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
+                for (int j = 0; j < numAccts; j++)
                 {
-                    x = bankChartData[i * numBankAccts + j].Inflows;
-                    y = bankChartData[i * numBankAccts + j].Outflows;
-                    // k= ToInt32(x + y);
-                    lineChart.series[j, i] = Decimal.ToInt32(Math.Round(x + y));
+                    //x = bankChartData[i * numAccts + j].Inflows;
+                    //y = bankChartData[i * numAccts + j].Outflows;
+                    //// k= ToInt32(x + y);
+                    x = Decimal.ToInt32(Math.Round(bankChartData[i * numAccts + j].Inflows + bankChartData[i * numAccts + j].Outflows));
+                    lineChart.series[j, i] += x + y;
+                    y += x;
                 }
+                x = y = 0;
             }
 
 
-                // Console.WriteLine(bankChartData.Length);
+            // Console.WriteLine(bankChartData.Length);
 
             return Content(JsonConvert.SerializeObject(lineChart), "application/json");
         }
 
+
+
+        
 
         // GET: BankAccts
         public ActionResult Recalc()

@@ -8,20 +8,16 @@
         <div class="card">
             <div class="header">
                 <h4 class="title">Categories</h4>
-                <p class="category">Main Expenses</p>
+
             </div>
             <div class="content">
-                <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
+                <div id="categoryPieChart" class="ct-chart ct-perfect-fourth"></div>
 
                 <div class="footer">
                     <div class="legend">
                         <i class="fa fa-circle text-info"></i> Open
                         <i class="fa fa-circle text-danger"></i> Bounce
                         <i class="fa fa-circle text-warning"></i> Unsubscribe
-                    </div>
-                    <hr>
-                    <div class="stats">
-                        <i class="fa fa-clock-o"></i> Campaign sent 2 days ago
                     </div>
                 </div>
             </div>
@@ -43,10 +39,7 @@
                         <i class="fa fa-circle text-danger"></i> Click
                         <i class="fa fa-circle text-warning"></i> Click Second Time
                     </div>
-                    <hr>
-                    <div class="stats">
-                        <i class="fa fa-history"></i> Updated 3 minutes ago
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -79,34 +72,20 @@
                 </div>
             </div>
             <div class="content">
-                <div id="chartActivity" class="ct-chart"></div>
+                <div id="incExpBarChart" class="ct-chart"></div>
 
                 <div class="footer">
-                    <div class="legend">
-                        <i class="fa fa-circle text-info"></i>Series1
-                        <i class="fa fa-circle text-danger"></i>Series2
+                    <div class="legend">INCOME
+                        <i class="text-info fa fa-circle"></i>Budget
+                        <i class="text-danger fa fa-circle"></i>Actual : EXPENSE
+                        <i class="text-warning fa fa-circle"></i>Budget
+                        <i class="fa fa-circle" style="color:#9368E9"></i>Actual :
+                        <i class="text-success fa fa-circle"></i>NET $
                     </div>
 
                 </div>
             </div>
         </div>
-
-        @*<div id="divPartialGraphs">
-                Select Year :
-                <select id="ddlyear">
-                    <option>2010</option>
-                    <option>2011</option>
-                    <option>2012</option>
-                    <option>2013</option>
-                    <option>2014</option>
-                    <option selected="selected">2015</option>
-                </select>
-                <button id="btnCreatePieChart">Create Pie chart</button>
-                <div class="ct-chart ct-golden-section"></div>
-                <div class="ct-chart ct-perfect-fourth">
-
-                </div>
-            </div>*@
     </div>
     <div class="col-md-6">
         <div class="card">
@@ -173,10 +152,10 @@
             $.post('@Url.Action("GetBankChartData","BankAccts")').then(function (response) {
                 console.log('response: ' + response);
 
-                var optionsBankAccts = {
+                var optionsBankChart = {
                     lineSmooth: false,
-                    low: 0,
-                    high: 20000,
+                    low: -10000,
+                    high: 30000,
                     showArea: true,
                     height: "245px",
                     axisX: {
@@ -185,11 +164,11 @@
                     lineSmooth: Chartist.Interpolation.simple({
                         divisor: 3
                     }),
-                    showLine: false,
+                    showLine: true,
                     showPoint: false,
                 };
 
-                var responsiveBankAccts = [
+                var responsiveBankChart = [
                   ['screen and (max-width: 640px)', {
                       axisX: {
                           labelInterpolationFnc: function (value) {
@@ -200,7 +179,7 @@
                 ];
 
 
-               new Chartist.Line('#chartBankAccts', response, optionsBankAccts, responsiveBankAccts);
+                new Chartist.Line('#chartBankAccts', response, optionsBankChart, responsiveBankChart);
             })
 
             $.notify({
@@ -213,6 +192,111 @@
             });
 
         });
+
+
+
+
+        $.post('@Url.Action("GetCategoryPieChart", "Categories")').then(function (response) {
+
+            console.log(' Inside GetCategoryPieChart response: ' + response);
+
+
+            var optionsPreferences = {
+                donut: true,
+                donutWidth: 40,
+                startAngle: 0,
+                total: 100,
+                chartPadding: 30,
+                labelOffset: 25,
+                labelDirection: 'explode',
+                ignoreEmptyValues: true,
+                showLabel: true,
+                axisX: {
+                    showGrid: false
+                }
+            };
+
+            var options = {
+                labelInterpolationFnc: function (value) {
+                    return value[0]
+                }
+            };
+
+            var responsiveOptions = [
+              ['screen and (min-width: 640px)', {
+                  chartPadding: 30,
+                  labelOffset: 10,
+                  labelDirection: 'explode',
+                  labelInterpolationFnc: function (value) {
+                      return value;
+                  }
+              }],
+              ['screen and (min-width: 1024px)', {
+                  labelOffset: 80,
+                  chartPadding: 20
+              }]
+            ];
+
+            new Chartist.Pie('#categoryPieChart', response, options, responsiveOptions);
+
+
+        });
+
+
+
+
+
+
+        $.post('@Url.Action("GetIncExpBarChart", "Categories")').then(function (response) {
+
+            console.log(' Inside GetIncExpBarChart response: ' + response);
+
+
+            Chartist.Bar('#incExpBarChart', response,
+                {
+                // Default mobile configuration
+                stackBars: true,
+                axisX: {
+                    labelInterpolationFnc: function (value) {
+                        return value.split(/\s+/).map(function (word) {
+                            return word[0];
+                        }).join('');
+                    }
+                },
+                axisY: {
+                    offset: 20
+                }
+            }, [
+    // Options override for media > 400px
+    ['screen and (min-width: 400px)', {
+        reverseData: true,
+        horizontalBars: true,
+        axisX: {
+            labelInterpolationFnc: Chartist.noop
+        },
+        axisY: {
+            offset: 60
+        }
+    }],
+    // Options override for media > 800px
+    ['screen and (min-width: 800px)', {
+        stackBars: false,
+        seriesBarDistance: 10
+    }],
+    // Options override for media > 1000px
+    ['screen and (min-width: 1000px)', {
+        reverseData: false,
+        horizontalBars: false,
+        seriesBarDistance: 15
+    }]
+            ]);
+
+
+
+        });
+
+
+
 
 
 

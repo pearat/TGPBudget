@@ -11,6 +11,10 @@ namespace TgpBudget.Models
     {
         public int Id { get; set; }
         public int? HouseholdId { get; set; }
+        public Category()
+        {
+            this.Deals = new HashSet<Deal>();
+        }
 
         [Required]
         [Display(Name = "Category")]
@@ -26,6 +30,8 @@ namespace TgpBudget.Models
         public bool IsProtected { get; set; }
 
         public virtual Household Household { get; set; }
+
+        public virtual ICollection<Deal> Deals { get; set; }
 
         public int CompareTo(Category c)
         {
@@ -98,6 +104,18 @@ namespace TgpBudget.Models
         public CatDisplay ExpTotal { get; set; }
         public CatDisplay NetTotal { get; set; }
 
+    }
+
+    public class PieChart
+    {
+        public string[] labels { get; set; }
+        public int[] series { get; set; }
+    }
+
+    public class BarChart
+    {
+        public string[] labels { get; set; }
+        public int[,] series { get; set; }
     }
 
 }

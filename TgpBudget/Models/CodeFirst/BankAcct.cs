@@ -94,7 +94,7 @@ namespace TgpBudget.Models
 
     }
 
-    public class lineChart
+    public class LineChart
     {
         public string[] labels { get; set; }
         public int[,] series { get; set; }

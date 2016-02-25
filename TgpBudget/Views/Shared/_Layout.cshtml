@@ -7,20 +7,11 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    @*<script type="text/javascript">
-            var appInsights=window.appInsights||function(config){
-                function r(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s=u.createElement(o),i,f;for(s.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",u.getElementsByTagName(o)[0].parentNode.appendChild(s),t.cookie=u.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)r("track"+i.pop());return r("setAuthenticatedUserContext"),r("clearAuthenticatedUserContext"),config.disableExceptionTracking||(i="onerror",r("_"+i),f=e[i],e[i]=function(config,r,u,e,o){var s=f&&f(config,r,u,e,o);return s!==!0&&t["_"+i](config,r,u,e,o),s}),t
-            }({
-                instrumentationKey:"80cf0904-be68-4f77-98a0-d6116c001cae"
-            });
-
-            window.appInsights=appInsights;
-            appInsights.trackPageView();
-        </script>*@
+    <!-- Chartist-JS code -->
+    <link href="~/Content/chartist.css" rel="stylesheet" />
 
     <!-- vvvvvv start of TEMPLATE addins vvvvvv -->
-    <!-- Animation library for notifications   -->
-
+    <!-- Animation library for notifications   -->    
     <link href="~/XcTim1-3/assets/css/animate.min.css" rel="stylesheet" />
     <!--  Light Bootstrap Table core CSS    -->
     <link href="~/XcTim1-3/assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
@@ -34,10 +25,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="~/XcTim1-3/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
-    <!-- ^^^^^ start of TEMPLATE addins ^^^^^ -->
 
-        <!-- Chartist-JS code -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <!-- ^^^^^ start of TEMPLATE addins ^^^^^ -->
 
     <link href="~/Content/site.css" rel="stylesheet" />
 
@@ -208,7 +197,7 @@
 <script src="~/XcTim1-3/assets/js/demo.js"></script> -->
 
 <!-- Chartist-JS code -->
-<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script src="~/Scripts/chartist.js"></script>
 <script src="~/Scripts/site.js"></script>
 
 

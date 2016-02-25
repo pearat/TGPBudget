@@ -18,6 +18,7 @@ demo = {
 
     initChartist: function () {
 
+        
         var dataBankAccts = {
             labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
             series: [
@@ -53,7 +54,7 @@ demo = {
           }]
         ];
 
-        Chartist.Line('#chartBankAccts', dataBankAccts, optionsBankAccts, responsiveBankAccts);
+        // Chartist.Line('#chartBankAccts', dataBankAccts, optionsBankAccts, responsiveBankAccts);
 
 
         var data = {
@@ -155,7 +156,7 @@ demo = {
             }
         };
 
-        Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
+        // Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
 
         Chartist.Pie('#chartPreferences', {
             labels: ['62%', '32%', '6%'],

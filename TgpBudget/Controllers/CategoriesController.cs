@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using TgpBudget.Models;
 using TgpBudget.Helpers;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace TgpBudget.Controllers
 {
@@ -31,6 +32,8 @@ namespace TgpBudget.Controllers
             last30DaysPartial,
             avg90DaysPartial
         };
+
+
 
         // GET: Categories
         //public ActionResult Index(DateRange? period)
@@ -186,7 +189,7 @@ namespace TgpBudget.Controllers
         public ActionResult Index(DateRange? period)
         {
             DateRange actualDates = period ?? DateRange.currentMonth;
-            
+
             ViewBag.Period = actualDates;
             DateTimeOffset endDate = System.DateTimeOffset.Now;
             var startDate = new DateTimeOffset();
@@ -219,10 +222,10 @@ namespace TgpBudget.Controllers
             var catDVM = CategoryBudget(startDate, endDate);
             if (period > DateRange.avg90Days)
             {
-                return PartialView("_Index",catDVM);
+                return PartialView("_Index", catDVM);
             }
             else {
-                return View("Index",catDVM);
+                return View("Index", catDVM);
             }
         }
 
@@ -331,6 +334,130 @@ namespace TgpBudget.Controllers
             catDVM.NetTotal.IsTotal = true;
             return catDVM;
         }
+
+
+
+
+        // GET: CategoryPieChart
+        public ActionResult GetCategoryPieChart()
+        {
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            // var startingMonth = new DateTime(System.DateTime.Today.Year - 1, System.DateTime.Today.Month, 1);
+            //var currentMonth = startingMonth.AddMonths(2).AddDays(-1); // end of month
+            //var trailing12Months = new List<DateTime>();
+            var today = System.DateTime.Today;
+
+            //for (int i = 0; i < 12; i++)
+            //{
+            //    trailing12Months.Add(currentMonth);
+            //    currentMonth = currentMonth.AddMonths(1);
+            //}
+
+            decimal outflows = 0;
+
+            var pieChartData = (from c in hh.Categories
+                                where c.IsExpense == true
+                                let aSum = (from d in c.Deals
+                                            where d.DealDate.Month == today.Month
+                                            select d.Amount).DefaultIfEmpty().Sum()
+                                let _ = outflows += aSum
+                                select new
+                                {
+                                    labels = c.Name,
+                                    BudgetAmount = c.BudgetAmount,
+                                    ActualAmount = Decimal.ToInt32(Math.Round(aSum))
+                                }).ToArray();
+            var numCats = pieChartData.Count();
+            var ActualAmountPie = new PieChart();
+            ActualAmountPie.labels = new string[numCats];
+            ActualAmountPie.series = new int[numCats];
+
+            for (int i = 0; i < numCats; i++)
+            {
+                ActualAmountPie.labels[i] = pieChartData[i].labels;
+                ActualAmountPie.series[i] = pieChartData[i].ActualAmount;
+            }
+
+            return Content(JsonConvert.SerializeObject(ActualAmountPie), "application/json");
+
+        }
+
+
+        public enum ActVar
+        {
+            IncBudget,
+            IncActual,
+            ExpBudget,
+            ExpActual,
+            NetVariance
+        };
+        
+        // GET: IncomeExpense
+        public ActionResult GetIncExpBarChart()
+        {
+            int numPeriods = 4;
+            int numSeries = 5;
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderBy(a => a.DealDate);
+            var startingMonth = new DateTime(System.DateTime.Today.Year - 1, System.DateTime.Today.Month, 1);
+            var currentMonth = startingMonth.AddMonths(10).AddDays(-1); // end of month
+            var trailingMonths = new List<DateTime>();
+            for (int i = 0; i < numPeriods; i++)
+            {
+                trailingMonths.Add(currentMonth);
+                currentMonth = currentMonth.AddMonths(1);
+            }
+            decimal inflows = 0;
+            decimal outflows = 0;
+            var barChartData = (from m in trailingMonths
+                                let aSum = -(from d in deals
+                                             where d.DealDate.Month == m.Month && d.Category.IsExpense == true
+                                             select d.Amount).DefaultIfEmpty().Sum()
+                                let bSum = (from d in deals
+                                            where d.DealDate.Month == m.Month && d.Category.IsExpense == false
+                                            select d.Amount).DefaultIfEmpty().Sum()
+                                let _ = outflows += aSum
+                                let ___ = inflows += bSum
+
+                                select new
+                                {
+                                    Month = m,
+                                    Outflows = aSum,
+                                    Inflows = bSum,
+                                }).ToArray();
+
+            decimal totalBudgetExpense = 0;
+            decimal totalBudgetIncome = 0;
+
+            foreach (var cat in hh.Categories)
+            {
+                if (cat.IsExpense)
+                    totalBudgetExpense -= cat.BudgetAmount;
+                else
+                    totalBudgetIncome += cat.BudgetAmount;
+            }
+            var barChart = new BarChart();
+            barChart.labels = new string[numPeriods];
+            barChart.series = new int[numSeries,numPeriods ];
+            var catCount = hh.Categories.Count();
+
+            for (int i = 0; i < numPeriods; i++)
+            {
+
+                barChart.labels[i] = barChartData[i].Month.ToString("MMM/yy");
+                barChart.series[(int)ActVar.IncActual,i] = Decimal.ToInt32(Math.Round(barChartData[i].Inflows));
+                // barChart.series[i, (int)ActVar.IncVar] = barChart.series[i, (int)ActVar.IncActual] - Decimal.ToInt32(Math.Round(totalBudgetIncome));
+                barChart.series[(int)ActVar.IncBudget,i] = Decimal.ToInt32(Math.Round(totalBudgetIncome));
+                barChart.series[(int)ActVar.ExpActual,i] = Decimal.ToInt32(Math.Round(barChartData[i].Outflows));
+                // barChart.series[i, (int)ActVar.ExpVar] = barChart.series[i, (int)ActVar.ExpActual] - Decimal.ToInt32(Math.Round(totalBudgetExpense));
+                barChart.series[(int)ActVar.ExpBudget,i] = Decimal.ToInt32(Math.Round(totalBudgetExpense));
+                barChart.series[(int)ActVar.NetVariance,i] = barChart.series[(int)ActVar.IncActual, i] - barChart.series[(int)ActVar.IncBudget,i] +
+                                                             barChart.series[(int)ActVar.ExpActual, i] -  barChart.series[(int)ActVar.ExpBudget,i];
+            }
+            return Content(JsonConvert.SerializeObject(barChart), "application/json");
+        }
+
+
 
 
 
