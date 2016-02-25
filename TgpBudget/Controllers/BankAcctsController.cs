@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,11 +29,11 @@ namespace TgpBudget.Controllers
         {
 
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null || user.Household==null)
+            if (user == null || user.Household == null)
             {
                 return RedirectToAction("Login", "Account");
             }
-            return View( db.BankAccts.Where(b=>b.HouseholdId==user.HouseholdId).OrderBy(b=>b.AccountName).ToList() );
+            return View(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList());
         }
 
 
@@ -49,37 +50,68 @@ namespace TgpBudget.Controllers
         }
 
         // GET: BankAccts
-        public ActionResult _BankStmtChart()
+        public ActionResult GetBankChartData()
         {
-            int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
+            //int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
-            var accounts = db.BankAccts.Where(c => c.HouseholdId == HhId).OrderBy(c => c.AccountName).ToList();
-            var statement = new BankStmt();
-            var annualBankStmt = new AnnualBankStmt();
 
-            // DateTime endDate = System.DateTime.Today;
-            var currentMonth = new DateTime(System.DateTime.Today.Year - 12, System.DateTime.Today.Month, 1);
+            //var accounts = db.BankAccts.Where(c => c.HouseholdId == HhId).OrderBy(c => c.AccountName).ToList();
 
-            var lastYear = new List<DateTime>();
+            //var deals = accounts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+
+            var startingMonth = new DateTime(System.DateTime.Today.Year - 1, System.DateTime.Today.Month, 1);
+            var currentMonth = startingMonth.AddMonths(2).AddDays(-1); // end of month
+            var trailing12Months = new List<DateTime>();
 
             for (int i = 0; i < 12; i++)
             {
-                
-                lastYear.Add(currentMonth);
-                currentMonth= currentMonth.AddMonths(1).AddDays(-1);
-                
+                trailing12Months.Add(currentMonth);
+                currentMonth = currentMonth.AddMonths(1);
             }
-            foreach (var deal in deals)
+            decimal inflows = 0;
+            decimal outflows = 0;
+
+            var bankChartData = (from m in trailing12Months
+                                 from a in hh.BankAccts
+                                 let aSum = (from d in a.Deals
+                                             where m.Month == d.DealDate.Month && d.Category.IsExpense == true
+                                             select d.Amount).DefaultIfEmpty().Sum()
+                                 let bSum = (from d in a.Deals
+                                             where m.Month == d.DealDate.Month && d.Category.IsExpense == false
+                                             select d.Amount).DefaultIfEmpty().Sum()
+                                 let _ = outflows -= aSum
+                                 let ___ = inflows += bSum
+                                 select new
+                                 {
+                                     AcctId=a.Id,
+                                     AcctName = a.AccountName,
+                                     Month = m,
+                                     Outflows = aSum,
+                                     Inflows = bSum
+                                 }).ToArray();
+            int numBankAccts = bankChartData.Count() / 12;
+            var lineChart = new lineChart();
+            lineChart.labels = new string[12];
+            lineChart.series = new int[numBankAccts,12];
+            decimal x = 0;
+            decimal y = 0;
+            int k = 0;
+            for (int i = 0; i < 12; i++)
             {
-
-                //if (deal.DealDate < startDate)
-                //    continue;
-                //if (deal.DealDate > endDate)
-                //    break;
-
+                lineChart.labels[i] = bankChartData[i * numBankAccts].Month.ToString("MMM");
+                for (int j = 0; j < numBankAccts; j++)
+                {
+                    x = bankChartData[i * numBankAccts + j].Inflows;
+                    y = bankChartData[i * numBankAccts + j].Outflows;
+                    // k= ToInt32(x + y);
+                    lineChart.series[j, i] = Decimal.ToInt32(Math.Round(x + y));
+                }
             }
-            return PartialView("_BankStmtChart", annualBankStmt);
+
+
+                // Console.WriteLine(bankChartData.Length);
+
+            return Content(JsonConvert.SerializeObject(lineChart), "application/json");
         }
 
 
@@ -88,7 +120,7 @@ namespace TgpBudget.Controllers
         {
 
             //var user = db.Users.Find(User.Identity.GetUserId());
-            
+
             var Household = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             //var HhBanks = Household.BankAccts
             // var HhBanks = db.BankAccts.Where(b => b.HouseholdId == HhId);
@@ -97,11 +129,11 @@ namespace TgpBudget.Controllers
                 bank.BalanceCurrent = bank.BalanceReconciled = 0;
                 foreach (var deal in bank.Deals)
                 {
-                    bank.BalanceCurrent += (deal.Category.IsExpense?-1:1)* deal.Amount;
+                    bank.BalanceCurrent += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
                     if (deal.Reconciled)
                         bank.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
                 }
-                
+
             }
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -136,9 +168,9 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var user = db.Users.Find(User.Identity.GetUserId());
-            if(user==null)
+            if (user == null)
             {
-                return RedirectToAction("JoinCreate","Households");
+                return RedirectToAction("JoinCreate", "Households");
             }
 
             var bankAccount = new BankAcctViewModel();
@@ -157,7 +189,7 @@ namespace TgpBudget.Controllers
             if (ModelState.IsValid)
             {
                 bankAcct.AccountName = bankAcct.HeldAt + "::" + bankAcct.AccountNumber;
-                
+
                 if (db.BankAccts.Any(a => a.AccountName == bankAcct.AccountName))
                 {
                     ModelState.AddModelError("AccountName", "Please enter a unique Account number for this Institution.");
@@ -171,7 +203,7 @@ namespace TgpBudget.Controllers
                     // generate opening transaction
                 }
                 var newBankAcct = new BankAcct();
-                
+
                 newBankAcct.AccountNumber = bankAcct.AccountNumber;
                 newBankAcct.HeldAt = bankAcct.HeldAt;
                 newBankAcct.AccountName = bankAcct.AccountName;

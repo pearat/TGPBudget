@@ -76,8 +76,8 @@ namespace TgpBudget.Models
 
     public class BankStmt
     {
-        public int BankAcctId { get; set; }
-        public DataType ReportMonth { get; set; }
+        
+        public DateTime ReportMonth { get; set; }
         public decimal OpeningBalance { get; set; }
         public decimal InFlows { get; set; }
         public decimal OutFlows { get; set; }
@@ -87,17 +87,16 @@ namespace TgpBudget.Models
 
     public class AnnualBankStmt
     {
-        public BankStmt[] ABS { get; set; }
-        public string AccountName { get; set; }
 
-        public AnnualBankStmt()
-        {
-            for (int i = 0; i < 12; i++)
-            {
-                ABS[i] = new BankStmt();
-            }
-            AccountName = "An-Account::SomeWhere";
-            
-        }
+        public int BankAcctId { get; set; }
+        public string AccountName { get; set; }
+        public List<BankStmt> ABS { get; set; }
+
+    }
+
+    public class lineChart
+    {
+        public string[] labels { get; set; }
+        public int[,] series { get; set; }
     }
 }

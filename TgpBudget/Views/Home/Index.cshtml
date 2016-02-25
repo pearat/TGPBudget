@@ -35,8 +35,8 @@
                 <p class="category">Top accounts over pas year</p>
             </div>
             <div class="content">
-                @*<div id="chartHours" class="ct-chart"></div>*@
-                @Html.Action("_BankStmtChart", "BankAccts")
+                <div id="chartBankAccts" class="ct-chart"></div>
+                @*@Html.Action("_BankStmtChart", "BankAccts")*@
                 <div class="footer">
                     <div class="legend">
                         <i class="fa fa-circle text-info"></i> Open
@@ -118,7 +118,7 @@
 
 </div>
 <div class="row">
-    
+
     <div class="col-sm-7">
         <div class="card">
             <div id="divPartialDeals">
@@ -169,6 +169,39 @@
         $(document).ready(function () {
 
             demo.initChartist();
+
+            $.post('@Url.Action("GetBankChartData","BankAccts")').then(function (response) {
+                console.log('response: ' + response);
+
+                var optionsBankAccts = {
+                    lineSmooth: false,
+                    low: 0,
+                    high: 20000,
+                    showArea: true,
+                    height: "245px",
+                    axisX: {
+                        showGrid: false,
+                    },
+                    lineSmooth: Chartist.Interpolation.simple({
+                        divisor: 3
+                    }),
+                    showLine: false,
+                    showPoint: false,
+                };
+
+                var responsiveBankAccts = [
+                  ['screen and (max-width: 640px)', {
+                      axisX: {
+                          labelInterpolationFnc: function (value) {
+                              return value[0];
+                          }
+                      }
+                  }]
+                ];
+
+
+               new Chartist.Line('#chartBankAccts', response, optionsBankAccts, responsiveBankAccts);
+            })
 
             $.notify({
                 icon: 'pe-7s-gift',

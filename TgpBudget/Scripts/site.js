@@ -18,8 +18,8 @@ demo = {
 
     initChartist: function () {
 
-        var dataSales = {
-            labels: ['9:00AM', '12:00AM', '3:00PM', '6:00PM', '9:00PM', '12:00PM', '3:00AM', '6:00AM'],
+        var dataBankAccts = {
+            labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
             series: [
                [287, 385, 490, 492, 554, 586, 698, 695, 752, 788, 846, 944],
               [67, 152, 143, 240, 287, 335, 435, 437, 539, 542, 544, 647],
@@ -27,7 +27,7 @@ demo = {
             ]
         };
 
-        var optionsSales = {
+        var optionsBankAccts = {
             lineSmooth: false,
             low: 0,
             high: 800,
@@ -43,7 +43,7 @@ demo = {
             showPoint: false,
         };
 
-        var responsiveSales = [
+        var responsiveBankAccts = [
           ['screen and (max-width: 640px)', {
               axisX: {
                   labelInterpolationFnc: function (value) {
@@ -53,7 +53,7 @@ demo = {
           }]
         ];
 
-        Chartist.Line('#chartHours', dataSales, optionsSales, responsiveSales);
+        Chartist.Line('#chartBankAccts', dataBankAccts, optionsBankAccts, responsiveBankAccts);
 
 
         var data = {
