@@ -47,15 +47,6 @@
             </div>
         </div>
 
-        @*<div class="form-group">
-                @Html.LabelFor(model => model.DealDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { class = "form-control", value="System.DateTimeOffset.Now" } })
-
-                    @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.DealDate, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
 
         <div class="control-group row" style="padding:8px 12px;">
             <div style="display:inline">
@@ -71,19 +62,6 @@
                 </div>
             </div>
         </div>
-
-
-
-        @*<div class="input-group date">
-                <input type="text" class="form-control" value="@Model.DealDate.ToString("MM/dd/yyyy")">
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-th">Transaction Date</span>
-                </div>
-            </div>*@
-
-
-
-
 
         <div class="form-group row">
             @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })

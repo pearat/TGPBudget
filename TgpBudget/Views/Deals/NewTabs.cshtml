@@ -1,0 +1,210 @@
+﻿@model TgpBudget.Models.DealViewModel
+
+@{
+    ViewBag.Title = "New Transaction";
+}
+
+<h2>New Transaction</h2>
+
+<h4>Enter a new income or expense item</h4>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Spend Money</a></li>
+                <li><a href="#tabs-2">Earn Money</a></li>
+                @*<li><a href="#tabs-3">Transfer Funds</a></li>*@
+            </ul>
+            <div id="tabs-1">
+                <div class="form-group" style="margin-bottom:0">
+                    <div class="col-md-2 control-label">
+                        Expense Category
+                    </div>
+                    <div id="ExpenseList" style="padding-top:-25px">
+                        <div class="col-md-10">
+                            @Html.DropDownList("ExpenseId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ExpenseId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tabs-2">
+                <div class="form-group" style="margin-bottom:0">
+                    <div class="col-md-2 control-label">
+                        Income Category
+                    </div>
+                    <div class="col-md-10">
+                        @Html.DropDownList("IncomeId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IncomeId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @*<div id="tabs-3">
+
+                <div class="form-group" style="margin-bottom:0">
+                    <div class="col-md-2 control-label">
+                        Transfer FROM
+                    </div>
+                    <div class="col-md-4">
+                        @Html.DropDownList("XferAcctId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.XferAcctId, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6 control-label" style="text-align:left">
+                        Transfer TO (account below)
+                    </div>
+                </div>
+
+            </div>*@
+        </div>
+
+        <input type="hidden" id="activeTab" name="activeTab" value="1">
+
+        <div class="form-group" style="margin-bottom:0">
+            <div class="col-md-2 control-label">
+                @Html.LabelFor(model => model.BankAcctId, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
+            </div>
+            <div class="col-md-10">
+                @Html.DropDownList("BankAcctId", null, htmlAttributes: new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(model => model.BankAcctId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="control-group row" style="padding:8px 12px;">
+            <div style="display:inline">
+                <label for="date-picker-1" class="control-label col-md-2" style="display:inline">
+                    @*<span class="glyphicon glyphicon-calendar">*@
+                    Transaction Date
+                    @*</span>*@
+                </label>
+                <div class="controls col-md-10" style="padding:8px 12px;">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate"
+                           style="display:inline;  border:hidden; padding:8px 12px;"
+                           value="@Model.DealDate.ToString("MM/dd/yyyy")">
+                </div>
+            </div>
+        </div>
+
+
+        @*<div class="form-group" style="display:inline">
+                <div class="col-md-2 control-label" style="margin-top:13px">
+
+                    <input type="checkbox" data-toggle="toggle" data-on="Expense" data-off="Income" checked
+                           id="IncExpBtn" name="IncomeToggle" data-onstyle="success" data-offstyle="info">
+                </div>
+                <div id="ExpenseList" style="padding-top:-25px">
+                    <div class="col-md-10">
+                        @Html.DropDownList("ExpenseId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ExpenseId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div id="IncomeList" style="padding-top:-19px">
+                    <div class="col-md-10">
+                        @Html.DropDownList("IncomeId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IncomeId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>*@
+
+
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Payee, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Reconciled, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="btn btn-info btn-simple btn-lg">
+                    @Html.CheckBoxFor(model => model.Reconciled, "")
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(window).load(function () {
+            $('#tabs').tabs({
+                activate: function (event, ui) {
+                    var act = $("#tabs").tabs("option", "active");
+                    $("#activeTab").val(act);
+                    //console.log($(ui.newTab));
+                    //console.log($(ui.oldTab));
+                }
+            });
+        });
+
+        $(function () {
+            $('#IncomeList').hide();
+            $('#ExpenseList').show();
+            $('#IncExpBtn').val("Income");
+            $('#IncExpBtn').change(function () {
+                if ($(this).val() == "Income") {
+                    $('#IncomeList').show();
+                    $('#ExpenseList').hide();
+                    $(this).val("Expense");
+                }
+                else {
+                    $('#IncomeList').hide();
+                    $('#ExpenseList').show();
+                    $(this).val("Income");
+                }
+            });
+
+            $('.datepicker').datepicker({
+                format: 'dd MMM yyyy'
+            });
+
+            $(".date-picker").on("change", function () {
+                var id = $(this).attr("id");
+                var val = $("label[for='" + id + "']").text();
+                $("#msg").text(val + " changed");
+            });
+        });
+    </script>
+}

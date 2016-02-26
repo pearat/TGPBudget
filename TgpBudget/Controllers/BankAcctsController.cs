@@ -90,23 +90,25 @@ namespace TgpBudget.Controllers
                                      Inflows = bSum
                                  }).ToArray();
             int numAccts = bankChartData.Count() / 12;
-            var lineChart = new LineChart();
-            lineChart.labels = new string[12];
-            lineChart.series = new int[numAccts, 12];
+            var lineChart = new LineChartWithLegend();
+            lineChart.seriesCount = numAccts;
+            lineChart.legend = new string[numAccts];
+            
+            lineChart.data.labels = new string[12];
+            lineChart.data.series = new int[numAccts, 12];
             int x, y = 0;
             //decimal y = 0;
             int k = 0;
             for (int i = 0; i < 12; i++)
             {
-                lineChart.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
+                lineChart.data.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
                 for (int j = 0; j < numAccts; j++)
                 {
-                    //x = bankChartData[i * numAccts + j].Inflows;
-                    //y = bankChartData[i * numAccts + j].Outflows;
-                    //// k= ToInt32(x + y);
                     x = Decimal.ToInt32(Math.Round(bankChartData[i * numAccts + j].Inflows + bankChartData[i * numAccts + j].Outflows));
-                    lineChart.series[j, i] += x + y;
+                    lineChart.data.series[j, i] += x + y;
                     y += x;
+                    if (i == 0)
+                        lineChart.legend[j] = bankChartData[j].AcctName;
                 }
                 x = y = 0;
             }
@@ -119,7 +121,7 @@ namespace TgpBudget.Controllers
 
 
 
-        
+
 
         // GET: BankAccts
         public ActionResult Recalc()

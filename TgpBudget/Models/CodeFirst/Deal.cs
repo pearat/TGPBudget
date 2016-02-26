@@ -57,6 +57,11 @@ namespace TgpBudget.Models
         [DataType(DataType.Text)]
         [Display(Name = "Account Name")]
         public int BankAcctId { get; set; }
+        [DataType(DataType.Text)]
+        [Display(Name = "Transfer Account")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        public int XferAcctId { get; set; }
+
 
         public int? CategoryId { get; set; }
 
@@ -66,6 +71,7 @@ namespace TgpBudget.Models
         public DateTimeOffset DealDate { get; set; }
         public string Description { get; set; }
 
+        [DataType(DataType.Text)]
         [Display(Name = "Expense")]
         public int? ExpenseId { get; set; }
 
@@ -73,6 +79,7 @@ namespace TgpBudget.Models
         public bool IsExpense { get; set; }
         public bool InitialCheckbox { get; set; }
 
+        [DataType(DataType.Text)]
         [Display(Name = "Income")]
         public int? IncomeId { get; set; }
         public string IncomeToggle { get; set; }
@@ -82,8 +89,5 @@ namespace TgpBudget.Models
         
         [Display(Name = "Reconciled?")]
         public bool Reconciled { get; set; }
-
-
-
     }
 }

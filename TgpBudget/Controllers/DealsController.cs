@@ -115,6 +115,10 @@ namespace TgpBudget.Controllers
             ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(
                 b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
 
+            ViewBag.XferAcctId = new SelectList(db.BankAccts.Where(
+                b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
+
+
             // ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
 
             ViewBag.ExpenseId = new SelectList(db.Categories.Where(
@@ -135,7 +139,7 @@ namespace TgpBudget.Controllers
             {
                 Deal deal = new Deal();
                 deal.BankAcctId = dvm.BankAcctId;
-                if (dvm.IncomeToggle == "Income")
+                if (dvm.IsExpense)
                     deal.CategoryId = dvm.ExpenseId;
                 else
                     deal.CategoryId = dvm.IncomeId;
@@ -264,20 +268,6 @@ namespace TgpBudget.Controllers
             return View(dvm);
         }
 
-        // GET: Deals/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Deal deal = db.Deals.Find(id);
-        //    if (deal == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(deal);
-        //}
 
         //// POST: Deals/Delete/5
         //[HttpPost, ActionName("Delete")]
@@ -290,11 +280,6 @@ namespace TgpBudget.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Deal deal = db.Deals.Find(id);
-
-            //db.Deals.Add(deal);
-            //db.SaveChanges();
-            ////var i = deal.Id;
-            //deal = db.Deals.Include("BankAcct").Include("Category").FirstOrDefault(d => d.Id == deal.Id);
 
             deal.BankAcct.BalanceCurrent -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
             if (deal.Reconciled)

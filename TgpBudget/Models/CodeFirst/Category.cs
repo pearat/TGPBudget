@@ -110,12 +110,24 @@ namespace TgpBudget.Models
     {
         public string[] labels { get; set; }
         public int[] series { get; set; }
+        public int seriesCount { get; set; }
     }
 
     public class BarChart
     {
         public string[] labels { get; set; }
         public int[,] series { get; set; }
+    }
+
+    public class BarChartWithLegend
+    {
+        public BarChartWithLegend()
+        {
+            data = new BarChart();
+        }
+        public BarChart data { get; set; }
+        public string[] legend { get; set; }
+        public int seriesCount { get; set; }
     }
 
 }

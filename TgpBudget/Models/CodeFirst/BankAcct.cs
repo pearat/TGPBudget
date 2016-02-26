@@ -87,16 +87,25 @@ namespace TgpBudget.Models
 
     public class AnnualBankStmt
     {
-
         public int BankAcctId { get; set; }
         public string AccountName { get; set; }
         public List<BankStmt> ABS { get; set; }
-
     }
 
     public class LineChart
     {
         public string[] labels { get; set; }
         public int[,] series { get; set; }
+    }
+
+    public class LineChartWithLegend
+    {
+        public LineChartWithLegend()
+        {
+            data = new LineChart();
+        }
+        public LineChart data { get; set; }
+        public string[] legend { get; set; }
+        public int seriesCount { get; set; }
     }
 }
