@@ -59,8 +59,9 @@ namespace TgpBudget.Models
         public int BankAcctId { get; set; }
         [DataType(DataType.Text)]
         [Display(Name = "Transfer Account")]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
-        public int XferAcctId { get; set; }
+
+        //[StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        //public int XferAcctId { get; set; }
 
 
         public int? CategoryId { get; set; }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<TgpBudget.Models.BankAcct>
 
 @{
-    ViewBag.Title = "Financial Accounts";
+    ViewBag.Title = "Account List";
 }
 
 
@@ -9,7 +9,7 @@
 
 <div row style="display:inline">
     <div class="col-sm-4" style="display:inline">
-        <h2>Account List</h2>
+        <h2>@ViewBag.Title</h2>
 
     </div>
     <div class="col-sm-1" style="display:inline; margin:30px 0 0px">
@@ -83,7 +83,7 @@
                 @Html.ActionLink("Transact", "Index", "Deals", new { id = item.Id }, null) |
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#closeBankAcctModal">
+                <button data-id="@item.Id" class="del" data-toggle="modal" data-target="#closeBankAcctModal">
                     <span>Close</span>
                 </button>
             </td>
@@ -94,6 +94,9 @@
 <div class="row">
     <div class="col-md-2">
         @Html.ActionLink("Return Home", "Index", "Home")
+    </div>
+    <div class="col-md-4">
+        @Html.ActionLink("Recalculate Bank Balances", "Recalc", "BankAccts")
     </div>
 </div>
 

@@ -108,4 +108,10 @@ namespace TgpBudget.Models
         public string[] legend { get; set; }
         public int seriesCount { get; set; }
     }
+
+    public class StartEndDates
+    {
+        public DateTimeOffset start { get; set; }
+        public DateTimeOffset end { get; set; }
+    }
 }

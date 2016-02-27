@@ -482,7 +482,6 @@
     <Content Include="Views\Categories\IndexCollection.cshtml" />
     <Content Include="Views\Deals\Details Deal.cshtml" />
     <Content Include="Views\Deals\IndexBckup.cshtml" />
-    <Content Include="Views\Deals\NewTabs.cshtml" />
     <Content Include="Views\Deals\IndexBckup2.cshtml" />
     <Content Include="Views\Households\Index.cshtml" />
     <Content Include="Views\BankAccts\_Index.cshtml" />
@@ -490,6 +489,7 @@
     <Content Include="Views\Deals\_Index.cshtml" />
     <Content Include="Views\BankAccts\_BankStmtChart.cshtml" />
     <Content Include="Views\Deals\New.cshtml" />
+    <Content Include="Views\Deals\NewTabs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

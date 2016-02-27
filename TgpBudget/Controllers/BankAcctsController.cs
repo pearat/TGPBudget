@@ -52,32 +52,35 @@ namespace TgpBudget.Controllers
         // GET: BankAccts
         public ActionResult GetBankChartData()
         {
-            //int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-
-            //var accounts = db.BankAccts.Where(c => c.HouseholdId == HhId).OrderBy(c => c.AccountName).ToList();
-
-            //var deals = accounts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
-
-            var startingMonth = new DateTime(System.DateTime.Today.Year - 1, System.DateTime.Today.Month, 1);
-            var currentMonth = startingMonth.AddMonths(2).AddDays(-1); // end of month
-            var trailing12Months = new List<DateTime>();
-
+            var monthStart = new DateTime(System.DateTime.Today.Year - 1, System.DateTime.Today.Month, 1);
+            var monthEnd = monthStart.AddMonths(2).AddDays(-1); // end of month
+            var currentPeriod = new StartEndDates();
+            var trailing12Months = new List<StartEndDates>();
+            currentPeriod.start = monthStart.AddYears(-10);
+            currentPeriod.end = monthEnd;
             for (int i = 0; i < 12; i++)
             {
-                trailing12Months.Add(currentMonth);
-                currentMonth = currentMonth.AddMonths(1);
+                trailing12Months.Add(currentPeriod);
+                monthStart = monthEnd.AddDays(1);
+                monthEnd = monthStart.AddMonths(1).AddDays(-1);
+                currentPeriod = new StartEndDates();
+                currentPeriod.start = monthStart;
+                currentPeriod.end = monthEnd;
             }
             decimal inflows = 0;
             decimal outflows = 0;
-
             var bankChartData = (from m in trailing12Months
                                  from b in hh.BankAccts
                                  let aSum = -(from d in b.Deals
-                                              where m.Month == d.DealDate.Month && d.Category.IsExpense == true
+                                              where m.start.Date <= d.DealDate.Date &&
+                                              m.end.Date >= d.DealDate.Date &&
+                                              d.Category.IsExpense == true
                                               select d.Amount).DefaultIfEmpty().Sum()
                                  let bSum = (from d in b.Deals
-                                             where m.Month == d.DealDate.Month && d.Category.IsExpense == false
+                                             where m.start.Date <= d.DealDate.Date &&
+                                             m.end.Date >= d.DealDate.Date &&
+                                            d.Category.IsExpense == false
                                              select d.Amount).DefaultIfEmpty().Sum()
                                  let _ = outflows += aSum
                                  let ___ = inflows += bSum
@@ -85,7 +88,7 @@ namespace TgpBudget.Controllers
                                  {
                                      AcctId = b.Id,
                                      AcctName = b.AccountName,
-                                     Month = m,
+                                     Month = m.end,
                                      Outflows = aSum,
                                      Inflows = bSum
                                  }).ToArray();
@@ -93,34 +96,70 @@ namespace TgpBudget.Controllers
             var lineChart = new LineChartWithLegend();
             lineChart.seriesCount = numAccts;
             lineChart.legend = new string[numAccts];
-            
             lineChart.data.labels = new string[12];
             lineChart.data.series = new int[numAccts, 12];
-            int x, y = 0;
-            //decimal y = 0;
-            int k = 0;
+            int x; int plusSum; int minusSum; int total;
             for (int i = 0; i < 12; i++)
             {
                 lineChart.data.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
-                for (int j = 0; j < numAccts; j++)
+                x = 0; plusSum = 0; minusSum = 0; total = 0;
+                for (int j = 0; j < numAccts; j++)      // initial assignments of bank balances
                 {
                     x = Decimal.ToInt32(Math.Round(bankChartData[i * numAccts + j].Inflows + bankChartData[i * numAccts + j].Outflows));
-                    lineChart.data.series[j, i] += x + y;
-                    y += x;
+
+                    lineChart.data.series[j, i] = x;
+                    total += x;
+                    if (x > 0)
+                        plusSum += x;
+                    else
+                        minusSum += x;
                     if (i == 0)
                         lineChart.legend[j] = bankChartData[j].AcctName;
+                    else
+                        lineChart.data.series[j, i] += lineChart.data.series[j, i - 1];
                 }
-                x = y = 0;
+                if (minusSum != 0 && plusSum != 0)      // need to net out -balance(s) with +balance(s)
+                {
+                    for (int j = 0; j < numAccts; j++)
+                    {
+                        if (Math.Sign(lineChart.data.series[j, i]) != Math.Sign(total)) // minority value
+                            lineChart.data.series[j, i] = 0;  // clear balance of an account in the minority
+                        else
+                        {
+                            if (Math.Sign(total) == 1)        // majority is positive
+                            {
+                                if (lineChart.data.series[j, i] > -minusSum)  // able to offset with this balance
+                                {
+                                    lineChart.data.series[j, i] += minusSum;
+                                    minusSum = 0;
+                                    break;
+                                }
+                                else        // partial offset only
+                                {
+                                    minusSum += lineChart.data.series[j, i];
+                                    lineChart.data.series[j, i] = 0;
+                                }
+                            }
+                            else        // majority is negative
+                            {
+                                if (lineChart.data.series[j, i] < -plusSum)  // able to offset with this balance
+                                {
+                                    lineChart.data.series[j, i] += plusSum;
+                                    plusSum = 0;
+                                    break;
+                                }
+                                else      // partial offset only
+                                {
+                                    plusSum += lineChart.data.series[j, i];
+                                    lineChart.data.series[j, i] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
             }
-
-
-            // Console.WriteLine(bankChartData.Length);
-
             return Content(JsonConvert.SerializeObject(lineChart), "application/json");
         }
-
-
-
 
 
         // GET: BankAccts

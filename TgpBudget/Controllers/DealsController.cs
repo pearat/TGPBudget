@@ -57,7 +57,7 @@ namespace TgpBudget.Controllers
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             List<Deal> deals = new List<Deal>();
             deals = hh.BankAccts.SelectMany(a => a.Deals).ToList();
-            foreach(var d in deals)
+            foreach (var d in deals)
             {
                 d.Amount *= (d.Category.IsExpense ? -1 : 1);
             }
@@ -115,8 +115,8 @@ namespace TgpBudget.Controllers
             ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(
                 b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
 
-            ViewBag.XferAcctId = new SelectList(db.BankAccts.Where(
-                b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
+            //ViewBag.XferAcctId = new SelectList(db.BankAccts.Where(
+            //    b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
 
 
             // ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
@@ -139,7 +139,7 @@ namespace TgpBudget.Controllers
             {
                 Deal deal = new Deal();
                 deal.BankAcctId = dvm.BankAcctId;
-                if (dvm.IsExpense)
+                if (dvm.IncomeToggle == "Income")
                     deal.CategoryId = dvm.ExpenseId;
                 else
                     deal.CategoryId = dvm.IncomeId;
@@ -238,7 +238,7 @@ namespace TgpBudget.Controllers
                             deal.BankAcct.BalanceReconciled -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
                     }
                     deal.Amount = dvm.Amount;
-                    deal.DealDate = dvm.DealDate;  
+                    deal.DealDate = dvm.DealDate;
                     deal.BankAcctId = dvm.BankAcctId;
                     deal.CategoryId = dvm.CategoryId;
                     deal.Description = dvm.Description;

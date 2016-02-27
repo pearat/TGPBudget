@@ -50,20 +50,20 @@
             </div>
             @*<div id="tabs-3">
 
-                <div class="form-group" style="margin-bottom:0">
-                    <div class="col-md-2 control-label">
-                        Transfer FROM
+                    <div class="form-group" style="margin-bottom:0">
+                        <div class="col-md-2 control-label">
+                            Transfer FROM
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("XferAcctId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.XferAcctId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-6 control-label" style="text-align:left">
+                            Transfer TO (account below)
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        @Html.DropDownList("XferAcctId", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.XferAcctId, "", new { @class = "text-danger" })
-                    </div>
-                    <div class="col-md-6 control-label" style="text-align:left">
-                        Transfer TO (account below)
-                    </div>
-                </div>
 
-            </div>*@
+                </div>*@
         </div>
 
         <input type="hidden" id="activeTab" name="activeTab" value="1">
