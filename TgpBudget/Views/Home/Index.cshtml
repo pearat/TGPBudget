@@ -4,26 +4,6 @@
 
 <div class="row">
 
-    <div class="col-md-4">
-        <div class="card">
-            <div class="header">
-                <h4 class="title">Categories</h4>
-            </div>
-            <div class="content">
-                <div id="categoryPieChart" class="ct-chart ct-perfect-fourth"></div>
-                <div class="footer">
-                    <div class="legend">
-                        <i id="pieSymbol-0" class="fa fa-circle text-info"></i><div id="pie-0" value="a"></div>
-                        <i id="pieSymbol-1" class="fa fa-circle text-danger"></i><div id="pie-1" value="a"></div>
-                        <i id="pieSymbol-2" class="fa fa-circle text-warning"></i><div id="pie-2" value="a"></div>
-                        <i id="pieSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="pie-3" value="a"></div>
-                        <i id="pieSymbol-4" class="fa fa-circle text-success"></i><div id="pie-4" value="a"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="col-md-8">
         <div class="card">
             <div class="header">
@@ -45,10 +25,128 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div id="divPartialBankAccts">
+                @Html.Action("_Index", "BankAccts")
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="row">
+
+                <h4 style="text-align:center">Budget</h4>
+                
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="btn-group" data-toggle="buttons">
+
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="currentMonthBtn" name="period" value="currentMonthPartial" />Cur Mon
+                        </label>
+
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="priorMonthBtn" name="period" value="priorMonthPartial" />Prior
+                        </label>
+
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="last30DaysBtn" name="period" value="last30DaysPartial" />30 Days
+                        </label>
+
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="avg90DaysBtn" name="period" value="avg90DaysPartial" />90d Avg
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+            <div id="divPartialCategories">
+                @Html.Action("Index", "Categories", new { period = "currentMonthPartial" })
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-12" style="display:inline; margin:30px 0 0px">
+                        <h4 class="title">
+                            Income
+                        </h4>
+                        <span>Last 30 days</span>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="content">
+                <div id="incomePieChart" class="ct-chart ct-perfect-fourth"></div>
+                <div class="footer">
+                    <div class="legend">
+                        <i id="incPieSymbol-0" class="fa fa-circle text-info"></i><div id="incPie-0" value="a"></div>
+                        <i id="incPieSymbol-1" class="fa fa-circle text-danger"></i><div id="incPie-1" value="a"></div>
+                        <i id="incPieSymbol-2" class="fa fa-circle text-warning"></i><div id="incPie-2" value="a"></div>
+                        <i id="incPieSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="incPie-3" value="a"></div>
+                        <i id="incPieSymbol-4" class="fa fa-circle text-success"></i><div id="incPie-4" value="a"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-12" style="display:inline; margin:30px 0 0px">
+                        <h4 class="title">
+                            Expense
+                        </h4>
+                        <span>Last 30 days</span>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="content">
+                <div id="expensePieChart" class="ct-chart ct-perfect-fourth"></div>
+                <div class="footer">
+                    <div class="legend">
+                        <i id="pieSymbol-0" class="fa fa-circle text-info"></i><div id="pie-0" value="a"></div>
+                        <i id="pieSymbol-1" class="fa fa-circle text-danger"></i><div id="pie-1" value="a"></div>
+                        <i id="pieSymbol-2" class="fa fa-circle text-warning"></i><div id="pie-2" value="a"></div>
+                        <i id="pieSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="pie-3" value="a"></div>
+                        <i id="pieSymbol-4" class="fa fa-circle text-success"></i><div id="pie-4" value="a"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+
+    <div class="col-sm-7">
+        <div class="card">
+            <div id="divPartialDeals">
+                @Html.Action("Index", "Deals", new { calledFrom = "Dashboard" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
         <div class="card ">
             <div class="header">
                 <div class="row">
@@ -59,14 +157,14 @@
                     <div class="col-sm-8" style="display:inline; margin:30px 0 0px">
                         <div class="btn-group" data-toggle="buttons">
                             <label class="radio-inline btn btn-primary ">
-                                <input type="radio" id="fourMonthsBtn" name="period" value="currentMonth" />4 mo's
+                                <input type="radio" id="fourMonthsBtn" name="period" value="fourMonths" />4 mo's
                             </label>
                             <label class="radio-inline btn btn-primary ">
-                                <input type="radio" id="fourQuartersBtn" name="period" value="priorMonth" />4 Qtrs
+                                <input type="radio" id="fourQuartersBtn" name="period" value="fourQuarters" />4 Qtrs
                             </label>
-                            <label class="radio-inline btn btn-primary ">
+                            @*<label class="radio-inline btn btn-primary ">
                                 <input type="radio" id="twelveMonthsBtn" name="period" value="last30Days" />12 mo's
-                            </label>
+                            </label>*@
 
                         </div>
                     </div>
@@ -89,58 +187,8 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div id="divPartialBankAccts">
-                @Html.Action("_Index", "BankAccts")
-            </div>
-        </div>
-    </div>
 
-</div>
-<div class="row">
 
-    <div class="col-sm-7">
-        <div class="card">
-            <div id="divPartialDeals">
-                @Html.Action("_Index", "Deals")
-            </div>
-        </div>
-    </div>
-    <div class="col-md-5">
-        <div class="card">
-            <div class="row">
-                <div class="col-sm-2" style="display:inline">
-                    <h4>Budget</h4>
-                </div>
-
-                <div class="col-sm-10" style="display:inline; margin:30px 0 0px">
-
-                    <div class="btn-group" data-toggle="buttons">
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="currentMonthBtn" name="period" value="currentMonthPartial" />Cur Mon
-                        </label>
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="priorMonthBtn" name="period" value="priorMonthPartial" />Prior
-                        </label>
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="last30DaysBtn" name="period" value="last30DaysPartial" />30 Days
-                        </label>
-
-                        <label class="radio-inline btn btn-primary ">
-                            <input type="radio" id="avg90DaysBtn" name="period" value="avg90DaysPartial" />90d Avg
-                        </label>
-
-                    </div>
-                </div>
-            </div>
-            <div id="divPartialCategories">
-                @Html.Action("Index", "Categories", new { period = "currentMonthPartial" })
-            </div>
-        </div>
-    </div>
 </div>
 
 @section scripts{
@@ -213,18 +261,7 @@
                         });
                     }
                 });
-                // Listen for draw events on the bar chart
-                chart.on('draw', function (data) {
-                    // If this draw event is of type bar we can use the data to create additional content
-                    if (data.type === 'bar') {
-                        // We use the group element of the current series to append a simple circle with the bar peek coordinates and a circle radius that is depending on the value
-                        data.group.append(new Chartist.Svg('circle', {
-                            cx: data.x2,
-                            cy: data.y2,
-                            r: Math.abs(Chartist.getMultiValue(data.value)) * 2 + 5
-                        }, 'ct-slice-pie'));
-                    }
-                });
+
             });
 
 
@@ -275,27 +312,44 @@
             });
 
 
-
-
             $.post('@Url.Action("GetCategoryPieChart", "Categories")').then(function (data) {
 
                 console.log(' Inside GetCategoryPieChart data.data: ' + data);
 
+                $('*[id^="incPieSymbol"]').removeClass('fa fa-circle');
+                $('*[id^="incPie-"]').hide();
+
                 $('*[id^="pieSymbol"]').removeClass('fa fa-circle');
                 $('*[id^="pie-"]').hide();
 
-                for (var i = 0; i < data.seriesCount; i++) {
+                for (var i = 0; i < data.income.seriesCount; i++) {
+                    var iconName = '#incPieSymbol-' + i;
+                    $(iconName).addClass('fa fa-circle');
+                    var elemName = '#incPie-' + i;
+                    $(elemName).text(data.income.labels[i]);
+                    $(elemName).show();
+                }
+
+                for (var i = 0; i < data.expense.seriesCount; i++) {
                     var iconName = '#pieSymbol-' + i;
                     $(iconName).addClass('fa fa-circle');
                     var elemName = '#pie-' + i;
-                    $(elemName).text(data.labels[i]);
+                    $(elemName).text(data.expense.labels[i]);
                     $(elemName).show();
                 }
 
 
                 var sum = function (a, b) { return a + b };
 
-                new Chartist.Pie('#categoryPieChart', data, {
+                new Chartist.Pie('#incomePieChart', data.income, {
+                    donut: true,
+                    donutWidth: 60,
+                    startAngle: 270,
+                    total: 200,
+                    showLabel: false
+                });
+
+                new Chartist.Pie('#expensePieChart', data.expense, {
                     donut: true,
                     donutWidth: 60,
                     startAngle: 270,

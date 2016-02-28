@@ -34,204 +34,51 @@ namespace TgpBudget.Controllers
         };
 
 
-
-        // GET: Categories
-        //public ActionResult Index(DateRange? period)
-        //{
-        //    DateRange actualDates = period ?? DateRange.currentMonth;
-        //    ViewBag.Period = actualDates;
-        //    DateTimeOffset endDate = System.DateTimeOffset.Now;
-        //    var startDate = new DateTimeOffset();
-        //    var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
-        //    switch (actualDates)
-        //    {
-        //        case DateRange.currentMonth:
-        //            startDate = firstOfMonth;
-        //            break;
-        //        case DateRange.priorMonth:
-
-        //            startDate = firstOfMonth.AddMonths(-1);
-        //            endDate = firstOfMonth.AddDays(-1);
-        //            break;
-        //        case DateRange.last30Days:
-        //            startDate = endDate.AddDays(-30);
-        //            break;
-        //        case DateRange.avg90Days:
-        //            startDate = endDate.AddDays(-90);
-        //            break;
-        //        default:
-        //            startDate = firstOfMonth;
-        //            break;
-        //    }
-
-        //    var user = db.Users.Find(User.Identity.GetUserId());
-        //    @ViewBag.ActiveHousehold = user.Household.Name;
-        //    int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
-
-        //    var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-        //    var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
-
-        //    var categories = db.Categories.Where(c => c.HouseholdId == HhId).OrderBy(c => c.IsExpense).ThenBy(c => c.Name).ToList();
-        //    // var categoryViewModelList = new List<CategoryViewModel>();
-        //    var catDVM = new CatDisplayVM();
-        //    catDVM.IncCats = new List<CatDisplay>();
-        //    catDVM.ExpCats = new List<CatDisplay>();
-        //    catDVM.IncTotal = new CatDisplay();
-        //    catDVM.ExpTotal = new CatDisplay();
-        //    catDVM.NetTotal = new CatDisplay();
-        //    decimal totalActual = 0;
-        //    decimal totalBudget = 0;
-        //    decimal totalReconciled = 0;
-
-        //    foreach (var cat in categories)
-        //    {
-        //        if (cat.IsExpense)
-        //            break;
-        //        var cVM = new CatDisplay();
-
-        //        cVM.Id = cat.Id;
-        //        cVM.Name = cat.Name;
-        //        cVM.Budget = cat.BudgetAmount;
-
-        //        foreach (var d in deals)
-        //        {
-        //            if (d.DealDate >= startDate && d.DealDate <= endDate)
-        //            {
-        //                if (d.CategoryId == cat.Id)
-        //                {
-        //                    cVM.Actual += d.Amount;
-        //                    if (d.Reconciled)
-        //                        cVM.Reconciled += d.Amount;
-        //                }
-        //            }
-        //        }
-        //        if (actualDates == DateRange.avg90Days)
-        //        {
-        //            cVM.Actual /= 3;
-        //            cVM.Reconciled /= 3;
-        //        }
-        //        cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
-        //        cVM.Variance = cVM.Actual - cat.BudgetAmount;
-        //        // categoryViewModelList.Add(cVM);
-        //        catDVM.IncCats.Add(cVM);
-        //        totalActual += cVM.Actual;
-        //        totalBudget += cVM.Budget;
-        //        totalReconciled += cVM.Reconciled;
-        //    }
-
-        //    catDVM.IncTotal.Name = "Total Income";
-        //    catDVM.IncTotal.Reconciled = totalReconciled;
-        //    catDVM.IncTotal.Unreconciled = totalActual - totalReconciled;
-        //    catDVM.IncTotal.Actual = totalActual;
-        //    catDVM.IncTotal.Budget = totalBudget;
-        //    catDVM.IncTotal.Variance = totalActual - totalBudget;
-        //    catDVM.IncTotal.IsTotal = true;
-
-        //    totalActual = totalBudget = totalReconciled = 0;
-        //    foreach (var cat in categories)
-        //    {
-        //        if (!cat.IsExpense)
-        //            continue;
-        //        var cVM = new CatDisplay();
-        //        cVM.Id = cat.Id;
-        //        cVM.Name = cat.Name;
-        //        cVM.Budget = cat.BudgetAmount;
-
-        //        foreach (var d in deals)
-        //        {
-        //            if (d.DealDate >= startDate && d.DealDate <= endDate)
-        //            {
-        //                if (d.CategoryId == cat.Id)
-        //                {
-        //                    cVM.Actual -= d.Amount;
-        //                    if (d.Reconciled)
-        //                        cVM.Reconciled -= d.Amount;
-        //                }
-        //            }
-        //        }
-        //        if (actualDates == DateRange.avg90Days)
-        //        {
-        //            cVM.Actual /= 3;
-        //            cVM.Reconciled /= 3;
-        //        }
-
-        //        cVM.Budget *= -1;
-        //        cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
-        //        cVM.Variance = cVM.Actual - cat.BudgetAmount;
-        //        catDVM.ExpCats.Add(cVM);
-        //        totalActual += cVM.Actual;
-        //        totalBudget += cVM.Budget;
-        //        totalReconciled += cVM.Reconciled;
-        //    }
-
-        //    catDVM.ExpTotal.Name = "Total Expense";
-        //    catDVM.ExpTotal.Reconciled = totalReconciled;
-        //    catDVM.ExpTotal.Unreconciled = totalActual - totalReconciled;
-        //    catDVM.ExpTotal.Actual = totalActual;
-        //    catDVM.ExpTotal.Budget = totalBudget;
-        //    catDVM.ExpTotal.Variance = totalActual - totalBudget;
-        //    catDVM.ExpTotal.IsTotal = true;
-
-        //    catDVM.NetTotal.Name = "Combined Total";
-        //    catDVM.NetTotal.Reconciled = catDVM.IncTotal.Reconciled + catDVM.ExpTotal.Reconciled;
-        //    catDVM.NetTotal.Unreconciled = catDVM.IncTotal.Unreconciled + catDVM.ExpTotal.Unreconciled;
-        //    catDVM.NetTotal.Actual = catDVM.IncTotal.Actual + catDVM.ExpTotal.Actual;
-        //    catDVM.NetTotal.Budget = catDVM.IncTotal.Budget + catDVM.ExpTotal.Budget;
-        //    catDVM.NetTotal.Variance = catDVM.IncTotal.Variance + catDVM.ExpTotal.Variance;
-        //    catDVM.NetTotal.IsTotal = true;
-
-        //    return View(catDVM);
-        //}
-
-
-        // GET: Categories
-
-        public ActionResult Index(DateRange? period)
+        public startEndDates GetDateRange(DateRange? period)
         {
+
             DateRange actualDates = period ?? DateRange.currentMonth;
 
-            ViewBag.Period = actualDates;
-            DateTimeOffset endDate = System.DateTimeOffset.Now;
-            var startDate = new DateTimeOffset();
+            // ViewBag.Period = actualDates;
+            DateTime endDate = System.DateTime.Now;
+            var startDate = new DateTime();
             var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
             switch (actualDates)
             {
                 case DateRange.currentMonth:
                 case DateRange.currentMonthPartial:
                     startDate = firstOfMonth;
+                    ViewBag.Period = "Current Month";
                     break;
                 case DateRange.priorMonth:
                 case DateRange.priorMonthPartial:
                     startDate = firstOfMonth.AddMonths(-1);
                     endDate = firstOfMonth.AddDays(-1);
+                    ViewBag.Period = "Prior Month";
                     break;
                 case DateRange.last30Days:
                 case DateRange.last30DaysPartial:
                     startDate = endDate.AddDays(-30);
+                    ViewBag.Period = "Last 30 Days";
                     break;
                 case DateRange.avg90Days:
                 case DateRange.avg90DaysPartial:
                     startDate = endDate.AddDays(-90);
+                    ViewBag.Period = "90 day Average";
                     break;
                 default:
                     startDate = firstOfMonth;
                     break;
             }
-            var user = db.Users.Find(User.Identity.GetUserId());
-            @ViewBag.ActiveHousehold = user.Household.Name;
-            var catDVM = CategoryBudget(startDate, endDate);
-            if (period > DateRange.avg90Days)
-            {
-                return PartialView("_Index", catDVM);
-            }
-            else {
-                return View("Index", catDVM);
-            }
+            var range = new startEndDates();
+            range.start = startDate;
+            range.end = endDate;
+            return range;
         }
 
 
 
-        public CatDisplayVM CategoryBudget(DateTimeOffset startDate, DateTimeOffset endDate)
+        public CatDisplayVM CategoryBudget(DateTime startDate, DateTime endDate)
         {
             int? HhId = Convert.ToInt32(User.Identity.GetHouseholdId());
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
@@ -270,7 +117,6 @@ namespace TgpBudget.Controllers
                 }
                 cVM.Unreconciled = cVM.Actual - cVM.Reconciled;
                 cVM.Variance = cVM.Actual - cat.BudgetAmount;
-                // categoryViewModelList.Add(cVM);
                 catDVM.IncCats.Add(cVM);
                 totalActual += cVM.Actual;
                 totalBudget += cVM.Budget;
@@ -337,49 +183,70 @@ namespace TgpBudget.Controllers
 
 
 
+        public ActionResult Index(DateRange? period)
+        {
+
+            DateRange actualDates = period ?? DateRange.currentMonth;
+            var range = GetDateRange(actualDates);
+            ViewBag.Period = actualDates;
+
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            @ViewBag.ActiveHousehold = hh.Name;
+            var catDVM = CategoryBudget(range.start, range.end);
+            if (period > DateRange.avg90Days)
+            {
+                return PartialView("_Index", catDVM);
+            }
+            else {
+                return View("Index", "Categories", catDVM);
+            }
+        }
+
 
         // GET: CategoryPieChart
         public ActionResult GetCategoryPieChart()
         {
-            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-
-            var today = System.DateTime.Today;
-
-            decimal outflows = 0;
-
-            var pieChartData = (from c in hh.Categories
-                                where c.IsExpense == true
-                                let aSum = (from d in c.Deals
-                                            where d.DealDate.Month == today.Month
-                                            select d.Amount).DefaultIfEmpty().Sum()
-                                let _ = outflows += aSum
-                                select new
-                                {
-                                    labels = c.Name,
-                                    BudgetAmount = c.BudgetAmount,
-                                    ActualAmount = aSum
-                                }).ToArray();
-            var numCats = pieChartData.Count();
-            var actualAmountPie = new PieChart();
-            actualAmountPie.labels = new string[numCats];
-            actualAmountPie.series = new int[numCats];
-            actualAmountPie.seriesCount = numCats;
+            var range = GetDateRange(DateRange.last30Days);
+            
+            var catDVM = CategoryBudget(range.start, range.end);
+            catDVM.IncCats.OrderByDescending(a => a.Actual);
+            var IEPie = new IncExpPieChart();
+            var numCats = catDVM.IncCats.Count();
+            IEPie.income.labels = new string[numCats];
+            IEPie.income.series = new int[numCats];
+            IEPie.income.seriesCount = numCats;
+            
             decimal sum = 0;
-            for (int i = 0; i < numCats; i++)
+            foreach (var item in catDVM.IncCats)
             {
-                sum += pieChartData[i].ActualAmount;
+                sum += item.Actual;     // calculate sum in order to normalize values
             }
-            // sort by amount
-            // keep top 3 cats and lump everything else into Other
-
-            for (int i = 0; i < numCats; i++)
+            int i = 0;
+            foreach (var item in catDVM.IncCats)
             {
-                actualAmountPie.labels[i] = pieChartData[i].labels;
-                actualAmountPie.series[i] = Decimal.ToInt32(Math.Round(100 *pieChartData[i].ActualAmount/sum));
+                IEPie.income.series[i] = Decimal.ToInt32(Math.Round(100*item.Actual/sum)); // normalize to 100
+                IEPie.income.labels[i] = item.Name;
+                i++;
             }
 
-            return Content(JsonConvert.SerializeObject(actualAmountPie), "application/json");
-
+            catDVM.ExpCats.OrderBy(a => a.Actual);
+            numCats = catDVM.ExpCats.Count();
+            IEPie.expense.labels = new string[numCats];
+            IEPie.expense.series = new int[numCats];
+            IEPie.expense.seriesCount = numCats;
+            sum = 0;
+            foreach (var item in catDVM.ExpCats)
+            {
+                sum += item.Actual;     // calculate sum in order to normalize values
+            }
+            i = 0;
+            foreach (var item in catDVM.ExpCats)
+            {
+                IEPie.expense.series[i] = Decimal.ToInt32(Math.Round(100 * item.Actual / sum)); // normalize to 100
+                IEPie.expense.labels[i] = item.Name;
+                i++;
+            }
+            return Content(JsonConvert.SerializeObject(IEPie), "application/json");
         }
 
 
@@ -391,7 +258,7 @@ namespace TgpBudget.Controllers
             ExpActual,
             NetVariance
         };
-        
+
         // GET: IncomeExpense
         public ActionResult GetIncExpBarChart()
         {
@@ -439,30 +306,25 @@ namespace TgpBudget.Controllers
             var barChart = new BarChartWithLegend();
             barChart.seriesCount = barChartData.Count();
             barChart.legend = new string[barChart.seriesCount];  // not being used at present   
-            
+
             barChart.data.labels = new string[numPeriods];
-            barChart.data.series = new int[numSeries,numPeriods ];
+            barChart.data.series = new int[numSeries, numPeriods];
             var catCount = hh.Categories.Count();
             for (int i = 0; i < numPeriods; i++)
             {
 
                 barChart.data.labels[i] = barChartData[i].Month.ToString("MMM/yy");
-                barChart.data.series[(int)ActVar.IncActual,i] = Decimal.ToInt32(Math.Round(barChartData[i].Inflows));
-               
-                barChart.data.series[(int)ActVar.IncBudget,i] = Decimal.ToInt32(Math.Round(totalBudgetIncome));
-                barChart.data.series[(int)ActVar.ExpActual,i] = Decimal.ToInt32(Math.Round(barChartData[i].Outflows));
-                
-                barChart.data.series[(int)ActVar.ExpBudget,i] = Decimal.ToInt32(Math.Round(totalBudgetExpense));
-                barChart.data.series[(int)ActVar.NetVariance,i] = barChart.data.series[(int)ActVar.IncActual, i] - barChart.data.series[(int)ActVar.IncBudget,i] +
-                                                             barChart.data.series[(int)ActVar.ExpActual, i] -  barChart.data.series[(int)ActVar.ExpBudget,i];
+                barChart.data.series[(int)ActVar.IncActual, i] = Decimal.ToInt32(Math.Round(barChartData[i].Inflows));
+
+                barChart.data.series[(int)ActVar.IncBudget, i] = Decimal.ToInt32(Math.Round(totalBudgetIncome));
+                barChart.data.series[(int)ActVar.ExpActual, i] = Decimal.ToInt32(Math.Round(barChartData[i].Outflows));
+
+                barChart.data.series[(int)ActVar.ExpBudget, i] = Decimal.ToInt32(Math.Round(totalBudgetExpense));
+                barChart.data.series[(int)ActVar.NetVariance, i] = barChart.data.series[(int)ActVar.IncActual, i] - barChart.data.series[(int)ActVar.IncBudget, i] +
+                                                             barChart.data.series[(int)ActVar.ExpActual, i] - barChart.data.series[(int)ActVar.ExpBudget, i];
             }
             return Content(JsonConvert.SerializeObject(barChart), "application/json");
         }
-
-
-
-
-
 
 
 

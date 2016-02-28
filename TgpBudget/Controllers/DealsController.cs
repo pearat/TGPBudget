@@ -36,21 +36,34 @@ namespace TgpBudget.Controllers
 
 
         // GET: Deals
-        public ActionResult Index()
+        public ActionResult Index(int? Id, string calledFrom)
         {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            @ViewBag.ActiveHousehold = user.Household.Name;
-            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            var deals = new List<Deal>();
+            if (Id == null)
+            {
+                var user = db.Users.Find(User.Identity.GetUserId());
+                @ViewBag.ActiveHousehold = user.Household.Name;
+                var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+                deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList();
+            }
+            else
+            {
+                deals = db.Deals.Where(a => a.BankAcctId == Id).OrderByDescending(a => a.DealDate).ToList();
+            }
             foreach (var d in deals)
                 if (d.Category.IsExpense)
                     d.Amount *= -1;
-            return View(deals);
+            if (calledFrom == "Dashboard")
+
+                return PartialView("_Index", deals.Take(5));
+            else
+            return View("Index", deals);
+            
         }
 
 
 
-
+        /*
         [HttpPost]
         public ActionResult Index(string SortOrder)
         {
@@ -85,7 +98,7 @@ namespace TgpBudget.Controllers
             //}
             return View(deals);
         }
-
+        */
 
 
 
@@ -158,7 +171,8 @@ namespace TgpBudget.Controllers
                     deal.BankAcct.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
 
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                
+                return RedirectToAction("Index", "Deals", new { Id = deal.BankAcctId, calledFrom = "fullPage" });
 
             }
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -250,7 +264,7 @@ namespace TgpBudget.Controllers
                     if (deal.Reconciled)
                         deal.BankAcct.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index","Deals",new { Id=deal.BankAcctId, calledFrom= "fullPage" });
                 }
             }
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -288,7 +302,8 @@ namespace TgpBudget.Controllers
 
             db.Deals.Remove(deal);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            
+            return RedirectToAction("Index", new { Id = id, calledFrom = "fullPage" });
         }
 
         protected override void Dispose(bool disposing)

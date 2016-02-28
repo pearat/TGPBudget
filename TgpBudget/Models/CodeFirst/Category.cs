@@ -92,7 +92,6 @@ namespace TgpBudget.Models
         public CatDisplayVM()
         {
             IncCats = new List<CatDisplay>();
-            IncCats = new List<CatDisplay>();
             ExpCats = new List<CatDisplay>();
             IncTotal = new CatDisplay();
             ExpTotal = new CatDisplay();
@@ -103,7 +102,6 @@ namespace TgpBudget.Models
         public CatDisplay IncTotal { get; set; }
         public CatDisplay ExpTotal { get; set; }
         public CatDisplay NetTotal { get; set; }
-
     }
 
     public class PieChart
@@ -111,6 +109,17 @@ namespace TgpBudget.Models
         public string[] labels { get; set; }
         public int[] series { get; set; }
         public int seriesCount { get; set; }
+    }
+
+    public class IncExpPieChart
+    {
+        public IncExpPieChart()
+        {
+            income = new PieChart();
+            expense = new PieChart();
+        }
+        public PieChart income { get; set; }
+        public PieChart expense { get; set; }
     }
 
     public class BarChart
@@ -128,6 +137,12 @@ namespace TgpBudget.Models
         public BarChart data { get; set; }
         public string[] legend { get; set; }
         public int seriesCount { get; set; }
+    }
+
+    public class startEndDates
+    {
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
     }
 
 }

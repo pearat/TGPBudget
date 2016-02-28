@@ -7,20 +7,20 @@
 
 <div row style="display:inline">
     <div class="col-sm-5">
-        <h3  style="display:inline; margin:10px">Accounts</h3>
+        <h3 style="display:inline; margin:10px">Accounts</h3>
 
     </div>
-    <div class="col-sm-5" >
-        <h4 style="display:inline; margin-top:10px">Balance</h4>
+    <div class="col-sm-5">
+        <h4 style="display:inline; margin-top:10px;text-align:center">Balance</h4>
 
     </div>
 
 
-    <div class="col-sm-2">
-        <p  style="display:inline; margin-top: 15px; text-align:center">
-            @Html.ActionLink("New", "Open")
-        </p>
-    </div>
+    @*<div class="col-sm-2">
+            <p  style="display:inline; margin-top: 15px; text-align:center">
+                @Html.ActionLink("New", "Open")
+            </p>
+        </div>*@
 
 
 </div>
@@ -34,7 +34,7 @@
             Acct Name
         </th>
         <th>
-            Current 
+            Current
         </th>
         <th>
             Reconciled
@@ -54,14 +54,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BalanceReconciled)
             </td>
-            <td>
-                @*@Html.ActionLink("Transact", "Index", "Deals", new { id = item.Id }, null) |
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |*@
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) @*|
-                <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#closeBankAcctModal">
-                    <span>Close</span>
-                </button>*@
-            </td>
+
         </tr>
     }
 </table>
