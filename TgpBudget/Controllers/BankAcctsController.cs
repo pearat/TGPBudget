@@ -25,15 +25,20 @@ namespace TgpBudget.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: BankAccts
-        public ActionResult Index()
+        public ActionResult Index(DateTime? AsOfDate)
         {
-
-            var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null || user.Household == null)
+            DateTime today = System.DateTime.Today;
+            DateTime ReportAsOf = AsOfDate ?? today;
+            ViewBag.AsOfDate = ReportAsOf;
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var bankAcctList = new BankAcctList();
+            bankAcctList.BAL = hh.BankAccts.OrderBy(b => b.AccountName).ToList();
+            foreach (var item in bankAcctList.BAL)
             {
-                return RedirectToAction("Login", "Account");
+                bankAcctList.totalAccts.BalanceCurrent += item.BalanceCurrent;
+                bankAcctList.totalAccts.BalanceReconciled += item.BalanceReconciled;
             }
-            return View(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList());
+            return View(bankAcctList);
         }
 
 
@@ -118,72 +123,121 @@ namespace TgpBudget.Controllers
                     else
                         lineChart.data.series[j, i] += lineChart.data.series[j, i - 1];
                 }
-                if (minusSum != 0 && plusSum != 0)      // need to net out -balance(s) with +balance(s)
-                {
-                    for (int j = 0; j < numAccts; j++)
-                    {
-                        if (Math.Sign(lineChart.data.series[j, i]) != Math.Sign(total)) // minority value
-                            lineChart.data.series[j, i] = 0;  // clear balance of an account in the minority
-                        else
-                        {
-                            if (Math.Sign(total) == 1)        // majority is positive
-                            {
-                                if (lineChart.data.series[j, i] > -minusSum)  // able to offset with this balance
-                                {
-                                    lineChart.data.series[j, i] += minusSum;
-                                    minusSum = 0;
-                                    break;
-                                }
-                                else        // partial offset only
-                                {
-                                    minusSum += lineChart.data.series[j, i];
-                                    lineChart.data.series[j, i] = 0;
-                                }
-                            }
-                            else        // majority is negative
-                            {
-                                if (lineChart.data.series[j, i] < -plusSum)  // able to offset with this balance
-                                {
-                                    lineChart.data.series[j, i] += plusSum;
-                                    plusSum = 0;
-                                    break;
-                                }
-                                else      // partial offset only
-                                {
-                                    plusSum += lineChart.data.series[j, i];
-                                    lineChart.data.series[j, i] = 0;
-                                }
-                            }
-                        }
-                    }
-                }
+                /* if (minusSum != 0 && plusSum != 0)      // need to net out -balance(s) with +balance(s)
+                 {
+                     for (int j = 0; j < numAccts; j++)
+                     {
+                         if (Math.Sign(lineChart.data.series[j, i]) != Math.Sign(total)) // minority value
+                             lineChart.data.series[j, i] = 0;  // clear balance of an account in the minority
+                         else
+                         {
+                             if (Math.Sign(total) == 1)        // majority is positive
+                             {
+                                 if (lineChart.data.series[j, i] > -minusSum)  // able to offset with this balance
+                                 {
+                                     lineChart.data.series[j, i] += minusSum;
+                                     minusSum = 0;
+                                     break;
+                                 }
+                                 else        // partial offset only
+                                 {
+                                     minusSum += lineChart.data.series[j, i];
+                                     lineChart.data.series[j, i] = 0;
+                                 }
+                             }
+                             else        // majority is negative
+                             {
+                                 if (lineChart.data.series[j, i] < -plusSum)  // able to offset with this balance
+                                 {
+                                     lineChart.data.series[j, i] += plusSum;
+                                     plusSum = 0;
+                                     break;
+                                 }
+                                 else      // partial offset only
+                                 {
+                                     plusSum += lineChart.data.series[j, i];
+                                     lineChart.data.series[j, i] = 0;
+                                 }
+                             }
+                         }
+                     }
+                 }
+             */
             }
             return Content(JsonConvert.SerializeObject(lineChart), "application/json");
         }
 
 
         // GET: BankAccts
-        public ActionResult Recalc()
+        public ActionResult Recalc(DateTime? AsOfDate)
         {
-
+            DateTime today = System.DateTime.Today;
+            
+            AsOfDate = AsOfDate ?? today;
+            ViewBag.AsOfDate = AsOfDate;
             //var user = db.Users.Find(User.Identity.GetUserId());
 
-            var Household = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            //var HhBanks = Household.BankAccts
-            // var HhBanks = db.BankAccts.Where(b => b.HouseholdId == HhId);
-            foreach (var bank in Household.BankAccts)
-            {
-                bank.BalanceCurrent = bank.BalanceReconciled = 0;
-                foreach (var deal in bank.Deals)
-                {
-                    bank.BalanceCurrent += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
-                    if (deal.Reconciled)
-                        bank.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
-                }
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            decimal inflows = 0;
+            decimal outflows = 0;
+            decimal inflowsReconciled = 0;
+            decimal outflowsReconciled = 0;
 
+            var bankBalanceData = (from b in hh.BankAccts
+                                   let aSum = -(from x in b.Deals
+                                                where x.DealDate <= AsOfDate &&
+                                                x.Category.IsExpense
+                                                select x.Amount).DefaultIfEmpty().Sum()
+                                   let bSum = (from x in b.Deals
+                                               where x.DealDate <= AsOfDate &&
+                                                !x.Category.IsExpense
+                                               select x.Amount).DefaultIfEmpty().Sum()
+                                   let cSum = -(from x in b.Deals
+                                                where x.DealDate <= AsOfDate &&
+                                                x.Reconciled &&
+                                                x.Category.IsExpense
+                                                select x.Amount).DefaultIfEmpty().Sum()
+                                   let dSum = (from x in b.Deals
+                                               where x.DealDate <= AsOfDate &&
+                                                x.Reconciled &&
+                                                !x.Category.IsExpense
+                                               select x.Amount).DefaultIfEmpty().Sum()
+                                   let __ = outflows += aSum
+                                   let ___ = inflows += bSum
+                                   let _____ = outflowsReconciled += cSum
+                                   let ______ = inflowsReconciled += dSum
+                                   select new
+                                   {
+                                       AcctId = b.Id,
+                                       AcctName = b.AccountName,
+                                       Outflows = aSum,
+                                       Inflows = bSum,
+                                       OutflowsRec = cSum,
+                                       InflowsRec = dSum
+                                   }).ToArray();
+            int numAccts = bankBalanceData.Count();
+            int i = 0;
+            foreach (var bank in hh.BankAccts)
+            {
+                bank.BalanceCurrent = bankBalanceData[i].Inflows + bankBalanceData[i].Outflows;
+                bank.BalanceReconciled = bankBalanceData[i].InflowsRec + bankBalanceData[i].OutflowsRec;
+                i++;
             }
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+
+            //foreach (var bank in hh.BankAccts)
+            //{
+            //    bank.BalanceCurrent = bank.BalanceReconciled = 0;
+            //    foreach (var deal in bank.Deals)
+            //    {
+            //        bank.BalanceCurrent += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+            //        if (deal.Reconciled)
+            //            bank.BalanceReconciled += (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
+            //    }
+            //}
+
+            return RedirectToAction("Index","BankAccts", new { AsOfDate = AsOfDate});
         }
 
 

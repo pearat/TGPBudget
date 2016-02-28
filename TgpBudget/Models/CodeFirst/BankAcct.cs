@@ -40,13 +40,25 @@ namespace TgpBudget.Models
         }
     }
 
+    public class BankAcctList
+    {
+        public BankAcctList()
+        {
+            BAL = new List<BankAcct>();
+            totalAccts = new BankAcct();
+        }
+        public List<BankAcct> BAL { get; set; }
+        public BankAcct totalAccts { get; set; }
+        public DateTime AsOfDate { get; set; }
+    
+}
+
     public class BankAcctViewModel
     {
 
         public int HouseholdId { get; set; }
-        [Display(Name = "Household Name / Number")]
+        [Display(Name = "Household Name / Number")] 
         public string HouseholdName { get; set; }
-
 
         [DataType(DataType.Text)]
         [Display(Name = "Account Name (optional)")]

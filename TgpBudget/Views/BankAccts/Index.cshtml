@@ -1,16 +1,13 @@
-﻿@model IEnumerable<TgpBudget.Models.BankAcct>
+﻿@model TgpBudget.Models.BankAcctList
 
 @{
     ViewBag.Title = "Account List";
 }
 
-
-
-
 <div row style="display:inline">
-    <div class="col-sm-4" style="display:inline">
+    <div class="col-sm-4" style="display:inline; text-align:center">
         <h2>@ViewBag.Title</h2>
-
+        <h4>@ViewBag.AsOfDate.ToString("MM/dd/yyyy")</h4>
     </div>
     <div class="col-sm-1" style="display:inline; margin:30px 0 0px">
         @*<h5>Sort by</h5>*@
@@ -28,77 +25,131 @@
 </div>
 
 
-
-
-
 <table class="table">
-    <tr>
-        <th>
-            Institution
-        </th>
-        <th>
-            Acct Number
-        </th>
-        <th>
-            Active?
-        </th>
-        <th>
-            Current Balance
-        </th>
-        <th>
-            Reconciled Balance
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-            {
+    <thead>
         <tr>
-            @*<td>
-                    @Html.DisplayFor(modelItem => item.AccountName)
-                </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.HeldAt)
+                Institution
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AccountNumber)
+                Acct Number
             </td>
             <td>
-                @if (item.Closed == null)
-                {
-                    <text>Yes</text>
-                }
-                else
-                {
-                    <text>No</text>
-                }
+                Active?
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BalanceCurrent)
+                Current Balance
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BalanceReconciled)
+                Reconciled Balance
+            </td>
+            <td></td>
+        </tr>
+    </thead>
+    <tfoot style="vertical-align:bottom; text-align:right">
+        <tr>
+            <td>
+                Combined
             </td>
             <td>
-                @Html.ActionLink("Transact", "Index", "Deals", new { id = item.Id }, null) |
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                <button data-id="@item.Id" class="del" data-toggle="modal" data-target="#closeBankAcctModal">
-                    <span>Close</span>
-                </button>
+                Balance
+            </td>
+            <td>
+                ...
+            </td>
+            <td style="font-weight:bold; ">
+                @Html.DisplayFor(model => model.totalAccts.BalanceCurrent)
+            </td>
+            <td style="font-weight:bold; ">
+                @Html.DisplayFor(model => model.totalAccts.BalanceReconciled)
+            </td>
+            <td>
+                ...
             </td>
         </tr>
-    }
+    </tfoot>
+    <tbody>
+        @foreach (var item in Model.BAL)
+            {
+            <tr style="text-align:right">
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.AccountName)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.HeldAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNumber)
+                </td>
+                <td>
+                    @if (item.Closed == null)
+                {
+                        <text>Yes</text>
+                    }
+                    else
+                    {
+                        <text>No</text>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceCurrent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceReconciled)
+                </td>
+                <td>
+                    @Html.ActionLink("Transact", "Index", "Deals", new { id = item.Id }, null) |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    <button data-id="@item.Id" class="del" data-toggle="modal" data-target="#closeBankAcctModal">
+                        <span>Close</span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+
 </table>
+
 <hr />
 <div class="row">
     <div class="col-md-2">
         @Html.ActionLink("Return Home", "Index", "Home")
     </div>
-    <div class="col-md-4">
-        @Html.ActionLink("Recalculate Bank Balances", "Recalc", "BankAccts")
-    </div>
 </div>
+
+
+
+@using (Html.BeginForm("Recalc", "BankAccts", "AsOfDate"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="form-group" style="padding:8px 12px;">
+            <div style="display:inline">
+                <label for="date-picker-1" class="control-label col-md-2" style="display:inline">
+                    Balances as of: 
+                </label>
+                <div class="controls col-md-4" style="padding:8px 12px;">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="AsOfDate" 
+                           value="@ViewBag.AsOfDate.ToString("MM/dd/yyyy")" />
+                </div>
+                <input class="button" type="submit"
+                       value="Recalculate" />
+            </div>
+        </div>
+
+
+    </div>
+}
+
+
+
+
+
+
+
 
 <!-- vvvvv Start of Modal vvvvv -->
 
