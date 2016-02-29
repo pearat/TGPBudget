@@ -298,8 +298,7 @@ namespace TgpBudget.Controllers
             deal.BankAcct.BalanceCurrent -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
             if (deal.Reconciled)
                 deal.BankAcct.BalanceReconciled -= (deal.Category.IsExpense ? -1 : 1) * deal.Amount;
-
-
+            
             db.Deals.Remove(deal);
             db.SaveChanges();
             

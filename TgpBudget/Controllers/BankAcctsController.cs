@@ -46,12 +46,19 @@ namespace TgpBudget.Controllers
         public ActionResult _Index()
         {
 
-            var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null || user.Household == null)
+            DateTime today = System.DateTime.Today;
+            //DateTime ReportAsOf = AsOfDate ?? today;
+            ViewBag.AsOfDate = today;
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            var bankAcctList = new BankAcctList();
+            bankAcctList.BAL = hh.BankAccts.OrderBy(b => b.AccountName).ToList();
+            foreach (var item in bankAcctList.BAL)
             {
-                return RedirectToAction("Login", "Account");
+                bankAcctList.totalAccts.BalanceCurrent += item.BalanceCurrent;
+                bankAcctList.totalAccts.BalanceReconciled += item.BalanceReconciled;
             }
-            return PartialView(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList().Take(4));
+            return PartialView(bankAcctList);
+            //return PartialView(db.BankAccts.Where(b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName).ToList().Take(4));
         }
 
         // GET: BankAccts
@@ -172,7 +179,7 @@ namespace TgpBudget.Controllers
         public ActionResult Recalc(DateTime? AsOfDate)
         {
             DateTime today = System.DateTime.Today;
-            
+
             AsOfDate = AsOfDate ?? today;
             ViewBag.AsOfDate = AsOfDate;
             //var user = db.Users.Find(User.Identity.GetUserId());
@@ -237,7 +244,7 @@ namespace TgpBudget.Controllers
             //    }
             //}
 
-            return RedirectToAction("Index","BankAccts", new { AsOfDate = AsOfDate});
+            return RedirectToAction("Index", "BankAccts", new { AsOfDate = AsOfDate });
         }
 
 
@@ -285,7 +292,7 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Open([Bind(Include = "HouseholdId,AccountName,HeldAt,AccountNumber,BalanceCurrent")] BankAcctViewModel bankAcct)
+        public ActionResult Open([Bind(Include = "HouseholdId,AccountName,HeldAt,AccountNumber,OpeningBalance,OpeningDate,BalanceCurrent")] BankAcctViewModel bankAcct)
         {
             if (ModelState.IsValid)
             {
@@ -299,10 +306,7 @@ namespace TgpBudget.Controllers
 
                 if (bankAcct.OpeningDate == null)
                     bankAcct.OpeningDate = System.DateTimeOffset.Now;
-                if (bankAcct.OpeningBalance != 0)
-                {
-                    // generate opening transaction
-                }
+
                 var newBankAcct = new BankAcct();
 
                 newBankAcct.AccountNumber = bankAcct.AccountNumber;
@@ -312,6 +316,19 @@ namespace TgpBudget.Controllers
                 newBankAcct.Opened = bankAcct.OpeningDate;
                 newBankAcct.BalanceCurrent = bankAcct.OpeningBalance;
                 db.BankAccts.Add(newBankAcct);
+                if (bankAcct.OpeningBalance != 0)
+                {
+                    var openDeal = new Deal();
+                    openDeal.BankAcctId = newBankAcct.Id;
+                    var cat = db.Categories.FirstOrDefault(c => c.HouseholdId == newBankAcct.HouseholdId && c.Name == "Other Income");
+                    openDeal.CategoryId = cat.Id;
+                    openDeal.Amount = bankAcct.OpeningBalance;
+                    openDeal.DealDate = (DateTimeOffset)bankAcct.OpeningDate;
+                    openDeal.Description = "Opening Transaction";
+                    openDeal.Payee = "Deposit";
+                    openDeal.Reconciled = false;
+                    db.Deals.Add(openDeal);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index", "BankAccts");
             }

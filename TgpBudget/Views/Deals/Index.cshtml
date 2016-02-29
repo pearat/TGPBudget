@@ -54,7 +54,7 @@
 
 </div>
 
-<table class="table">
+<table class="table" id="myTable">
     <thead>
         <tr>
             <th>
@@ -175,7 +175,11 @@
 
 
         $(document).ready(function () {
-            $('.table').DataTable();
+            $('.table').DataTable({
+                "order":[0,'desc']
+            });
+            
+            
         });
         $(":radio").click(function () {
 

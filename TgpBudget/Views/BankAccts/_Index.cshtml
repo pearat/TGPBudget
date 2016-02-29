@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TgpBudget.Models.BankAcct>
+﻿@model TgpBudget.Models.BankAcctList
 
 @{
     ViewBag.Title = "Financial Accounts";
@@ -26,94 +26,89 @@
 </div>
 
 
-
 <table class="table">
-    <tr>
-
-        <th>
-            Acct Name
-        </th>
-        <th>
-            Current
-        </th>
-        <th>
-            Reconciled
-        </th>
-    </tr>
-
-    @foreach (var item in Model)
-            {
+    <thead>
         <tr>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountName)
+            <td style="font-weight:bold; width:50%; text-align:left;">
+                Account Name
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BalanceCurrent)
+
+            <td style="font-weight:bold; width:25%; text-align:right;">
+                Current
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BalanceReconciled)
+            <td style="font-weight:bold; width:25%; text-align:right;">
+                Reconciled
+            </td>
+            <td></td>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td style="font-weight:bold; width:50%; text-align:left;">
+                Total
+            </td>
+            <td style="font-weight:bold; width:25%;">
+                @Html.DisplayFor(model => model.totalAccts.BalanceCurrent)
+            </td>
+            <td style="font-weight:bold; width:25%">
+                @Html.DisplayFor(model => model.totalAccts.BalanceReconciled)
             </td>
 
         </tr>
-    }
+    </tfoot>
+    <tbody>
+        @foreach (var item in Model.BAL)
+            {
+            <tr>
+
+                <td style="width:50%; text-align:left;">
+                    @Html.DisplayFor(modelItem => item.AccountName)
+                </td>
+                <td style="width:25%; text-align:right;">
+                    @Html.DisplayFor(modelItem => item.BalanceCurrent)
+                </td>
+                <td style="width:25%; text-align:right;">
+                    @Html.DisplayFor(modelItem => item.BalanceReconciled)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+
 </table>
 
-<!-- vvvvv Start of Modal vvvvv -->
-
-<div class="modal fade" id="closeBankAcctModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width:360px;">
-        <div class="modal-content" style="align-content:center">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    ×
-                </button>
-                <h4 class="modal-title" style="text-align:center; color:#fff"
-                    id="myModalLabel">
-                    Confirm Closing of Account
-                </h4>
-            </div>
-
-            <div class="modal-body" style="text-align:center">
-                <div class="row">
-                    <h4>Are you sure this Account should be <u>Closed</u>?</h4>
-                    <p>If so, this Account's transactions will be removed.</p>
-                </div>
-            </div>
-            <div class="modal-footer" style="align-items:center">
-                <button type="button" data-dismiss="modal" class="btn btn-skin xtra-btn">Dismiss</button>
-
-                <form id="deleteIdForm" action="@Url.Action("Close", "BankAccts") ">
-                    @Html.AntiForgeryToken()
-                    <input id="modal-id" type="hidden" name="id" value="" />
-                    <button id="deleteConfirmed" value="true" form="deleteIdForm" type="submit"
-                            class="btn btn-danger xtra-danger-btn" data-warning="modal">
-                        Close
-                    </button>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ^^^^^ Modal end ^^^^^ -->
-
-@section scripts{
-    <script>
-        //$(document).ready(function () {
-        // $('.table').DataTable();
-        //});
-        var categoryId = 0;
-        $('#closeBankAcctModal').on('shown.bs.modal', function (e) {
-            var j = $(e.relatedTarget).data('id');
-            console.log(' categoryId j: ' + j);
-            categoryId = j;
-            $('.modal-backdrop').removeClass('modal-backdrop');
-            $('#modal-id').val(categoryId);
-        });
 
 
-    </script>
-}
 
+@*<table class="table">
+        <tr>
 
+            <th>
+                Acct Name
+            </th>
+            <th>
+                Current
+            </th>
+            <th>
+                Reconciled
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+                {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceCurrent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceReconciled)
+                </td>
+
+            </tr>
+        }
+    </table>*@

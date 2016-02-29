@@ -28,19 +28,19 @@
 <table class="table">
     <thead>
         <tr>
-            <td>
+            <td style="width:16%; text-align:left;">
                 Institution
-            </td>
-            <td>
+                </td>
+            <td style="width:14%; text-align:left;">
                 Acct Number
             </td>
-            <td>
+            <td style="width:8%; text-align:center;">
                 Active?
             </td>
-            <td>
+            <td style="width:14%; text-align:right;">
                 Current Balance
             </td>
-            <td>
+            <td style="width:14%; text-align:right;">
                 Reconciled Balance
             </td>
             <td></td>
@@ -48,19 +48,19 @@
     </thead>
     <tfoot style="vertical-align:bottom; text-align:right">
         <tr>
-            <td>
+            <td style="width:16%; text-align:left;">
                 Combined
             </td>
-            <td>
+            <td style="width:14%; text-align:left;">
                 Balance
             </td>
-            <td>
+            <td style="width:8%; text-align:center;">
                 ...
             </td>
-            <td style="font-weight:bold; ">
+            <td style="font-weight:bold; width:14%;">
                 @Html.DisplayFor(model => model.totalAccts.BalanceCurrent)
             </td>
-            <td style="font-weight:bold; ">
+            <td style="font-weight:bold; width:14%">
                 @Html.DisplayFor(model => model.totalAccts.BalanceReconciled)
             </td>
             <td>
@@ -71,17 +71,15 @@
     <tbody>
         @foreach (var item in Model.BAL)
             {
-            <tr style="text-align:right">
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.AccountName)
-                    </td>*@
-                <td>
+            <tr>
+
+                <td style="width:16%; text-align:left;">
                     @Html.DisplayFor(modelItem => item.HeldAt)
                 </td>
-                <td>
+                <td style="width:14%; text-align:left;">
                     @Html.DisplayFor(modelItem => item.AccountNumber)
                 </td>
-                <td>
+                <td style="width:8%; text-align:center;">
                     @if (item.Closed == null)
                 {
                         <text>Yes</text>
@@ -91,13 +89,13 @@
                         <text>No</text>
                     }
                 </td>
-                <td>
+                <td style="width:14%; text-align:right;">
                     @Html.DisplayFor(modelItem => item.BalanceCurrent)
                 </td>
-                <td>
+                <td style="width:14%; text-align:right;">
                     @Html.DisplayFor(modelItem => item.BalanceReconciled)
                 </td>
-                <td>
+                <td style="width:30%; text-align:center;">
                     @Html.ActionLink("Transact", "Index", "Deals", new { Id = item.Id, calledFrom = "fullPage" }, null) |
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
