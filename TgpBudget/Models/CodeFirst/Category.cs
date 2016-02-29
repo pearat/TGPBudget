@@ -74,15 +74,20 @@ namespace TgpBudget.Models
         public bool IsExpense { get; set; }
         
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public decimal Actual { get; set; }
         
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public decimal Budget { get; set; }
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public decimal Reconciled { get; set; }
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public decimal Unreconciled { get; set; }
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public decimal Variance { get; set; }
         public bool IsTotal { get; set; }
     }

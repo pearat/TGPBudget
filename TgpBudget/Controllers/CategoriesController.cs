@@ -417,7 +417,7 @@ namespace TgpBudget.Controllers
                 }
                 db.Categories.Add(category);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details",new { period = "currentMonth" });
             }
 
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
@@ -461,7 +461,7 @@ namespace TgpBudget.Controllers
                 }
                 db.Entry(category).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details",new { period = "currentMonth" });
             }
 
             return View(category);
@@ -549,7 +549,7 @@ namespace TgpBudget.Controllers
             }
             db.Categories.Remove(category);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details",new { period="currentMonth" });
         }
 
         protected override void Dispose(bool disposing)

@@ -21,17 +21,17 @@ namespace TgpBudget.Controllers
 
 
         // GET: Deals
-        public ActionResult _Index()
-        {
-            var user = db.Users.Find(User.Identity.GetUserId());
-            @ViewBag.ActiveHousehold = user.Household.Name;
-            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
-            var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList().Take(5);
-            foreach (var d in deals)
-                if (d.Category.IsExpense)
-                    d.Amount *= -1;
-            return PartialView(deals);
-        }
+        //public ActionResult _Index()
+        //{
+        //    var user = db.Users.Find(User.Identity.GetUserId());
+        //    @ViewBag.ActiveHousehold = user.Household.Name;
+        //    var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+        //    var deals = hh.BankAccts.SelectMany(a => a.Deals).OrderByDescending(a => a.DealDate).ToList().Take(8);
+        //    foreach (var d in deals)
+        //        if (d.Category.IsExpense)
+        //            d.Amount *= -1;
+        //    return PartialView(deals);
+        //}
 
 
 
@@ -55,7 +55,7 @@ namespace TgpBudget.Controllers
                     d.Amount *= -1;
             if (calledFrom == "Dashboard")
 
-                return PartialView("_Index", deals.Take(5));
+                return PartialView("_Index", deals.Take(8));
             else
             return View("Index", deals);
             

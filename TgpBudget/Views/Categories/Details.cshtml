@@ -128,7 +128,7 @@
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
-                        @Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>
+                        @*@Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>*@
                         <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
                             <span>Delete</span>
                         </button>
@@ -222,12 +222,17 @@
 
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
-                            @Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>
-                            <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
-                                <span>Delete</span>
-                            </button>
-                        </td>
+
+                            @*<a href="@Url.Action("Edit", "Categories", new { id = item.Id })">
+                                <i class="fa fa-pencil-square-o"></i>
+                                <span class="sr-only">Edit</span>*@
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
+                                @*@Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>*@
+
+                                <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
+                                    <span>Delete</span>
+                                </button>
+</td>
                     </tr>
                 }
             </tbody>
@@ -293,20 +298,22 @@
                 </h4>
             </div>
 
-            <div class="modal-body" style="text-align:center">
-                <div class="row">
+            <div class="modal-body" >
+                <div class="row" style="text-align:center">
                     <h4>Are you sure?</h4>
                     <p>If so, any transactions in this Category post to 'Other Expense' or 'Other Income'</p>
                 </div>
             </div>
-            <div class="modal-footer" style="align-items:center">
-                <button type="button" data-dismiss="modal" class="btn btn-skin xtra-btn">Dismiss</button>
+            <div class="modal-footer" style="display:inline">
+                <button type="button" data-dismiss="modal" class="btn btn-skin xtra-btn"
+                        style="display:inherit">Dismiss</button>
 
                 <form id="deleteIdForm" action="@Url.Action("Delete", "Categories") ">
                     @Html.AntiForgeryToken()
                     <input id="modal-id" type="hidden" name="id" value="" />
                     <button id="deleteConfirmed" value="true" form="deleteIdForm" type="submit"
-                            class="btn btn-danger xtra-danger-btn" data-warning="modal">
+                            class="btn btn-danger xtra-danger-btn" data-warning="modal"
+                            style="display:inherit">
                         Delete
                     </button>
                 </form>

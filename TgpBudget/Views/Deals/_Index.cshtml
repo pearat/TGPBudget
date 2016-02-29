@@ -11,14 +11,14 @@
 
     </div>
     <div class="col-sm-5">
-        <h4 style="display:inline; margin-top:10px">Balance</h4>
+        <h4 style="display:inline; margin-top:10px">Details</h4>
 
     </div>
 
 
     <div class="col-sm-2">
         <p style="display:inline; margin-top: 15px; text-align:center">
-            @Html.ActionLink("New", "Open")
+            @Html.ActionLink("New", "New")
         </p>
     </div>
 
@@ -83,7 +83,14 @@
                 </td>
                 <td>
                     @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |*@
-                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    @*<i class="fa fa-pencil-square-o"></i>*@
+                    @*@Html.ActionLink("Details", "Details", new { id = item.Id })*@
+
+                    <a href="@Url.Action("Edit", "Deals", new { id = item.Id })">
+                        <i class="fa fa-pencil-square-o"></i>
+                        <span class="sr-only">Edit</span>
+                    </a>
+
                     @*<span> | </span>
                     <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delDealModal">
                         <span>Delete</span>

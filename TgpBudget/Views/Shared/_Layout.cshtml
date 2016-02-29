@@ -38,10 +38,8 @@
         <div class="sidebar" data-color="blue" data-image="/XcTim1-3/assets/img/sidebar-5.jpg">
 
             <!--
-
                 Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
                 Tip 2: you can also add an image using data-image tag
-
             -->
             <div class="sidebar-wrapper">
                 <div class="logo">
@@ -57,26 +55,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("Index", "Households")>
-                            <i class="pe-7s-home"></i>
-                            <p>Household Info</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href=@Url.Action("EditUserProfile", "Manage")>
-                            <i class="pe-7s-user"></i>
-                            <p>User Profile</p>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href=@Url.Action("Index", "BankAccts")>
-                            <i class="pe-7s-piggy"></i>
-                            <p>Bank Accounts</p>
-                        </a>
-                    </li>
-
-                    <li>
                         <a href=@Url.Action("Index", "Deals")>
                             <i class="pe-7s-cash"></i>
                             <p>Transactions</p>
@@ -89,18 +67,26 @@
                                 <p>Budget Categories</p>
                             </a>
                     </li>
-                    @*<li>
-                            <a href="notifications.html">
-                                <i class="pe-7s-bell"></i>
-                                <p>Notifications</p>
-                            </a>
-                        </li>
-                        <li class="active-pro">
-                            <a href="#">
-                                <i class="pe-7s-graph3"></i>
-                                <p>Reports (Soon)</p>
-                            </a>
-                        </li>*@
+                    <li>
+                        <a href=@Url.Action("Index", "BankAccts")>
+                            <i class="pe-7s-piggy"></i>
+                            <p>Bank Accounts</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("Index", "Households")>
+                            <i class="pe-7s-home"></i>
+                            <p>Household Info</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href=@Url.Action("EditUserProfile", "Manage")>
+                            <i class="pe-7s-user"></i>
+                            <p>User Profile</p>
+                        </a>
+                    </li>
+
+
                 </ul>
             </div>
         </div>
@@ -132,7 +118,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-globe"></i>
                                     <b class="caret"></b>
-                                    <span class="notification">5</span>
+                                    @*<span class="notification">5</span>*@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
@@ -141,9 +127,9 @@
                                 </ul>
                             </li>
                             <li>
-                                <a href="">
+                                @*<a href="">
                                     <i class="fa fa-search"></i>
-                                </a>
+                                </a>*@
                             </li>
                             <li>
                                 <b>@ViewBag.ActiveHousehold</b>
