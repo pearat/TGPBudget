@@ -398,7 +398,6 @@
     <Content Include="Views\Categories\Delete.cshtml" />
     <Content Include="Views\Categories\Details.cshtml" />
     <Content Include="Views\Categories\Edit.cshtml" />
-    <Content Include="Views\Categories\Index.cshtml" />
     <Content Include="Views\Households\JoinCreate.cshtml" />
     <Content Include="Views\Households\Leave.cshtml" />
     <Content Include="Views\Households\ListMembers.cshtml" />
@@ -490,6 +489,9 @@
     <Content Include="Views\Deals\New.cshtml" />
     <Content Include="Views\Deals\NewTabs.cshtml" />
     <Content Include="Views\BankAccts\Index.cshtml" />
+    <Content Include="Views\Categories\Index.cshtml" />
+    <Content Include="Views\Categories\List.cshtml" />
+    <Content Include="Views\Categories\DetailsBckup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

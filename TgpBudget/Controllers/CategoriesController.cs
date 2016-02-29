@@ -193,7 +193,7 @@ namespace TgpBudget.Controllers
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             @ViewBag.ActiveHousehold = hh.Name;
             var catDVM = CategoryBudget(range.start, range.end);
-            if (period > DateRange.avg90Days)
+            if (actualDates > DateRange.avg90Days)
             {
                 return PartialView("_Index", catDVM);
             }
@@ -203,44 +203,101 @@ namespace TgpBudget.Controllers
         }
 
 
+        public ActionResult Details(DateRange? period)
+        {
+            if (period == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            DateRange actualDates = period ?? DateRange.currentMonth;
+            var range = GetDateRange(actualDates);
+            ViewBag.Period = actualDates;
+
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            @ViewBag.ActiveHousehold = hh.Name;
+            var catDVM = CategoryBudget(range.start, range.end);
+
+            Category category = db.Categories.Find(32);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            return View(catDVM);
+        }
+
+
+        //// GET: Categories/Details/5
+        //public ActionResult Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Category category = db.Categories.Find(id);
+        //    if (category == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(category);
+        //}
+
+        public ActionResult List(DateRange? period)
+        {
+
+            DateRange actualDates = period ?? DateRange.currentMonth;
+            var range = GetDateRange(actualDates);
+            ViewBag.Period = actualDates;
+
+            var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
+            @ViewBag.ActiveHousehold = hh.Name;
+            var catDVM = CategoryBudget(range.start, range.end);
+            if (actualDates > DateRange.avg90Days)
+            {
+                return PartialView("_Index", catDVM);
+            }
+            else {
+                return View("List", "Categories", catDVM);
+            }
+        }
+
         // GET: CategoryPieChart
         public ActionResult GetCategoryPieChart()
         {
-            var range = GetDateRange(DateRange.last30Days);
-            
+            var range = GetDateRange(DateRange.avg90Days);
+
             var catDVM = CategoryBudget(range.start, range.end);
-            catDVM.IncCats.OrderByDescending(a => a.Actual);
+            var incomeCategories = catDVM.IncCats.OrderByDescending(a => a.Actual);
             var IEPie = new IncExpPieChart();
             var numCats = catDVM.IncCats.Count();
             IEPie.income.labels = new string[numCats];
             IEPie.income.series = new int[numCats];
             IEPie.income.seriesCount = numCats;
-            
+
             decimal sum = 0;
-            foreach (var item in catDVM.IncCats)
+            foreach (var item in incomeCategories)
             {
                 sum += item.Actual;     // calculate sum in order to normalize values
             }
             int i = 0;
-            foreach (var item in catDVM.IncCats)
+            foreach (var item in incomeCategories)
             {
-                IEPie.income.series[i] = Decimal.ToInt32(Math.Round(100*item.Actual/sum)); // normalize to 100
+                IEPie.income.series[i] = Decimal.ToInt32(Math.Round(100 * item.Actual / sum)); // normalize to 100
                 IEPie.income.labels[i] = item.Name;
                 i++;
             }
 
-            catDVM.ExpCats.OrderBy(a => a.Actual);
+            var expenseCategories= catDVM.ExpCats.OrderBy(a => a.Actual);
             numCats = catDVM.ExpCats.Count();
             IEPie.expense.labels = new string[numCats];
             IEPie.expense.series = new int[numCats];
             IEPie.expense.seriesCount = numCats;
             sum = 0;
-            foreach (var item in catDVM.ExpCats)
+            foreach (var item in expenseCategories)
             {
                 sum += item.Actual;     // calculate sum in order to normalize values
             }
             i = 0;
-            foreach (var item in catDVM.ExpCats)
+            foreach (var item in expenseCategories)
             {
                 IEPie.expense.series[i] = Decimal.ToInt32(Math.Round(100 * item.Actual / sum)); // normalize to 100
                 IEPie.expense.labels[i] = item.Name;
@@ -328,21 +385,6 @@ namespace TgpBudget.Controllers
 
 
 
-        // GET: Categories/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Category category = db.Categories.Find(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            return View(category);
-        }
-
         // GET: Categories/Create
         public ActionResult Create()
         {
@@ -426,27 +468,27 @@ namespace TgpBudget.Controllers
         }
 
         // GET: Categories/Delete/5
-        //public ActionResult Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Category category = db.Categories.Find(id);
-        //    if (category == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    // TempData["OriginalCatName"] = category.Name;
-        //    return View(category);
-        //}
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Category category = db.Categories.Find(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            // TempData["OriginalCatName"] = category.Name;
+            return View(category);
+        }
 
         // POST: Categories/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult DeleteConfirmed(int id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
 
-        public ActionResult Delete(int? id)
+        //public ActionResult Delete(int? id)
         {
             if (id == null)
             {

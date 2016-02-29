@@ -1,72 +1,285 @@
-﻿@*@model IEnumerable<TgpBudget.Models.CategoryCollection>*@
-@model TgpBudget.Models.CategoryCollection
+﻿@model TgpBudget.Models.CatDisplayVM
 
-@{
-    ViewBag.Title = "Index";
-}
+<div class="row">
+    <div class="col-sm-4" style="display:inline">
+        <h2>Categories & Budget</h2>
 
-<h2>Category List</h2>
+    </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.category.Name)
-            </th>
-            <th style="max-width:175px; text-align:center">
-                @Html.DisplayNameFor(model => model.category.BudgetAmount)
-            </th>
-            <th style="max-width:175px; text-align:center">
-                @Html.DisplayNameFor(model => model.ActualAmount)
-            </th>
-            <th style="max-width:175px; text-align:center">
-                @Html.DisplayNameFor(model => model.Variance)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.)
+    <div class="col-sm-6" style="display:inline; margin:30px 0 0px">
+
+        @using (Html.BeginForm("Index", "Categories", "Period"))
         {
+            <div class="form-group">
+                <div class="btn-group" data-toggle="buttons">
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("Period", "currentMonth", new { onchange = "this.form.submit();" })
+                        <label class="active">Current Month</label>
+                    </div>
+
+                    <div class="btn btn-primary radio-inline">
+                        @Html.RadioButton("Period", "priorMonth", new { onchange = "this.form.submit();" })
+                        <label>Prior Month</label>
+                    </div>
+
+                    <div class="btn btn-primary radio-inline">
+                        @Html.RadioButton("Period", "last30Days", new { onchange = "this.form.submit();" })
+                        <label>Last 30 Days</label>
+                    </div>
+
+                    <div class="radio-inline btn btn-primary">
+                        @Html.RadioButton("Period", "avg90Days", new { onchange = "this.form.submit();" })
+                        <label>90 Day Avg</label>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-sm-2" style="display:inline; margin:40px 0 0px; text-align:left">
+        <p>
+            @Html.ActionLink("New Category", "Create")
+        </p>
+    </div>
+
+</div>
+
+<div class="row">
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.category.Name)
+                <th style="width:10%; text-align:left;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Name)
+                </th>
+                <th style="width:10%; text-align:right; font-style:italic;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Reconciled)
+                </th>
+                <th style="width:10%; text-align:right; font-style:italic;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Unreconciled)
+                </th>
+                <th style="width:10%; text-align:right; font-style:italic;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Actual)
+                </th>
+                <th style="width:10%; text-align:right; font-style:italic;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Budget)
+                </th>
+                <th style="width:10%; text-align:right; font-style:italic;">
+                    @Html.DisplayNameFor(model => model.IncTotal.Variance)
+                </th>
+                <th style="width:15%; text-align:center">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+
+        <tfoot style="vertical-align:bottom">
+            <tr>
+                <td style="font-weight:bolder">
+                    @Html.DisplayFor(model => Model.IncTotal.Name)
                 </td>
-                <td style="max-width:175px; text-align:right">
-                    @Html.DisplayFor(modelItem => item.category.BudgetAmount)
 
+                <td style="font-weight:bolder; text-align:right; font-style:italic">
+                    @Html.DisplayFor(model => Model.IncTotal.Reconciled)
+                </td>
+                <td style="font-weight:bolder; text-align:right; font-style:italic">
+                    @Html.DisplayFor(model => Model.IncTotal.Unreconciled)
                 </td>
 
-                <td style="text-align:right">
-                    @Html.DisplayFor(modelItem => item.ActualAmount)
+                <td style="font-weight:bolder; text-align:right">
+                    @Html.DisplayFor(model => Model.IncTotal.Actual)
 
                 </td>
-                <td style="text-align:right">
-                    @Html.DisplayFor(modelItem => item.Variance)
-
+                <td style="font-weight:bolder; text-align:right">
+                    @Html.DisplayFor(model => Model.IncTotal.Budget)
                 </td>
+                <td style="font-weight:bolder; text-align:right; font-style:italic">
+                    @Html.DisplayFor(model => Model.IncTotal.Variance)
+                    </>
+            </tr>
+        </tfoot>
 
-                <td>
-                    @if (!item.IsTotal)
-                    {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.category.Id })<span> | </span>
-                        @Html.ActionLink("Details", "Details", new { id = item.category.Id })<span> | </span>
-                        <button data-id="@item.category.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
+        <tbody>
+            @foreach (var item in Model.IncCats)
+            {
+                <tr style="text-align:right">
+                    <td style="text-align:left">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reconciled)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Unreconciled)
+                    </td>
+
+                    <td style="text-align:right; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.Actual)
+
+                    </td>
+                    <td style="text-align:right; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.Budget)
+                    </td>
+                    <td style="text-align:right; font-style:italic;">
+                        @Html.DisplayFor(modelItem => item.Variance)
+
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
+                        @Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>
+                        <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
                             <span>Delete</span>
                         </button>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table style="width:inherit; height:inherit">
+            <thead>
+                <tr>
+                    <th style="width:10%; text-align:left;">
+
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;">
+
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;">
+
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;">
+
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;">
+
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;">
+
+                    </th>
+                    <th style="width:15%; text-align:center">
+
+                    </th>
+                </tr>
+            </thead>
+
+            <tfoot style="vertical-align:bottom">
+                <tr>
+                    <td style="font-weight:bolder">
+                        @Html.DisplayFor(model => Model.ExpTotal.Name)
+                    </td>
+
+                    <td style="font-weight:bolder; text-align:right; font-style:italic">
+                        @Html.DisplayFor(model => Model.ExpTotal.Reconciled)
+                    </td>
+                    <td style="font-weight:bolder; text-align:right; font-style:italic">
+                        @Html.DisplayFor(model => Model.ExpTotal.Unreconciled)
+                    </td>
+
+                    <td style="font-weight:bolder; text-align:right">
+                        @Html.DisplayFor(model => Model.ExpTotal.Actual)
+
+                    </td>
+                    <td style="font-weight:bolder; text-align:right">
+                        @Html.DisplayFor(model => Model.ExpTotal.Budget)
+                    </td>
+                    <td style="font-weight:bolder; text-align:right; font-style:italic">
+                        @Html.DisplayFor(model => Model.ExpTotal.Variance)
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var item in Model.ExpCats)
+            {
+                    <tr style="text-align:right">
+                        <td style="text-align:left">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Reconciled)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Unreconciled)
+                        </td>
+
+                        <td style="text-align:right; font-weight:bolder;">
+                            @Html.DisplayFor(modelItem => item.Actual)
+
+                        </td>
+                        <td style="text-align:right; font-weight:bolder;">
+                            @Html.DisplayFor(modelItem => item.Budget)
+                        </td>
+                        <td style="text-align:right; font-style:italic;">
+                            @Html.DisplayFor(modelItem => item.Variance)
+
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
+                            @Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>
+                            <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delCategoryModal">
+                                <span>Delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-sm-12">
+        <table style="width:inherit;height:inherit;max-width:inherit;max-height:inherit">
+            <thead>
+
+            </thead>
+
+            <tfoot style="vertical-align:bottom; ">
+                <tr>
+                    <th style="width:10%; text-align:left">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Name)</u>
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic; text-decoration-line:underline">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Reconciled)</u>
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;text-decoration-line:underline">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Unreconciled)</u>
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;text-decoration-line:underline">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Actual)</u>
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;text-decoration-line:underline">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Budget)</u>
+                    </th>
+                    <th style="width:10%; text-align:right; font-style:italic;text-decoration-line:underline">
+                        <u>@Html.DisplayFor(model => model.NetTotal.Variance)</u>
+                    </th>
+
+                    <th style="width:15%; text-align:center">
+
+                    </th>
+                </tr>
+            </tfoot>
+            <tbody></tbody>
+
+        </table>
+    </div>
+</div>
+
+
 
 <!-- vvvvv Start of Modal vvvvv -->
 
 <div class="modal fade" id="delCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width:800px;">
+    <div class="modal-dialog modal-lg" style="max-width:360px;">
         <div class="modal-content" style="align-content:center">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -104,6 +317,9 @@
 
 @section scripts{
     <script>
+        //$(document).ready(function () {
+        // $('.table').DataTable();
+        //});
         var categoryId = 0;
         $('#delCategoryModal').on('shown.bs.modal', function (e) {
             var j = $(e.relatedTarget).data('id');
@@ -112,6 +328,7 @@
             $('.modal-backdrop').removeClass('modal-backdrop');
             $('#modal-id').val(categoryId);
         });
+
 
     </script>
 }

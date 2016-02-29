@@ -11,7 +11,7 @@
     <link href="~/Content/chartist.css" rel="stylesheet" />
 
     <!-- vvvvvv start of TEMPLATE addins vvvvvv -->
-    <!-- Animation library for notifications   -->    
+    <!-- Animation library for notifications   -->
     <link href="~/XcTim1-3/assets/css/animate.min.css" rel="stylesheet" />
     <!--  Light Bootstrap Table core CSS    -->
     <link href="~/XcTim1-3/assets/css/light-bootstrap-dashboard.css" rel="stylesheet" />
@@ -83,23 +83,24 @@
                         </a>
                     </li>
                     <li>
-                        <a href=@Url.Action("Index", "Categories")>
-                            <i class="pe-7s-menu"></i>
-                            <p>Budget Categories</p>
-                        </a>
+                        @*<a href=@Url.Action("Index", "Categories",new { period = "currentMonth" })>*@
+                            <a href=@Url.Action("Details", "Categories", new { period = "currentMonth" })>
+                                <i class="pe-7s-menu"></i>
+                                <p>Budget Categories</p>
+                            </a>
                     </li>
                     @*<li>
-                        <a href="notifications.html">
-                            <i class="pe-7s-bell"></i>
-                            <p>Notifications</p>
-                        </a>
-                    </li>
-                    <li class="active-pro">
-                        <a href="#">
-                            <i class="pe-7s-graph3"></i>
-                            <p>Reports (Soon)</p>
-                        </a>
-                    </li>*@
+                            <a href="notifications.html">
+                                <i class="pe-7s-bell"></i>
+                                <p>Notifications</p>
+                            </a>
+                        </li>
+                        <li class="active-pro">
+                            <a href="#">
+                                <i class="pe-7s-graph3"></i>
+                                <p>Reports (Soon)</p>
+                            </a>
+                        </li>*@
                 </ul>
             </div>
         </div>
@@ -195,7 +196,6 @@
 <script src="~/Scripts/jquery-ui.js"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project!
 <script src="~/XcTim1-3/assets/js/demo.js"></script> -->
-
 <!-- Chartist-JS code -->
 <script src="~/Scripts/chartist.js"></script>
 <script src="~/Scripts/site.js"></script>
