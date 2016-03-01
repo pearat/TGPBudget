@@ -11,6 +11,7 @@ namespace TgpBudget.Models
     {
         public int Id { get; set; }
         public int? HouseholdId { get; set; }
+        public int? DealId { get; set; }
         public Category()
         {
             this.Deals = new HashSet<Deal>();

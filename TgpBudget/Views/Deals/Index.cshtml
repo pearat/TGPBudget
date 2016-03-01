@@ -57,26 +57,26 @@
 <table class="table" id="myTable">
     <thead>
         <tr>
-            <th>
+            <th width="10%">
                 @Html.DisplayNameFor(m => m.DealDate)
             </th>
 
-            <th>
+            <th width="12%">
                 @Html.DisplayNameFor(m => m.Category.Name)
             </th>
-            <th>
+            <th width="16%">
                 @Html.DisplayNameFor(m => m.BankAcct.AccountName)
             </th>
-            <th>
+            <th width="14%">
                 @Html.DisplayNameFor(m => m.Payee)
             </th>
-            <th>
+            <th width="16%">
                 @Html.DisplayNameFor(m => m.Description)
             </th>
-            <th>
+            <th width="12%">
                 @Html.DisplayNameFor(m => m.Amount)
             </th>
-            <th>
+            <th width="8%">
                 @Html.DisplayNameFor(m => m.Reconciled)
             </th>
             <th></th>
@@ -85,7 +85,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr width="inherit">
                 <td>
                     @Html.DisplayFor(modelItem => item.DealDate)
                 </td>
@@ -111,7 +111,7 @@
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    <button data-id="@item.Id" class="btn del" data-toggle="modal" data-target="#delDealModal">
+                    <button data-id="@item.Id" class="del" data-toggle="modal" data-target="#delDealModal">
                         <span>Delete</span>
                     </button>
                 </td>

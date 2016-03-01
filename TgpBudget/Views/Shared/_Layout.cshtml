@@ -49,7 +49,7 @@
                 </div>
                 <ul class="nav">
                     <li class="active">
-                        <a href=@Url.Action("Index", "Home")>
+                        <a href=@Url.Action("Dashboard", "Home")>
                             <i class="pe-7s-graph"></i>
                             <p>Dashboard</p>
                         </a>
@@ -61,11 +61,11 @@
                         </a>
                     </li>
                     <li>
-                        @*<a href=@Url.Action("Index", "Categories",new { period = "currentMonth" })>*@
-                            <a href=@Url.Action("Details", "Categories", new { period = "currentMonth" })>
-                                <i class="pe-7s-menu"></i>
-                                <p>Budget Categories</p>
-                            </a>
+                        @*<a href=@Url.Action("Details", "Categories",new { period = "currentMonth" })>*@
+                        <a href=@Url.Action("Index", "Categories")>
+                            <i class="pe-7s-menu"></i>
+                            <p>Budget Categories</p>
+                        </a>
                     </li>
                     <li>
                         <a href=@Url.Action("Index", "BankAccts")>
@@ -104,17 +104,25 @@
                             <span class="icon-bar"></span>
                         </button>
 
-                        <a href="https://tpeara.azurewebsites.net" background-image="~/img/logo/tlogo.png"
-                           style="padding:!important 13px 15px 5px 0px;margin: 13px 0px 0px 0px; font-size:x-large; font-weight:900;">TGP</a>
+
                     </div>
                     <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-left">
+                            <li class="dropdown">
                             <li>
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-dashboard"></i>
+                                <a href="https://tpeara.azurewebsites.net" background-image="~img/logo/tlogo.png"
+                                   class="dropdown-toggle" data-toggle="dropdown"
+                                   style="font-size:x-large; font-weight:900;" n">TGP</a>
+                                @*color: #1DC7EA;*@
+                            </li>
+                            <li>
+                                <a href="https://github.com/pearat"
+                                   @*style="color: #1DC7EA">*@
+                                   class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-github"></i>
                                 </a>
                             </li>
-                            <li class="dropdown">
+                            <li>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-globe"></i>
                                     <b class="caret"></b>
@@ -128,11 +136,13 @@
                             </li>
                             <li>
                                 @*<a href="">
-                                    <i class="fa fa-search"></i>
-                                </a>*@
+                                        <i class="fa fa-search"></i>
+                                    </a>*@
                             </li>
                             <li>
-                                <b>@ViewBag.ActiveHousehold</b>
+                                <a href=@Url.Action("Index", "Households") class="dropdown-toggle" data-toggle="dropdown">
+                                    @ViewBag.ActiveHousehold
+                                </a>
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
@@ -178,8 +188,7 @@
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="~/XcTim1-3/assets/js/light-bootstrap-dashboard.js"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
-
-<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project!
 <script src="~/XcTim1-3/assets/js/demo.js"></script> -->
 <!-- Chartist-JS code -->

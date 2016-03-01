@@ -9,7 +9,7 @@ using TgpBudget.Helpers;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
-    [AuthorizeHouseholdRequired]
+    [Authorize]
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -17,19 +17,8 @@ namespace TgpBudget.Controllers
         // GET: Households
         public ActionResult Index()
         {
-            if (User == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
             var user = db.Users.Find(User.Identity.GetUserId());
-            if (user == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            if (user.DisplayName == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
             if (user.HouseholdId == null)
             {
                 if (user.InvitationCode == null)
@@ -63,6 +52,7 @@ namespace TgpBudget.Controllers
         }
 
         // GET: Households/List/5
+        [AuthorizeHouseholdRequired]
         public ActionResult ListMembers()
         {
             // var user = db.Users.Find(User.Identity.GetUserId());
@@ -105,11 +95,25 @@ namespace TgpBudget.Controllers
                     household.Created = now;
                     db.Households.Add(household);
                     db.SaveChanges();
-
                     var hh = db.Households.FirstOrDefault(h => h.Name == household.Name);
                     user.HouseholdId = hh.Id;
+                    var startingHouseholdId = 14;
+
+                    var startingCategories = db.Categories.Where(c => c.HouseholdId == startingHouseholdId).ToList();
+
+                    foreach (var cat in startingCategories)
+                    {
+                        var inheritedCategory = new Category();
+                        inheritedCategory.HouseholdId = hh.Id;
+                        inheritedCategory.Name = cat.Name;
+                        inheritedCategory.IsExpense = cat.IsExpense;
+                        inheritedCategory.IsProtected = cat.IsProtected;
+                        inheritedCategory.BudgetAmount = cat.BudgetAmount;
+                        db.Categories.Add(inheritedCategory);
+                    }
+
                     db.SaveChanges();
-                    return RedirectToAction("Index", new { HhId = hh.Id });
+                    return RedirectToAction("Index"); // , new { HhId = hh.Id });
                 }
                 else
                 {
@@ -127,19 +131,17 @@ namespace TgpBudget.Controllers
                     user.HouseholdId = invitation.HouseholdId;
                     db.Invitations.Remove(invitation);
                     db.SaveChanges();
-                    return RedirectToAction("Index", new { HhId = user.HouseholdId });
+                    return RedirectToAction("Index");
                 }
-
             }
-
             return View(HhVM);
         }
-
         // GET: Households/Edit/5
+        [AuthorizeHouseholdRequired]
         public ActionResult Edit(int? id)
         {
             var user = db.Users.Find(User.Identity.GetUserId());
-            
+
             if (user == null)
             {
                 return RedirectToAction("JoinCreate");
@@ -158,6 +160,7 @@ namespace TgpBudget.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeHouseholdRequired]
         public ActionResult Edit([Bind(Include = "Id,Name,Created,Updated,Address,TaxId")] Household household)
         {
             if (ModelState.IsValid)
@@ -171,6 +174,7 @@ namespace TgpBudget.Controllers
         }
 
         // GET: Households/Leave/5
+        [AuthorizeHouseholdRequired]
         public ActionResult Leave()
         {
             var user = db.Users.Find(User.Identity.GetUserId());
@@ -195,6 +199,7 @@ namespace TgpBudget.Controllers
         // POST: Households/Leave/5
         [HttpPost, ActionName("Leave")]
         [ValidateAntiForgeryToken]
+        [AuthorizeHouseholdRequired]
         public ActionResult LeaveConfirmed()
         {
             var user = db.Users.Find(User.Identity.GetUserId());

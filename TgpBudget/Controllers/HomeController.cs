@@ -10,21 +10,39 @@ using TgpBudget.Models;
 namespace TgpBudget.Controllers
 {
 
-    [RequireHttps]
-    [Authorize]
-    [AuthorizeHouseholdRequired]
+
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [RequireHttps]
+        [AllowAnonymous]
         public ActionResult Index()
         {
-            @ViewBag.ActiveHousehold = "";
-            if (User != null)
+            return View();
+        }
+
+        [RequireHttps]
+        [Authorize]
+        [AuthorizeHouseholdRequired]
+        public ActionResult Dashboard()
+        {
+            if (User == null)
             {
-                var user = db.Users.Find(User.Identity.GetUserId());
-                if (user != null && user.DisplayName != null && user.Household.Name != null)
-                    @ViewBag.ActiveHousehold = user.Household.Name;
+                return RedirectToAction("Login", "User");
+            }
+            var user = db.Users.Find(User.Identity.GetUserId());
+            if (user == null || user.DisplayName == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            if (user.HouseholdId == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+            else
+            {
+                @ViewBag.ActiveHousehold = user.Household.Name;
             }
             return View();
         }
@@ -36,7 +54,7 @@ namespace TgpBudget.Controllers
             return View();
         }
 
-        [Authorize]
+
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

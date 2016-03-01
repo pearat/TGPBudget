@@ -1,0 +1,406 @@
+﻿@{
+    ViewBag.Title = "Welcome to TGP Budget!";
+}
+
+<div class="row">
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="header">
+                <h4 class="title">Bank Account Balance</h4>
+                <p class="category">Top accounts over past year</p>
+            </div>
+            <div class="content">
+                <div id="chartBankAccts" class="ct-chart"></div>
+                @*@Html.Action("_BankStmtChart", "BankAccts")*@
+                <div class="footer">
+                    <div class="legend">
+                        <i id="acctSymbol-0" class="fa fa-circle text-info"></i><div id="acct-0" value="a"></div>
+                        <i id="acctSymbol-1" class="fa fa-circle text-danger"></i><div id="acct-1" value="a"></div>
+                        <i id="acctSymbol-2" class="fa fa-circle text-warning"></i><div id="acct-2" value="a"></div>
+                        <i id="acctSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="acct-3" value="a"></div>
+                        <i id="acctSymbol-4" class="fa fa-circle text-success"></i><div id="acct-4" value="a"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div id="divPartialBankAccts" style="padding-top:15px">
+                @Html.Action("_Index", "BankAccts")
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="row">
+                <h4 style="text-align:center">Budget Period</h4>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="currentMonthBtn" name="period" value="currentMonthPartial" />Cur Mon
+                        </label>
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="priorMonthBtn" name="period" value="priorMonthPartial" />Prior
+                        </label>
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="last30DaysBtn" name="period" value="last30DaysPartial" />30 Days
+                        </label>
+                        <label class="radio-inline btn btn-primary" style="display:inline">
+                            <input type="radio" id="avg90DaysBtn" name="period" value="avg90DaysPartial" />90d Avg
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div id="divPartialCategories">
+                @Html.Action("_Index", "Categories", new { period = "currentMonthPartial" })
+            </div>
+        </div>
+        <hr />
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-12" style="display:inline; margin:30px 0 0px">
+                        <h4 class="title">
+                            Income
+                        </h4>
+                        <p class="budgetPeriod" value="3 month Average"></p>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="content">
+                <div id="incomePieChart" class="ct-chart ct-perfect-fourth"></div>
+                <div class="footer">
+                    <div class="legend">
+                        <i id="incPieSymbol-0" class="fa fa-circle text-info"></i><div id="incPie-0" value="a"></div>
+                        <i id="incPieSymbol-1" class="fa fa-circle text-danger"></i><div id="incPie-1" value="a"></div>
+                        <i id="incPieSymbol-2" class="fa fa-circle text-warning"></i><div id="incPie-2" value="a"></div>
+                        <i id="incPieSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="incPie-3" value="a"></div>
+                        <i id="incPieSymbol-4" class="fa fa-circle text-success"></i><div id="incPie-4" value="a"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-12" style="display:inline; margin:30px 0 0px">
+                        <h4 class="title">
+                            Expense
+                        </h4>
+                        <p class="budgetPeriod" value="3 month Average"></p>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="content">
+                <div id="expensePieChart" class="ct-chart ct-perfect-fourth"></div>
+                <div class="footer">
+                    <div class="legend">
+                        <i id="pieSymbol-0" class="fa fa-circle text-info"></i><div id="pie-0" value="a"></div>
+                        <i id="pieSymbol-1" class="fa fa-circle text-danger"></i><div id="pie-1" value="a"></div>
+                        <i id="pieSymbol-2" class="fa fa-circle text-warning"></i><div id="pie-2" value="a"></div>
+                        <i id="pieSymbol-3" class="fa fa-circle" style="color:#9368E9"></i><div id="pie-3" value="a"></div>
+                        <i id="pieSymbol-4" class="fa fa-circle text-success"></i><div id="pie-4" value="a"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-sm-7">
+        <div class="card">
+            <div id="divPartialDeals" style="padding-top:15px">
+                @Html.Action("Index", "Deals", new { calledFrom = "Dashboard" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card ">
+            <div class="header">
+                <div class="row">
+                    <div class="col-sm-6" style="display:inline">
+                        <h4>Income/Expense</h4>
+                    </div>
+
+                    @*<div class="col-sm-6" style="display:inline; margin:30px 0 0px">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="radio-inline btn btn-primary ">
+                                    <input type="radio" id="fourMonthsBtn" name="period" value="fourMonths" />4 mo's
+                                </label>
+                                <label class="radio-inline btn btn-primary ">
+                                    <input type="radio" id="fourQuartersBtn" name="period" value="fourQuarters" />4 Qtrs
+                                </label>
+                            </div>
+                        </div>*@
+                </div>
+
+            </div>
+            <div class="content">
+                <div id="incExpBarChart" class="ct-chart"></div>
+
+                <div class="footer">
+                    <div class="legend">
+                        INC.
+                        <i class="text-info fa fa-circle"></i>Budget
+                        <i class="text-danger fa fa-circle"></i>Actual : EXP.
+                        <i class="text-warning fa fa-circle"></i>Budget
+                        <i class="fa fa-circle" style="color:#9368E9"></i>Actual :
+                        <i class="text-success fa fa-circle"></i>NET $
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section scripts{
+    <script>
+
+
+        $(document).ready(function () {
+
+            demo.initChartist();
+
+            $.notify({
+                icon: 'pe-7s-gift',
+                message: "Welcome to <b>TGP Budget</b> - a budgetting App for households."
+            }, { type: 'info', timer: 1000 });
+
+
+            $.post('@Url.Action("GetBankChartData","BankAccts")').then(function (response) {
+                console.log('response: ' + response);
+
+                $('*[id^="acctSymbol"]').removeClass('fa fa-circle');
+                $('*[id^="acct-"]').hide();
+
+                for (var i = 0; i < response.seriesCount; i++) {
+                    var iconName = '#acctSymbol-' + i;
+                    $(iconName).addClass('fa fa-circle');
+                    var elemName = '#acct-' + i;
+                    $(elemName).text(response.legend[i]);
+                    $(elemName).show();
+                }
+
+                var optionsBankChart = {
+                    lineSmooth: false,
+                    //low: -10000,
+                    //high: 30000,
+                    showArea: true,
+                    height: "245px",
+                    axisX: {
+                        showGrid: false,
+                    },
+                    lineSmooth: Chartist.Interpolation.simple({
+                        divisor: 3
+                    }),
+                    showLine: true,
+                    showPoint: false,
+                };
+
+                var responsiveBankChart = [
+                  ['screen and (max-width: 640px)', {
+                      axisX: {
+                          labelInterpolationFnc: function (value) {
+                              return value[0];
+                          }
+                      }
+                  }]
+                ];
+
+
+                new Chartist.Bar('#chartBankAccts', response.data, {
+                    stackBars: true,
+                    axisY: {
+                        labelInterpolationFnc: function (value) {
+                            return (value / 1000) + 'k';
+                        }
+                    }
+                }).on('draw', function (data) {
+                    if (data.type === 'bar') {
+                        data.element.attr({
+                            style: 'stroke-width: 30px'
+                        });
+                    }
+                });
+
+            });
+
+
+            $.post('@Url.Action("GetIncExpBarChart", "Categories")').then(function (response) {
+
+                // console.log(' Inside GetIncExpBarChart response: ' + response);
+
+                Chartist.Bar('#incExpBarChart', response.data,
+                    {
+                        // Default mobile configuration
+                        stackBars: true,
+                        axisX: {
+                            labelInterpolationFnc: function (value) {
+                                return value.split(/\s+/).map(function (word) {
+                                    return word[0];
+                                }).join('');
+                            }
+                        },
+                        axisY: {
+                            offset: 20
+                        }
+                    }, [
+                        // Options override for media > 400px
+                        ['screen and (min-width: 400px)', {
+                            reverseData: true,
+                            horizontalBars: true,
+                            axisX: {
+                                labelInterpolationFnc: Chartist.noop
+                            },
+                            axisY: {
+                                offset: 60
+                            }
+                        }],
+                        // Options override for media > 800px
+                        ['screen and (min-width: 800px)', {
+                            stackBars: false,
+                            seriesBarDistance: 10
+                        }],
+                        // Options override for media > 1000px
+                        ['screen and (min-width: 1000px)', {
+                            reverseData: false,
+                            horizontalBars: false,
+                            seriesBarDistance: 15
+                        }]
+                    ]);
+            });
+
+
+            $.post('@Url.Action("GetCategoryPieChart", "Categories", new { period="avg90Days"})').then(function (data) {
+
+                drawPies(data, "avg90Days");
+            });
+
+
+        });
+
+        function drawPies (data,title){
+
+            switch (title) {
+                case "currentMonth":
+                    $(".budgetPeriod").text("Current Month");
+                    break;
+                case "priorMonth":
+                    $(".budgetPeriod").text("Prior Month");
+                    break;
+                case "last30Days":
+                    $(".budgetPeriod").text("Last 30 Days");
+                    break;
+                case "avg90Days":
+                    $(".budgetPeriod").text("3 Month Average");
+                    break;
+                default:
+                    $(".budgetPeriod").text("Current Month");
+
+            };
+
+            $('*[id^="incPieSymbol"]').removeClass('fa fa-circle');
+            $('*[id^="incPie-"]').hide();
+
+            $('*[id^="pieSymbol"]').removeClass('fa fa-circle');
+            $('*[id^="pie-"]').hide();
+
+            for (var i = 0; i < data.income.seriesCount; i++) {
+                var iconName = '#incPieSymbol-' + i;
+                $(iconName).addClass('fa fa-circle');
+                var elemName = '#incPie-' + i;
+                $(elemName).text(data.income.labels[i]);
+                $(elemName).show();
+            }
+
+            for (var i = 0; i < data.expense.seriesCount; i++) {
+                var iconName = '#pieSymbol-' + i;
+                $(iconName).addClass('fa fa-circle');
+                var elemName = '#pie-' + i;
+                $(elemName).text(data.expense.labels[i]);
+                $(elemName).show();
+            }
+
+            var sum = function (a, b) { return a + b };
+
+            new Chartist.Pie('#incomePieChart', data.income, {
+                donut: true,
+                donutWidth: 60,
+                startAngle: 270,
+                total: 200,
+                showLabel: false
+            });
+
+            new Chartist.Pie('#expensePieChart', data.expense, {
+                donut: true,
+                donutWidth: 60,
+                startAngle: 270,
+                total: 200,
+                showLabel: false
+            });
+
+        };
+
+
+
+        $('body').on('change', '#currentMonthBtn', function (e) {
+            $('#divPartialCategories').load('/Categories/_Index?period=currentMonthPartial');
+            $.post('@Url.Action("GetCategoryPieChart", "Categories", new { period= "currentMonth" })').then(function (data) {
+
+                drawPies(data,"currentMonth");
+            });
+        });
+
+
+        $('body').on('change', '#priorMonthBtn', function (e) {
+            $('#divPartialCategories').load('/Categories/_Index?period=priorMonthPartial');
+            $.post('@Url.Action("GetCategoryPieChart", "Categories", new { period= "priorMonth" })').then(function (data) {
+
+                drawPies(data, "priorMonth");
+            });
+        });
+
+        $('body').on('change', '#last30DaysBtn', function (e) {
+            $('#divPartialCategories').load('/Categories/_Index?period=last30DaysPartial');
+            $.post('@Url.Action("GetCategoryPieChart", "Categories", new { period= "last30Days" })').then(function (data) {
+
+                drawPies(data, "last30Days");
+            });
+        });
+        $('body').on('change', '#avg90DaysBtn', function (e) {
+            $('#divPartialCategories').load('/Categories/_Index?period=avg90DaysPartial');
+            $.post('@Url.Action("GetCategoryPieChart", "Categories", new { period= "avg90Days" })').then(function (data) {
+
+                drawPies(data, "avg90Days");
+            });
+        });
+    </script>
+}

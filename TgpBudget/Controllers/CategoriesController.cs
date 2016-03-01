@@ -15,14 +15,16 @@ using Newtonsoft.Json;
 namespace TgpBudget.Controllers
 {
     [RequireHttps]
+    [Authorize]
     [AuthorizeHouseholdRequired]
     public class CategoriesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private List<string> protectedNameList = new List<string>(new string[] { "Other Income", "Other Expense", "Total" });
 
-        public enum DateRange
+        public enum BudgetPeriod
         {
+            None,
             currentMonth,
             priorMonth,
             last30Days,
@@ -34,10 +36,10 @@ namespace TgpBudget.Controllers
         };
 
 
-        public startEndDates GetDateRange(DateRange? period)
+        public startEndDates GetDateRange(BudgetPeriod? period)
         {
 
-            DateRange actualDates = period ?? DateRange.currentMonth;
+            BudgetPeriod actualDates = period ?? BudgetPeriod.currentMonth;
 
             // ViewBag.Period = actualDates;
             DateTime endDate = System.DateTime.Now;
@@ -45,24 +47,24 @@ namespace TgpBudget.Controllers
             var firstOfMonth = new DateTime(endDate.Year, endDate.Month, 1);
             switch (actualDates)
             {
-                case DateRange.currentMonth:
-                case DateRange.currentMonthPartial:
+                case BudgetPeriod.currentMonth:
+                case BudgetPeriod.currentMonthPartial:
                     startDate = firstOfMonth;
                     ViewBag.Period = "Current Month";
                     break;
-                case DateRange.priorMonth:
-                case DateRange.priorMonthPartial:
+                case BudgetPeriod.priorMonth:
+                case BudgetPeriod.priorMonthPartial:
                     startDate = firstOfMonth.AddMonths(-1);
                     endDate = firstOfMonth.AddDays(-1);
                     ViewBag.Period = "Prior Month";
                     break;
-                case DateRange.last30Days:
-                case DateRange.last30DaysPartial:
+                case BudgetPeriod.last30Days:
+                case BudgetPeriod.last30DaysPartial:
                     startDate = endDate.AddDays(-30);
                     ViewBag.Period = "Last 30 Days";
                     break;
-                case DateRange.avg90Days:
-                case DateRange.avg90DaysPartial:
+                case BudgetPeriod.avg90Days:
+                case BudgetPeriod.avg90DaysPartial:
                     startDate = endDate.AddDays(-90);
                     ViewBag.Period = "90 day Average";
                     break;
@@ -183,33 +185,29 @@ namespace TgpBudget.Controllers
 
 
 
-        public ActionResult Index(DateRange? period)
+        public ActionResult _Index(BudgetPeriod? period)
         {
 
-            DateRange actualDates = period ?? DateRange.currentMonth;
+            BudgetPeriod actualDates = period ?? BudgetPeriod.currentMonth;
             var range = GetDateRange(actualDates);
             ViewBag.Period = actualDates;
 
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             @ViewBag.ActiveHousehold = hh.Name;
             var catDVM = CategoryBudget(range.start, range.end);
-            if (actualDates > DateRange.avg90Days)
-            {
-                return PartialView("_Index", catDVM);
-            }
-            else {
-                return View("Index", "Categories", catDVM);
-            }
+            //if (actualDates > BudgetPeriod.avg90Days)
+            //{
+                return PartialView(catDVM);
+            //}
+            //else {
+            //    return View("Index", "Categories", catDVM);
+            //}
         }
 
 
-        public ActionResult Details(DateRange? period)
+        public ActionResult Index(BudgetPeriod? period)
         {
-            if (period == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            DateRange actualDates = period ?? DateRange.currentMonth;
+            BudgetPeriod actualDates = period ?? BudgetPeriod.currentMonth;
             var range = GetDateRange(actualDates);
             ViewBag.Period = actualDates;
 
@@ -217,41 +215,36 @@ namespace TgpBudget.Controllers
             @ViewBag.ActiveHousehold = hh.Name;
             var catDVM = CategoryBudget(range.start, range.end);
 
-            Category category = db.Categories.Find(32);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
             return View(catDVM);
         }
 
 
         //// GET: Categories/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Category category = db.Categories.Find(id);
-        //    if (category == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(category);
-        //}
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Category category = db.Categories.Find(id);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            return View(category);
+        }
 
-        public ActionResult List(DateRange? period)
+        public ActionResult List(BudgetPeriod? period)
         {
 
-            DateRange actualDates = period ?? DateRange.currentMonth;
+            BudgetPeriod actualDates = period ?? BudgetPeriod.currentMonth;
             var range = GetDateRange(actualDates);
             ViewBag.Period = actualDates;
 
             var hh = db.Households.Find(Convert.ToInt32(User.Identity.GetHouseholdId()));
             @ViewBag.ActiveHousehold = hh.Name;
             var catDVM = CategoryBudget(range.start, range.end);
-            if (actualDates > DateRange.avg90Days)
+            if (actualDates > BudgetPeriod.avg90Days)
             {
                 return PartialView("_Index", catDVM);
             }
@@ -261,9 +254,10 @@ namespace TgpBudget.Controllers
         }
 
         // GET: CategoryPieChart
-        public ActionResult GetCategoryPieChart()
+        public ActionResult GetCategoryPieChart(BudgetPeriod period)
         {
-            var range = GetDateRange(DateRange.avg90Days);
+            period = (period == BudgetPeriod.None ? BudgetPeriod.avg90Days : period);
+            var range = GetDateRange(period);
 
             var catDVM = CategoryBudget(range.start, range.end);
             var incomeCategories = catDVM.IncCats.OrderByDescending(a => a.Actual);
@@ -278,6 +272,7 @@ namespace TgpBudget.Controllers
             {
                 sum += item.Actual;     // calculate sum in order to normalize values
             }
+            if (sum == 0) sum = 1;
             int i = 0;
             foreach (var item in incomeCategories)
             {
@@ -286,7 +281,7 @@ namespace TgpBudget.Controllers
                 i++;
             }
 
-            var expenseCategories= catDVM.ExpCats.OrderBy(a => a.Actual);
+            var expenseCategories = catDVM.ExpCats.OrderBy(a => a.Actual);
             numCats = catDVM.ExpCats.Count();
             IEPie.expense.labels = new string[numCats];
             IEPie.expense.series = new int[numCats];
@@ -297,6 +292,7 @@ namespace TgpBudget.Controllers
                 sum += item.Actual;     // calculate sum in order to normalize values
             }
             i = 0;
+            if (sum == 0) sum = 1;
             foreach (var item in expenseCategories)
             {
                 IEPie.expense.series[i] = Decimal.ToInt32(Math.Round(100 * item.Actual / sum)); // normalize to 100
@@ -417,7 +413,7 @@ namespace TgpBudget.Controllers
                 }
                 db.Categories.Add(category);
                 db.SaveChanges();
-                return RedirectToAction("Details",new { period = "currentMonth" });
+                return RedirectToAction("Index", new { period = "currentMonth" });
             }
 
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", category.HouseholdId);
@@ -461,7 +457,7 @@ namespace TgpBudget.Controllers
                 }
                 db.Entry(category).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Details",new { period = "currentMonth" });
+                return RedirectToAction("Index", new { period = "currentMonth" });
             }
 
             return View(category);
@@ -549,7 +545,7 @@ namespace TgpBudget.Controllers
             }
             db.Categories.Remove(category);
             db.SaveChanges();
-            return RedirectToAction("Details",new { period="currentMonth" });
+            return RedirectToAction("Index", new { period = "currentMonth" });
         }
 
         protected override void Dispose(bool disposing)

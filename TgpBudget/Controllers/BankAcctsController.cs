@@ -111,65 +111,68 @@ namespace TgpBudget.Controllers
             lineChart.data.labels = new string[12];
             lineChart.data.series = new int[numAccts, 12];
             int x; int plusSum; int minusSum; int total;
-            for (int i = 0; i < 12; i++)
+            if (numAccts > 0)
             {
-                lineChart.data.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
-                x = 0; plusSum = 0; minusSum = 0; total = 0;
-                for (int j = 0; j < numAccts; j++)      // initial assignments of bank balances
+                for (int i = 0; i < 12; i++)
                 {
-                    x = Decimal.ToInt32(Math.Round(bankChartData[i * numAccts + j].Inflows + bankChartData[i * numAccts + j].Outflows));
+                    lineChart.data.labels[i] = bankChartData[i * numAccts].Month.ToString("MMM/yy");
+                    x = 0; plusSum = 0; minusSum = 0; total = 0;
+                    for (int j = 0; j < numAccts; j++)      // initial assignments of bank balances
+                    {
+                        x = Decimal.ToInt32(Math.Round(bankChartData[i * numAccts + j].Inflows + bankChartData[i * numAccts + j].Outflows));
 
-                    lineChart.data.series[j, i] = x;
-                    total += x;
-                    if (x > 0)
-                        plusSum += x;
-                    else
-                        minusSum += x;
-                    if (i == 0)
-                        lineChart.legend[j] = bankChartData[j].AcctName;
-                    else
-                        lineChart.data.series[j, i] += lineChart.data.series[j, i - 1];
-                }
-                /* if (minusSum != 0 && plusSum != 0)      // need to net out -balance(s) with +balance(s)
-                 {
-                     for (int j = 0; j < numAccts; j++)
+                        lineChart.data.series[j, i] = x;
+                        total += x;
+                        if (x > 0)
+                            plusSum += x;
+                        else
+                            minusSum += x;
+                        if (i == 0)
+                            lineChart.legend[j] = bankChartData[j].AcctName;
+                        else
+                            lineChart.data.series[j, i] += lineChart.data.series[j, i - 1];
+                    }
+                    /* if (minusSum != 0 && plusSum != 0)      // need to net out -balance(s) with +balance(s)
                      {
-                         if (Math.Sign(lineChart.data.series[j, i]) != Math.Sign(total)) // minority value
-                             lineChart.data.series[j, i] = 0;  // clear balance of an account in the minority
-                         else
+                         for (int j = 0; j < numAccts; j++)
                          {
-                             if (Math.Sign(total) == 1)        // majority is positive
+                             if (Math.Sign(lineChart.data.series[j, i]) != Math.Sign(total)) // minority value
+                                 lineChart.data.series[j, i] = 0;  // clear balance of an account in the minority
+                             else
                              {
-                                 if (lineChart.data.series[j, i] > -minusSum)  // able to offset with this balance
+                                 if (Math.Sign(total) == 1)        // majority is positive
                                  {
-                                     lineChart.data.series[j, i] += minusSum;
-                                     minusSum = 0;
-                                     break;
+                                     if (lineChart.data.series[j, i] > -minusSum)  // able to offset with this balance
+                                     {
+                                         lineChart.data.series[j, i] += minusSum;
+                                         minusSum = 0;
+                                         break;
+                                     }
+                                     else        // partial offset only
+                                     {
+                                         minusSum += lineChart.data.series[j, i];
+                                         lineChart.data.series[j, i] = 0;
+                                     }
                                  }
-                                 else        // partial offset only
+                                 else        // majority is negative
                                  {
-                                     minusSum += lineChart.data.series[j, i];
-                                     lineChart.data.series[j, i] = 0;
-                                 }
-                             }
-                             else        // majority is negative
-                             {
-                                 if (lineChart.data.series[j, i] < -plusSum)  // able to offset with this balance
-                                 {
-                                     lineChart.data.series[j, i] += plusSum;
-                                     plusSum = 0;
-                                     break;
-                                 }
-                                 else      // partial offset only
-                                 {
-                                     plusSum += lineChart.data.series[j, i];
-                                     lineChart.data.series[j, i] = 0;
+                                     if (lineChart.data.series[j, i] < -plusSum)  // able to offset with this balance
+                                     {
+                                         lineChart.data.series[j, i] += plusSum;
+                                         plusSum = 0;
+                                         break;
+                                     }
+                                     else      // partial offset only
+                                     {
+                                         plusSum += lineChart.data.series[j, i];
+                                         lineChart.data.series[j, i] = 0;
+                                     }
                                  }
                              }
                          }
                      }
-                 }
-             */
+                 */
+                }
             }
             return Content(JsonConvert.SerializeObject(lineChart), "application/json");
         }

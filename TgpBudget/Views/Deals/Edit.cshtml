@@ -16,11 +16,11 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.IsExpense)
-        
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.BankAcctId, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="padding-left:8px">
                 @Html.DropDownListFor(model => model.BankAcctId, null, htmlAttributes: new { @class = "form-control" })
 
                 @Html.ValidationMessageFor(model => model.BankAcctId, "", new { @class = "text-danger" })
@@ -29,34 +29,42 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @*@Html.DropDownList("CategoryId", (IEnumerable<SelectListItem>)ViewBag.CategoryId, htmlAttributes: new { @class = "form-control" })*@
-                @*@Html.DropDownListFor(model => model.CategoryId, (IEnumerable<SelectListItem>)ViewBag.CategoryId, htmlAttributes: new { @class = "form-control" })*@
+            <div class="col-md-10"style="padding-left:8px">
                 @Html.DropDownListFor(model => model.CategoryId, null, htmlAttributes: new { @class = "form-control" })
-            
-                @*@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })*@
                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="control-group">
+        <div class="form-group row" style="padding:0px 5px;">
             <div style="display:inline">
-                <label for="date-picker-1" class="control-label">
-                    <span class="glyphicon glyphicon-calendar">
-                        Transaction Date
-                    </span>
+                <label for="date-picker-1" class="control-label col-md-2" style="display:inline; padding-top:10px">
+                    Transaction Date
                 </label>
-                <div class="controls">
-                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate"
+                <div class="controls col-md-10" style="padding:0px 8px">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate" style="padding:8px 12px; border:1px"
                            value="@Model.DealDate.ToString("MM/dd/yyyy")">
                 </div>
             </div>
         </div>
 
+        @*<div class="form-group row" style="padding:0px 5px;">
+                <div style="display:inline">
+                    <label for="date-picker-1" class="control-label col-md-2" style="display:inline; padding-top:10px">
+                        Transaction Date
+                    </label>
+                    <div class="controls col-md-10" style="padding:0px 12px;">
+                        @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
+                        <hr />
+                        @Html.TextBox("DealDate",@Model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>*@
+
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10"style="padding-left:8px">
                 @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Payee, "", new { @class = "text-danger" })
             </div>
@@ -64,7 +72,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10"style="padding-left:8px">
                 @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
@@ -72,7 +80,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10"style="padding-left:8px">
                 @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
             </div>
@@ -80,7 +88,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Reconciled, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10"style="padding-left:8px">
                 <div class="btn btn-info btn-simple btn-lg">
 
                     @Html.CheckBoxFor(model => model.Reconciled, new { htmlAttributes = new { @class = "form-control" } })
@@ -89,7 +97,7 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-offset-2 col-md-10"style="padding-left:8px">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>

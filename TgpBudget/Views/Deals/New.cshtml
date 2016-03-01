@@ -17,9 +17,9 @@
 
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group" style="margin-bottom:0">
+        <div class="form-group" style="margin-bottom:0; padding-top:5px">
             @Html.LabelFor(model => model.BankAcctId, "Account", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="padding-left:20px">
                 @Html.DropDownList("BankAcctId", null, htmlAttributes: new { @class = "form-control" })
 
                 @Html.ValidationMessageFor(model => model.BankAcctId, "", new { @class = "text-danger" })
@@ -33,14 +33,14 @@
                        id="IncExpBtn" name="IncomeToggle" data-onstyle="success" data-offstyle="info">
             </div>
             <div id="ExpenseList" style="padding-top:-25px">
-                <div class="col-md-10">
+                <div class="col-md-10" style="padding-left:8px">
                     @Html.DropDownList("ExpenseId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.ExpenseId, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div id="IncomeList" style="padding-top:-19px">
-                <div class="col-md-10">
+                <div class="col-md-10" style="padding-left:8px">
                     @Html.DropDownList("IncomeId", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.IncomeId, "", new { @class = "text-danger" })
                 </div>
@@ -48,20 +48,28 @@
         </div>
 
 
-        <div class="control-group row" style="padding:8px 12px;">
+        <div class="form-group row" style="padding:0px 5px;">
             <div style="display:inline">
-                <label for="date-picker-1" class="control-label col-md-2" style="display:inline">
-                    @*<span class="glyphicon glyphicon-calendar">*@
+                <label for="date-picker-1" class="control-label col-md-2" style="display:inline; padding-top:10px">
                     Transaction Date
-                    @*</span>*@
                 </label>
-                <div class="controls col-md-10" style="padding:8px 12px;">
-                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate"
-                           style="display:inline;  border:hidden; padding:8px 12px;"
+                <div class="controls col-md-10" style="padding:0px 15px">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="DealDate" style="padding:8px 12px; border:1px"
                            value="@Model.DealDate.ToString("MM/dd/yyyy")">
                 </div>
             </div>
         </div>
+
+        @*<div class="form-group row" style="padding:8px 12px;">
+            <div style="display:inline">
+                <label for="date-picker-1" class="control-label col-md-2" style="display:inline; padding-top:4px">
+                    Transaction Date
+                </label>
+                <div class="controls col-md-10" style="padding:18px 12px;">
+                    @Html.EditorFor(model => model.DealDate, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+        </div>*@
 
         <div class="form-group row">
             @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })

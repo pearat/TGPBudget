@@ -30,7 +30,7 @@
         <tr>
             <td style="width:16%; text-align:left;">
                 Institution
-                </td>
+            </td>
             <td style="width:14%; text-align:left;">
                 Acct Number
             </td>
@@ -127,17 +127,20 @@
         <div class="form-group" style="padding:8px 12px;">
             <div style="display:inline">
                 <label for="date-picker-1" class="control-label col-md-2" style="display:inline">
-                    Balances as of: 
+                    Balances as of:
                 </label>
-                <div class="controls col-md-4" style="padding:8px 12px;">
-                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="AsOfDate" 
-                           value="@ViewBag.AsOfDate.ToString("MM/dd/yyyy")" />
+
+                <div class="controls col-md-2" style="padding:0px 15px">
+                    <input class="datepicker" data-date-format="mm/dd/yyyy" name="AsOfDate" style="padding:8px 12px; border:1px"
+                           value="@ViewBag.AsOfDate.ToString("MM/dd/yyyy")">
                 </div>
-                <input class="button" type="submit"
-                       value="Recalculate" />
+
+                <div class="col-md-2" style="display:inline">
+                    <input class="button" type="submit"
+                           value="Recalculate" />
+                </div>
             </div>
         </div>
-
 
     </div>
 }
@@ -201,6 +204,18 @@
             $('#modal-id').val(categoryId);
         });
 
+        $(function () {
+
+            $('.datepicker').datepicker({
+                format: 'dd MMM yyyy'
+            });
+
+            $(".date-picker").on("change", function () {
+                var id = $(this).attr("id");
+                var val = $("label[for='" + id + "']").text();
+                $("#msg").text(val + " changed");
+            });
+        });
 
     </script>
 }

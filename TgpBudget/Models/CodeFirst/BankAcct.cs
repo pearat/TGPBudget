@@ -80,8 +80,8 @@ namespace TgpBudget.Models
         [Display(Name = "Opening Balance (optional)")]
         public decimal OpeningBalance { get; set; }
 
-        [DataType(DataType.Date)]
         [Display(Name = "Date for Opening Balance")]
+        [DataType(DataType.Date)]
         public DateTimeOffset? OpeningDate { get; set; }
 
     }

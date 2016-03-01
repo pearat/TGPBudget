@@ -6363,7 +6363,7 @@ button.close {
 .carousel-control .glyphicon-chevron-right {
   position: absolute;
   top: 50%;
-  z-index: 5;
+  z-index: 500;
   display: inline-block;
   margin-top: -10px;
 }

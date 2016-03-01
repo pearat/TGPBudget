@@ -1,6 +1,6 @@
 ﻿@model TgpBudget.Models.EditUserProfileViewModel
 @{
-    ViewBag.Title = "Edit User Profile";
+    ViewBag.Title = "Review & Edit Your Profile";
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -8,9 +8,6 @@
 @using (Html.BeginForm("EditUserProfile", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Edit User Profile Form</h4>
-    
-    <hr />
     
     @Html.ValidationSummary("", new { @class = "text-danger" })
 
@@ -49,7 +46,7 @@
 }
 
 <div>
-    @Html.ActionLink("Return Home", "Index", "Home")
+    @Html.ActionLink("Return Home", "Dashboard", "Home")
 </div>
 
 @section Scripts {

@@ -24,6 +24,7 @@ namespace TgpBudget.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTimeOffset DealDate { get; set; }
 
         public string Description { get; set; }
