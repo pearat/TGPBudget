@@ -127,7 +127,7 @@ namespace TgpBudget.Controllers
                 es.SendAsync(msg);
 
                 // ^^^^^^^^^ end send Email ^^^^^^^^^
-                return RedirectToAction("Index", "Home", "Home");
+                return RedirectToAction("Index", "Dashboard", "Home");
             }
 
             //ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", invitation.HouseholdId);

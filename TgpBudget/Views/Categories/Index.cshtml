@@ -10,7 +10,7 @@
 
     <div class="col-sm-6" style="display:inline; margin:30px 0 0px">
 
-        @using (Html.BeginForm("Details", "Categories", "period"))
+        @using (Html.BeginForm("Index", "Categories", "period"))
         {
             <div class="form-group">
                 <div class="btn-group" data-toggle="buttons">
@@ -128,7 +128,7 @@
                     </td>
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> | </span>
-                        @*@Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>*@
+                        @Html.ActionLink("Details", "Details", new { id = item.Id })<span> | </span>
                         <button data-id="@item.Id" class="del" data-toggle="modal" data-target="#delCategoryModal">
                             <span>Delete</span>
                         </button>

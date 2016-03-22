@@ -128,16 +128,12 @@ namespace TgpBudget.Controllers
             ViewBag.BankAcctId = new SelectList(db.BankAccts.Where(
                 b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
 
-            //ViewBag.XferAcctId = new SelectList(db.BankAccts.Where(
-            //    b => b.HouseholdId == user.HouseholdId).OrderBy(b => b.AccountName), "Id", "AccountName");
-
-
-            // ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
-
             ViewBag.ExpenseId = new SelectList(db.Categories.Where(
                 c => c.IsExpense == true && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
+
             ViewBag.IncomeId = new SelectList(db.Categories.Where(
                 c => c.IsExpense == false && c.HouseholdId == user.HouseholdId).OrderBy(c => c.Name), "Id", "Name");
+
             return View(newDeal);
         }
 
